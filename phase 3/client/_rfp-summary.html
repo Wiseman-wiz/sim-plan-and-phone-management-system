@@ -1,0 +1,2175 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+    <link href="https://rawcdn.githack.com/shinxzxzxz/TableJS/c8218ba13b4d74c34af06f9f25d5063b6a99956f/tablejs.css"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer type="module"
+        src="https://rawcdn.githack.com/shinxzxzxz/TableJS/55597d91c8f5165cdfaaf90798bc2e0e886a42e8/tablejs.js"></script>
+    <!-- <script defer type="module"
+        src="https://rawcdn.githack.com/shinxzxzxz/TableJs-v2/fa9f1e82cf2595093650626d177115e1806a3919/tablejs.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/datepicker.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        tailwind.config = {
+            darkMode: ['[data-mode="dark"]'],
+        };
+    </script>
+    <?!= include("CSS"); ?>
+</head>
+
+<body>
+    <nav class="fixed top-0 z-[39] w-full bg-white border-b border-gray-200">
+        <div class="px-3 py-3 lg:px-5 lg:pl-3 h-14">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center justify-start rtl:justify-end">
+                    <button data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar"
+                        aria-controls="logo-sidebar" type="button"
+                        class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200">
+                        <span class="sr-only">Open sidebar</span>
+                        <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path clip-rule="evenodd" fill-rule="evenodd"
+                                d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z">
+                            </path>
+                        </svg>
+                    </button>
+                    <!-- <a href="https://flowbite.com" class="flex ms-5 md:me-24"> -->
+                    <span class="pl-6 self-center text-xl font-semibold sm:text-2xl whitespace-nowrap">
+                        SPPM
+                    </span>
+                    <!-- </a> -->
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- sidebar -->
+    {{SIDEBAR}}
+
+    <!-- Add Form Modal -->
+    <div id="add-modal" tabindex="-1" aria-hidden="true" data-modal-backdrop="static"
+        class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-4xl mx-auto max-h-full">
+            <!-- max-w-4xl mx-auto -->
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
+                    <h3 class="text-lg font-semibold text-gray-900">Generate RFP</h3>
+                    <button type="button"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+                        data-modal-toggle="add-modal">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <form id="addModalForm" class="p-4 md:p-5 form-to-submit" data-action="createRfpSummary"
+                    data-modal-id="add-modal">
+                    <div class="grid gap-4 mb-4 grid-cols-3">
+                        <div class="col-span-1 sm:col-span-1">
+                            <label for="rfpNoId" class="block mb-2 text-sm font-medium text-gray-900">RFP No</label>
+                            <select id="rfpNoId" name="rfpNo" required
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5">
+                                <option value="" disabled selected>Select RFP No</option>
+                            </select>
+                        </div>
+                        <div class="col-span-1 sm:col-span-1">
+                            <label for="rfpDateId" class="block mb-2 text-sm font-medium text-gray-900">
+                                RFP DATE
+                            </label>
+                            <div class="relative max-w-sm">
+                                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                    <svg class="w-4 h-4 text-gray-500" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                                    </svg>
+                                </div>
+                                <input datepicker datepicker-autohide datepicker-format="mm/dd/yyyy" datepicker-buttons
+                                    datepicker-autoselect-today type="text" name="rfpDate" id="rfpDateId"
+                                    autocomplete="off"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
+                                    placeholder="Select date" required />
+                            </div>
+                        </div>
+
+                        <div class="col-span-1 sm:col-span-1">
+                            <label for="billPeriodId" class="block mb-2 text-sm font-medium text-gray-900">
+                                Bill Period (From - To)
+                            </label>
+                            <input type="text" name="billPeriod" id="billPeriodId"
+                                class="pointer-events-none read-only:bg-neutral-200 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                placeholder="" required="" readonly tabindex="-1" />
+                        </div>
+                    </div>
+                    <div class="grid gap-4 mb-4 grid-cols-3">
+                        <div class="col-span-1 sm:col-span-1">
+                            <label for="companyId" class="block mb-2 text-sm font-medium text-gray-900">
+                                Company
+                            </label>
+                            <input type="text" name="company" id="companyId"
+                                class="pointer-events-none read-only:bg-neutral-200 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                placeholder="" required readonly tabindex="-1" />
+                        </div>
+                        <div class="col-span-1 sm:col-span-1">
+                            <label for="networkProviderId" class="block mb-2 text-sm font-medium text-gray-900">
+                                Network Provider
+                            </label>
+                            <input type="text" name="networkProvider" id="networkProviderId"
+                                class="pointer-events-none read-only:bg-neutral-200 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                placeholder="" required="" readonly tabindex="-1" />
+                        </div>
+                        <div class="col-span-1 sm:col-span-1">
+                            <label for="payableToId" class="block mb-2 text-sm font-medium text-gray-900">
+                                Payable To
+                            </label>
+                            <input type="text" name="payableTo" id="payableToId"
+                                class="pointer-events-none read-only:bg-neutral-200 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                placeholder="" required="" readonly tabindex="-1" />
+                        </div>
+                        <div class="col-span-1 sm:col-span-1 hidden">
+                            <label for="rfpGroupId" class="block mb-2 text-sm font-medium text-gray-900">
+                                RFP Group ID
+                            </label>
+                            <input type="text" name="rfpGroupId" id="rfpGroupId"
+                                class="pointer-events-none read-only:bg-neutral-200 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                placeholder="" required="" readonly tabindex="-1" />
+                        </div>
+                        <div class="col-span-1 sm:col-span-1 hidden">
+                            <label for="rfpGroupNameId" class="block mb-2 text-sm font-medium text-gray-900">
+                                RFP Group Name
+                            </label>
+                            <input type="text" name="rfpGroupName" id="rfpGroupNameId"
+                                class="pointer-events-none read-only:bg-neutral-200 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                placeholder="" required="" readonly tabindex="-1" />
+                        </div>
+                    </div>
+                    <div class="grid gap-4 mb-4 grid-cols-3">
+                        <div class="col-span-1 sm:col-span-1">
+                            <label for="amountId" class="block mb-2 text-sm font-medium text-gray-900">
+                                Total Amount
+                            </label>
+                            <input type="text" name="amount" id="totalAmountId"
+                                class="pointer-events-none read-only:bg-neutral-200 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                placeholder="" required="" readonly tabindex="-1" />
+                        </div>
+                        <div class="col-span-1 sm:col-span-1">
+                            <label for="withholdingTaxId" class="block mb-2 text-sm font-medium text-gray-900">
+                                Withholding Tax
+                            </label>
+                            <input type="text" name="withholdingTax" id="withholdingTaxId"
+                                class="pointer-events-none read-only:bg-neutral-200 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                placeholder="" required="" readonly tabindex="-1" />
+                        </div>
+                        <div class="col-span-1 sm:col-span-1">
+                            <label for="amountAfterTaxId" class="block mb-2 text-sm font-medium text-gray-900">
+                                Amount After Tax
+                            </label>
+                            <input type="text" name="amountAfterTax" id="amountAfterTaxId"
+                                class="pointer-events-none read-only:bg-neutral-200 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                placeholder="" required="" readonly tabindex="-1" />
+                        </div>
+                    </div>
+                    <div class="flex justify-end pt-2">
+                        <button type="submit"
+                            class="to-disable text-white inline-flex items-center bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                            Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Generate Reports Modal -->
+    <div id="reports-modal" tabindex="-1" aria-hidden="true" data-modal-backdrop="static"
+        class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-8xl mx-auto max-h-full">
+            <!-- max-w-4xl mx-auto -->
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        Payment Breakdown
+                    </h3>
+                    <button type="button"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+                        data-modal-toggle="reports-modal">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <div class="p-1 md:p-1">
+                    <!-- Reports Header Table Controllers -->
+                    <div class="w-full h-14 flex justify-between items-center border-b border-neutral-200">
+                        <div class="flex space-x-2">
+                            <!-- search -->
+                            <label for="searchInput" class="sr-only">Search</label>
+                            <div class="relative w-full">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <svg aria-hidden="true" class="w-5 h-5 text-gray-500" viewbox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <input type="text" id="reports-pagination-search"
+                                    class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded bg-gray-50 focus:ring-black focus:border-black"
+                                    placeholder="Search" required="" />
+                            </div>
+                            <!-- colvis -->
+                            <div class="relative w-40">
+                                <button data-dropdown-toggle="reports-table-colvis"
+                                    class="relative block w-40 p-1.5 border bg-neutral-50 border-neutral-300 text-neutral-900 sm:text-sm rounded focus:ring-neutral-600 focus:border-neutral-600">
+                                    <div
+                                        class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-neutral-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
+                                        </svg>
+                                    </div>
+                                    Columns
+                                </button>
+                                <div data-popover id="reports-table-colvis"
+                                    class="text-left z-50 hidden bg-white divide-y divide-neutral-100 rounded-lg shadow w-44 max-h-vh-36 overflow-x-auto">
+                                    <ul class="py-2 text-sm text-neutral-700"></ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <!-- add button -->
+                            <!-- Add Form Modal toggle -->
+                            <div
+                                class="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
+                                <button id="actionsDropdownButton" data-dropdown-toggle="actionsDropdown"
+                                    class="disable-print w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                    type="button">
+                                    <svg class="-ml-1 mr-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                        <path clip-rule="evenodd" fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                    </svg>
+                                    Print
+                                </button>
+                                <div id="actionsDropdown"
+                                    class="hidden z-50 w-50 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
+                                    <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
+                                        aria-labelledby="actionsDropdownButton">
+                                        <li>
+                                            <a id="downloadRfpId"
+                                                class="disableable-link cursor-pointer block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Request
+                                                for Payment
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <div class="py-1">
+                                        <a id="downloadPaymentBreakdownId"
+                                            class="disableable-link cursor-pointer block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Payment
+                                            Breakdown
+                                        </a>
+                                    </div>
+                                </div>
+                                <button id="reports-export-csv"
+                                    class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 disable-on-load">
+                                    Export CSV
+                                </button>
+                                <div class="flex items-center w-full space-x-3 md:w-auto"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Reports Table -->
+                    <div class="h-[40rem] overflow-y-auto overflow-x-auto">
+                        <!-- Spinner -->
+                        <div class="flex items-center justify-center h-vh-40" id="reportsTableSpinner">
+                            <div role="status" class="flex items-center space-x-2">
+                                <svg aria-hidden="true" class="w-8 h-8 mr-2 text-gray-200 animate-spin fill-gray-600"
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+                                    <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                    <path
+                                        d="M304 48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zm0 416a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM48 304a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm464-48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM142.9 437A48 48 0 1 0 75 369.1 48 48 0 1 0 142.9 437zm0-294.2A48 48 0 1 0 75 75a48 48 0 1 0 67.9 67.9zM369.1 437A48 48 0 1 0 437 369.1 48 48 0 1 0 369.1 437z" />
+                                </svg>
+                                <!-- <span class="sr-only">Loading...</span> -->
+                            </div>
+                        </div>
+                        <!-- Table Container -->
+                        <div id="reportsTableContainer" class="table-container hidden">
+                            <table id="reportsTable" class="w-full text-sm text-left rtl:text-right text-gray-500">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3">RFP NO</th>
+                                        <th scope="col" class="px-6 py-3">RFP DATE</th>
+                                        <th scope="col" class="px-6 py-3">DATE OF PAYMENT</th>
+                                        <th scope="col" class="px-6 py-3">RFP AMOUNT</th>
+                                        <th scope="col" class="px-6 py-3">WITHHOLDING TAX</th>
+                                        <th scope="col" class="px-6 py-3">AMOUNT AFTER TAX</th>
+                                        <th scope="col" class="px-6 py-3">
+                                            DATE RECEIVED BY ACCOUNTING
+                                        </th>
+                                        <th scope="col" class="px-6 py-3">CV NO</th>
+                                        <th scope="col" class="px-6 py-3">CV DATE</th>
+                                        <th scope="col" class="px-6 py-3">CHECK NO</th>
+                                        <th scope="col" class="px-6 py-3">CHECK DATE</th>
+                                        <th scope="col" class="px-6 py-3">ACTION</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody">
+                                    <tr>
+                                        <td scope="col" class="px-6 py-3">No data</td>
+                                        <td scope="col" class="px-6 py-3">No data</td>
+                                        <td scope="col" class="px-6 py-3">No data</td>
+                                        <td scope="col" class="px-6 py-3">No data</td>
+                                        <td scope="col" class="px-6 py-3">No data</td>
+                                        <td scope="col" class="px-6 py-3">No data</td>
+                                        <td scope="col" class="px-6 py-3">No data</td>
+                                        <td scope="col" class="px-6 py-3">No data</td>
+                                        <td scope="col" class="px-6 py-3">No data</td>
+                                        <td scope="col" class="px-6 py-3">No data</td>
+                                        <td scope="col" class="px-6 py-3">No data</td>
+                                        <td scope="col" class="px-6 py-3">Action</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot class="text-sm uppercase font-semibold">
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- <div class="flex justify-end pt-2">
+            <button type="button" data-modal-hide="reports-modal"
+                            class="text-white inline-flex items-center bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                            Close
+                        </button>
+          </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Form Modal -->
+    <div id="edit-modal" tabindex="-1" aria-hidden="true" data-modal-backdrop="static"
+        class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-4xl max-h-full">
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        Edit RFP Information
+                    </h3>
+                    <button type="button"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+                        data-modal-hide="edit-modal">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <form id="editModalForm" class="p-5 md:p-5 form-to-submit" data-action="editRfpSummary"
+                    data-modal-id="edit-modal">
+                    <div class="grid gap-4 mb-4 grid-cols-2">
+                        <div class="col-span-1">
+                            <label for="" class="block mb-2 text-sm font-medium text-gray-900">
+                                RFP No
+                            </label>
+                            <input type="text" name="editRfpNo" id="editRfpNoId"
+                                class="pointer-events-none read-only:bg-neutral-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 w-full p-2.5"
+                                placeholder="" required="" readonly tabindex="-1" />
+                        </div>
+                        <div class="col-span-1 sm:col-span-1">
+                            <label for="editDateOfPaymentId" class="block mb-2 text-sm font-medium text-gray-900">
+                                Date of Payment
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                    <svg class="w-4 h-4 text-gray-500" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                                    </svg>
+                                </div>
+                                <input datepicker datepicker-autohide datepicker-format="mm/dd/yyyy"
+                                    datepicker-autoselect-today type="text" name="editDateOfPayment"
+                                    id="editDateOfPaymentId" autocomplete="off"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
+                                    placeholder="Select date" />
+                            </div>
+                        </div>
+
+
+                        <div class="col-span-1">
+                            <label for="editCvNoId" class="block mb-2 text-sm font-medium text-gray-900">
+                                CV No
+                            </label>
+                            <input type="text" name="editCvNo" id="editCvNoId"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                placeholder="CV No" />
+                        </div>
+                        <div class="col-span-1 sm:col-span-1">
+                            <label for="editCvDateId" class="block mb-2 text-sm font-medium text-gray-900">
+                                CV Date
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                    <svg class="w-4 h-4 text-gray-500" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                                    </svg>
+                                </div>
+                                <input datepicker datepicker-autohide datepicker-format="mm/dd/yyyy"
+                                    datepicker-autoselect-today type="text" name="editCvDate" id="editCvDateId"
+                                    autocomplete="off"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
+                                    placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-span-1">
+                            <label for="editCheckNoId" class="block mb-2 text-sm font-medium text-gray-900">
+                                Check No
+                            </label>
+                            <input type="text" name="editCheckNo" id="editCheckNoId"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                placeholder="Check No" />
+                        </div>
+                        <div class="col-span-1 sm:col-span-1">
+                            <label for="editCheckDateId" class="block mb-2 text-sm font-medium text-gray-900">
+                                Check Date
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                    <svg class="w-4 h-4 text-gray-500" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                                    </svg>
+                                </div>
+                                <input datepicker datepicker-autohide datepicker-format="mm/dd/yyyy"
+                                    datepicker-autoselect-today type="text" name="editCheckDate" id="editCheckDateId"
+                                    autocomplete="off"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
+                                    placeholder="Select date" />
+                            </div>
+                        </div>
+                        <!-- <div class="grid gap-4 mb-4 grid-cols-2"> -->
+                        <div class="col-span-1 sm:col-span-1">
+                            <label for="editDateReceivedByAccountingId"
+                                class="block mb-2 text-sm font-medium text-gray-900">
+                                Date Received By Accounting
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                    <svg class="w-4 h-4 text-gray-500" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                                    </svg>
+                                </div>
+                                <input datepicker datepicker-autohide datepicker-format="mm/dd/yyyy"
+                                    datepicker-autoselect-today type="text" name="editDateReceivedByAccounting"
+                                    autocomplete="off" id="editDateReceivedByAccountingId"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
+                                    placeholder="Select date" />
+                            </div>
+                        </div>
+                        <div class="col-span-1 sm:col-span-1">
+                            <label for="editDepositDateId" class="block mb-2 text-sm font-medium text-gray-900">
+                                Deposit Date
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                    <svg class="w-4 h-4 text-gray-500" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                                    </svg>
+                                </div>
+                                <input datepicker datepicker-autohide datepicker-format="mm/dd/yyyy"
+                                    datepicker-autoselect-today type="text" name="editDepositDate"
+                                    id="editDepositDateId" autocomplete="off"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
+                                    placeholder="Select date" />
+                            </div>
+                        </div>
+
+                        <!-- </div> -->
+                    </div>
+
+                    <div class="flex justify-end pt-2">
+                        <button type="submit"
+                            class="to-disable text-white inline-flex items-center bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                            Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Modal -->
+    <div id="view-modal" tabindex="-1" aria-hidden="true" data-modal-backdrop="static"
+        class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-4xl max-h-full">
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow max-h-[100vh]">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        View RFP Information
+                    </h3>
+                    <button type="button"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+                        data-modal-hide="view-modal">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <div id="viewModal" class="p-5 md:p-5 overflow-y-auto max-h-[80vh]">
+                    <div class="grid gap-y-1.5 grid-cols-3">
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            RFP NO
+                        </div>
+                        <div id="viewRfpNoId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            RFP DATE
+                        </div>
+                        <div id="viewRfpDateId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            BILL PERIOD (FROM - TO)
+                        </div>
+                        <div id="viewBillPeriodId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            COMPANY
+                        </div>
+                        <div id="viewCompanyId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            NETWORK PROVIDER
+                        </div>
+                        <div id="viewNetworkProviderId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            PAYABLE TO
+                        </div>
+                        <div id="viewPayableToId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            TOTAL RFP AMOUNT
+                        </div>
+                        <div id="viewAmountId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            TOTAL WITHHOLDING TAX
+                        </div>
+                        <div id="viewWithholdingTaxId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            TOTAL AMOUNT AFTER TAX
+                        </div>
+                        <div id="viewAmountAfterTaxId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            DATE RECEIVED BY ACCOUNTING
+                        </div>
+                        <div id="viewDateReceivedByAccountingId" class="col-span-2 text-left text-sm text-neutral-700">
+                        </div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            CV NO
+                        </div>
+                        <div id="viewCvNoId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            CV DATE
+                        </div>
+                        <div id="viewCvDateId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            CHECK NO
+                        </div>
+                        <div id="viewCheckNoId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            CHECK DATE
+                        </div>
+                        <div id="viewCheckDateId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            DEPOSIT DATE
+                        </div>
+                        <div id="viewDepositDateId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            DATE OF PAYMENT
+                        </div>
+                        <div id="viewDateOfPaymentId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                    </div>
+                    <div class="flex justify-end pt-2">
+                        <button type="button" data-modal-hide="view-modal"
+                            class="text-white inline-flex items-center bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div id="delete-modal" tabindex="-1"
+        class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+            <div class="relative bg-white rounded-lg shadow">
+                <button type="button"
+                    class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+                    data-modal-hide="delete-modal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+                <div class="p-4 md:p-5 text-center">
+                    <svg class="mx-auto mb-4 text-gray-400 w-12 h-12" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                    <h3 class="mb-5 text-lg font-normal text-gray-500">
+                        Are you sure you want to delete this record?
+                    </h3>
+                    <button type="button" id="deleteConfirmButtonId"
+                        class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                        Yes, I'm sure
+                    </button>
+                    <button data-modal-hide="delete-modal" type="button" id="cancel-delete"
+                        class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100">
+                        No, cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template Modal -->
+    <div id="template-modal" tabindex="-1" aria-hidden="true" data-modal-backdrop="static"
+        class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-4xl max-h-full">
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow max-h-[100vh]">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        RFP Template
+                    </h3>
+                    <button type="button"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+                        data-modal-hide="template-modal">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <div id="templateModal" class="p-5 md:p-5 overflow-y-auto max-h-[80vh]">
+                    <div class="grid gap-y-1.5 grid-cols-3">
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            RFP NO
+                        </div>
+                        <div id="viewRfpNoId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            RFP DATE
+                        </div>
+                        <div id="viewRfpDateId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            BILL PERIOD (FROM - TO)
+                        </div>
+                        <div id="viewBillPeriodId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            COMPANY
+                        </div>
+                        <div id="viewCompanyId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            NETWORK PROVIDER
+                        </div>
+                        <div id="viewNetworkProviderId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            PAYABLE TO
+                        </div>
+                        <div id="viewPayableToId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            TOTAL RFP AMOUNT
+                        </div>
+                        <div id="viewAmountId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            TOTAL WITHHOLDING TAX
+                        </div>
+                        <div id="viewWithholdingTaxId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            TOTAL AMOUNT AFTER TAX
+                        </div>
+                        <div id="viewAmountAfterTaxId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            DATE RECEIVED BY ACCOUNTING
+                        </div>
+                        <div id="viewDateReceivedByAccountingId" class="col-span-2 text-left text-sm text-neutral-700">
+                        </div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            CV NO
+                        </div>
+                        <div id="viewCvNoId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            CV DATE
+                        </div>
+                        <div id="viewCvDateId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            CHECK NO
+                        </div>
+                        <div id="viewCheckNoId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            CHECK DATE
+                        </div>
+                        <div id="viewCheckDateId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            DEPOSIT DATE
+                        </div>
+                        <div id="viewDepositDateId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            DATE OF PAYMENT
+                        </div>
+                        <div id="viewDateOfPaymentId" class="col-span-2 text-left text-sm text-neutral-700"></div>
+                    </div>
+                    <div class="flex justify-end pt-2">
+                        <button type="button" data-modal-hide="template-modal"
+                            class="text-white inline-flex items-center bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast container -->
+    <!-- <div id="toast-container" class="fixed z-50 bottom-5 left-5 space-y-4"></div> -->
+
+    <div class="mt-14 sm:ml-64 hidden">
+        <!-- <input type="text" id="pagination-search" /> -->
+        <!-- <select name="" id="pagination-limit"></select> -->
+        <!-- <button id="pagination-next">Next</button> -->
+        <!-- <button id="pagination-previous">Previous</button> -->
+        <!-- <button id="export-csv" class="hidden">Export CSV</button> -->
+        <select name="" id="flags-filter"></select>
+        <!-- <div id="table-colvis"></div> -->
+    </div>
+
+    <div class="fixed top-14 right-0 w-vw-64 h-vh-14">
+        <!-- Table header controllers -->
+        <div class="w-full h-14 flex justify-between items-center border-b border-neutral-200">
+            <div class="flex space-x-2">
+                <!-- search -->
+                <label for="searchInput" class="sr-only">Search</label>
+                <div class="relative w-full">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg aria-hidden="true" class="w-5 h-5 text-gray-500" viewbox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <input type="text" id="pagination-search"
+                        class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded bg-gray-50 focus:ring-black focus:border-black"
+                        placeholder="Search" required="" />
+                </div>
+                <!-- colvis -->
+                <div class="relative w-40">
+                    <button data-dropdown-toggle="table-colvis"
+                        class="relative block w-40 p-1.5 border bg-neutral-50 border-neutral-300 text-neutral-900 sm:text-sm rounded focus:ring-neutral-600 focus:border-neutral-600">
+                        <div
+                            class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-neutral-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
+                            </svg>
+                        </div>
+                        Columns
+                    </button>
+                    <div data-popover id="table-colvis"
+                        class="text-left z-50 hidden bg-white divide-y divide-neutral-100 rounded-lg shadow w-44 max-h-vh-36 overflow-x-auto">
+                        <ul class="py-2 text-sm text-neutral-700"></ul>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <!-- add button -->
+                <!-- Add Form Modal toggle -->
+                <div
+                    class="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
+                    <button data-modal-target="add-modal" data-modal-toggle="add-modal" type="button"
+                        id="add-modal-toggle"
+                        class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-blue-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 disable-on-load">
+                        Generate RFP
+                    </button>
+                    <button type="button" id="export-csv"
+                        class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 disable-on-load">
+                        Export CSV
+                    </button>
+                    <div class="flex items-center w-full space-x-3 md:w-auto"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="h-vh-40 overflow-y-auto overflow-x-auto">
+            <!-- Spinner -->
+            <div class="flex items-center justify-center h-vh-40" id="spinner">
+                <div role="status" class="flex items-center space-x-2">
+                    <svg aria-hidden="true" class="w-8 h-8 mr-2 text-gray-200 animate-spin fill-gray-600"
+                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+                        <path
+                            d="M304 48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zm0 416a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM48 304a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm464-48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM142.9 437A48 48 0 1 0 75 369.1 48 48 0 1 0 142.9 437zm0-294.2A48 48 0 1 0 75 75a48 48 0 1 0 67.9 67.9zM369.1 437A48 48 0 1 0 437 369.1 48 48 0 1 0 369.1 437z" />
+                    </svg>
+                    <!-- <span class="sr-only">Loading...</span> -->
+                </div>
+            </div>
+            <!-- Table Container -->
+            <div id="tableContainer" class="table-container hidden">
+                <table id="tablejs" class="w-full text-sm text-left rtl:text-right text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">RFP NO</th>
+                            <th scope="col" class="px-6 py-3">RFP DATE</th>
+                            <th scope="col" class="px-6 py-3">DATE OF PAYMENT</th>
+                            <th scope="col" class="px-6 py-3">RFP AMOUNT</th>
+                            <th scope="col" class="px-6 py-3">WITHHOLDING TAX</th>
+                            <th scope="col" class="px-6 py-3">AMOUNT AFTER TAX</th>
+                            <th scope="col" class="px-6 py-3">
+                                DATE RECEIVED BY ACCOUNTING
+                            </th>
+                            <th scope="col" class="px-6 py-3">CV NO</th>
+                            <th scope="col" class="px-6 py-3">CV DATE</th>
+                            <th scope="col" class="px-6 py-3">CHECK NO</th>
+                            <th scope="col" class="px-6 py-3">CHECK DATE</th>
+                            <th scope="col" class="px-6 py-3">ACTION</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr>
+                            <td scope="col" class="px-6 py-3">No data</td>
+                            <td scope="col" class="px-6 py-3">No data</td>
+                            <td scope="col" class="px-6 py-3">No data</td>
+                            <td scope="col" class="px-6 py-3">No data</td>
+                            <td scope="col" class="px-6 py-3">No data</td>
+                            <td scope="col" class="px-6 py-3">No data</td>
+                            <td scope="col" class="px-6 py-3">No data</td>
+                            <td scope="col" class="px-6 py-3">No data</td>
+                            <td scope="col" class="px-6 py-3">No data</td>
+                            <td scope="col" class="px-6 py-3">No data</td>
+                            <td scope="col" class="px-6 py-3">No data</td>
+                            <td scope="col" class="px-6 py-3">Action</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Table Footer -->
+        <div class="flex items-center justify-between border-t border-neutral-200 px-4 h-12">
+            <!-- <div class="info flex items-center space-x-2">
+                <div class="font-bold text-xl me-8 w-24">
+                    TOTAL
+                </div>
+                <div class="font-medium text-xl me-2" id="reports-total">
+                    0.00
+                </div>
+            </div> -->
+            <div class="text-sm">
+                <span class="text-sm" id="pagination-records">Shows 1 of 1 of 1 entries</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <div class="text-sm">Rows per page</div>
+                <div class="text-sm">
+                    <select id="pagination-limit"
+                        class="block w-full items-center justify-center px-2 h-8 text-xs font-medium text-neutral-500 bg-white border rounded-lg hover:bg-neutral-100 hover:text-neutral-700 border-neutral-300 focus-within:ring-0 focus:ring-neutral-500 focus:outline-none focus:border-neutral-500">
+                        <option value="*" selected>All</option>
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="500">500</option>
+                        <option value="1000">1000</option>
+                    </select>
+                </div>
+                <span class="text-sm" id="pagination-label">Page 1 of 10</span>
+                <button id="pagination-previous"
+                    class="aspect-square flex items-center justify-center px-2 h-8 text-sm font-medium text-neutral-500 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-100 hover:text-neutral-700"
+                    name="previous">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                    </svg>
+                </button>
+                <button id="pagination-next"
+                    class="aspect-square flex items-center justify-center px-2 h-8 text-sm font-medium text-neutral-500 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-100 hover:text-neutral-700"
+                    name="next">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+    <?!= include('JavaScript'); ?>
+    <script>
+        document.addEventListener("DOMContentLoaded", async function () {
+            const ids = generateIds(document.querySelectorAll("[id]"));
+
+            const spinner = document.getElementById("spinner");
+            const tableContainer = document.getElementById("tableContainer");
+            const reportsTableSpinner = document.getElementById("reportsTableSpinner");
+            const reportsTableContainer = document.getElementById("reportsTableContainer");
+
+            let cachedPaymentBreakdown = [];
+            let cachedRfpData = {};
+
+            // Cache object to store datasets by rfpNo
+            let cache = {
+                paymentBreakdown: {}
+            };
+
+            const onClickEvents = {
+                viewData: function (data) {
+                    // console.warn(data);
+                    // console.warn(Object.keys(data));
+                    loadViewFields(data);
+                    showModal("view");
+                },
+                editData: function (data) {
+                    console.log(data);
+                    loadEditFields(data);
+                    // calculateCurrentChargeAmount();
+                    showModal("edit");
+                },
+                deleteData: function (data) {
+                    Swal.fire({
+                        title: "Are you sure you want to delete this record?",
+                        showCancelButton: true,
+                        icon: "info",
+                        confirmButtonText: `Yes, Delete RFP No ${data.RFP_NO}`,
+                        cancelButtonText: "No, cancel",
+                        customClass: {
+                            title: "mb-5 text-lg font-normal text-gray-500",
+                            cancelButton:
+                                "cursor-pointer text-white bg-gray-600 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center",
+                            confirmButton:
+                                "cursor-pointer text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center",
+                        },
+                    }).then((result) => {
+                        /* Read more about isConfirmed, isDenied below */
+                        if (result.isConfirmed) {
+                            // Swal.fire("Deleted!", "", "success");
+                            handleDelete(data.rfpNo);
+                        } else if (result.isDenied) {
+                            // Swal.fire("Changes are not saved", "", "info");
+                        }
+                    });
+                },
+                generateReports: function (data) {
+                    // Hide the spinner once the data was loaded
+                    reportsTableSpinner.classList.remove("hidden");
+                    // Show the Table Container once the data was loaded
+                    reportsTableContainer.classList.add("hidden");
+
+
+                    refreshReportsTable(reportsTableInstance, data.RFP_NO);
+                    showModal("reports");
+
+                    console.log("RFP NO:", data.RFP_NO);
+                    console.log("Data:", data)
+
+                    // Object.assign(cachedRfpData, data);
+
+                    cachedRfpData = { ...data };
+                    console.log(cachedPaymentBreakdown);
+
+                    // Define the event handler function
+                    function downloadRfpHandler() {
+                        console.log("Action button has been clicked");
+                        google.script.run.withSuccessHandler(function (pdfUrl) {
+                            var win = window.open("", "_blank");
+                            win.document.write('<iframe width="100%" height="100%" src="' + pdfUrl + '"></iframe>');
+                        }).getRfpPdfUrl(cachedRfpData);
+                    }
+
+                    // Define the event handler function
+                    function downloadPaymentBreakdown() {
+                        console.log("Action button has been clicked");
+
+                        // Use cached payment breakdown data for the given RFP No
+                        // const cachedBreakdown = cache.paymentBreakdown[data.RFP_NO];
+
+                        // console.log(cachedBreakdown);
+
+                        if (cachedPaymentBreakdown) {
+                            google.script.run.withSuccessHandler(function (pdfUrl) {
+                                var win = window.open("", "_blank");
+                                win.document.write('<iframe width="100%" height="100%" src="' + pdfUrl + '"></iframe>');
+                            }).getPaymentBreakdownPdfUrl(cachedPaymentBreakdown);
+                        } else {
+                            console.warn(`No cached payment breakdown found for RFP No: ${data.RFP_NO}`);
+                        }
+                    }
+
+
+                    // console.log(cachedPaymentBreakdown);
+                    // console.log("RFP SUMMARY DATA:", data);
+
+                    // Add the event listener
+                    if (!ids.downloadRfpId.hasRfpDownloadEvent) {
+                        ids.downloadRfpId.addEventListener('click', downloadRfpHandler);
+                        ids.downloadRfpId.hasRfpDownloadEvent = true;
+                    }
+                    if (!ids.downloadPaymentBreakdownId.hasPaymentBreakdownEvent) {
+                        ids.downloadPaymentBreakdownId.addEventListener('click', downloadPaymentBreakdown);
+                        ids.downloadPaymentBreakdownId.hasPaymentBreakdownEvent = true;
+                    }
+                },
+            };
+
+            // Disables all buttons while the table content is loading
+            // document.querySelectorAll("button").forEach((button) => {
+            //     button.classList.add("cursor-not-allowed");
+            //     button.disabled = true;
+            // });
+
+            // Targeting a specific class instead of all the buttons
+            document.querySelectorAll('.disable-on-load').forEach(button => {
+                button.classList.add('cursor-not-allowed');
+                button.disabled = true;
+            });
+
+            // const totalElement = document.querySelector('div#reports-total');
+            const recordElement = document.querySelector("span#pagination-records");
+            const pagingElement = document.querySelector("span#pagination-label");
+
+            const output = {
+                pagination: ({
+                    current_page,
+                    total_page,
+                    start_item,
+                    end_item,
+                    total_rows,
+                }) => {
+                    if (recordElement)
+                        recordElement.innerHTML = `Shows ${start_item} to ${end_item} of ${total_rows} entries`;
+                    if (pagingElement)
+                        pagingElement.innerHTML = `Page ${current_page} of ${total_page}`;
+                },
+            };
+
+
+
+            const billingData = await $.getDataFromSheet(BILLING, SHEETS.BILLING.DATE_FIELDS);
+
+            async function initializeRfpSummary() {
+
+                try {
+                    const dataset = await $.getRfpDetails();
+                    // console.warn(dataset);
+                    const parsed = JSON.parse(dataset);
+                    const array = Array.from(parsed);
+                    console.warn("RFP Summary Details:", array);
+                    // console.warn("Billing Dataset:", billingData);
+
+                    // const billingRfpNos = [... new Set(billingData.map(item => item.RFP_NO))];
+                    // const rfpSummaryNos = new Set(array.map(item => item.RFP_NO));
+
+                    // const uniqueRfpNos = billingRfpNos.filter(rfpNo => !rfpSummaryNos.has(rfpNo));
+
+
+                    // const uniqueRfpNos = [...new Set(billingData.map(item => item.RFP_NO))];
+                    // const uniqueRfpNos = await $.getUniqueRfpNo();
+                    // console.log("uniqueRfpNos", uniqueRfpNos);
+                    // console.log(typeof uniqueRfpNos );
+
+                    // populateDropdown(uniqueRfpNos, ids.rfpNoId);
+
+                    window.rfpSummaryData = array;
+
+                } catch (error) {
+                    console.error(error);
+                }
+
+            }
+
+
+            // const rfpDetails = await initializeRfpDetails();
+
+            const headers = [
+                "RFP_NO",
+                "RFP_COMPANY",
+                "NETWORK_PROVIDER",
+                "PAYABLE_TO",
+                "BILL_PERIOD_FROM",
+                "BILL_PERIOD_TO",
+                "RFP_DATE",
+                "RFP_AMOUNT",
+                "WITHHOLDING_TAX",
+                "AMOUNT_AFTER_TAX",
+                "DATE_OF_PAYMENT",
+                "DATE_RECEIVED_BY_ACCTG",
+                "CV_NO",
+                "CV_DATE",
+                "CHECK_NO",
+                "CHECK_DATE",
+                "DEPOSIT_DATE",
+            ];
+
+            async function renderTable({ data, table }) {
+                const thead = table.querySelector("thead");
+                const tbody = table.querySelector("tbody");
+
+                // Clear existing content
+                thead.innerHTML = "";
+                tbody.innerHTML = "";
+
+                // Create Header
+                const headerRow = document.createElement("tr");
+                headers.forEach((header) => {
+                    const th = document.createElement("th");
+                    th.scope = "col";
+                    th.classList.add("px-6", "py-3");
+                    th.textContent = header.replace(/[_\s]{1,}/g, " ");
+                    headerRow.appendChild(th);
+                });
+                // Add Action Header
+                const actionHeader = document.createElement("th");
+                actionHeader.scope = "col";
+                actionHeader.classList.add("px-6", "py-3", "actions-column");
+                actionHeader.textContent = "Actions";
+                headerRow.appendChild(actionHeader);
+                thead.appendChild(headerRow);
+
+                // if (data.length === 1 && data[0].RFP_NO === "") {
+                //     // Create a row indicating no unposted records
+                //     const noDataRow = document.createElement('tr');
+                //     const noDataTd = document.createElement('td');
+                //     noDataTd.colSpan = headers.length + 1; // Adjust colspan for headers + actions column
+                //     noDataTd.classList.add('px-6', 'py-3', 'text-center');
+                //     noDataTd.textContent = 'No records found';
+                //     noDataRow.appendChild(noDataTd);
+                //     tbody.appendChild(noDataRow);
+                //     return;
+                // }
+
+                // Create Body
+                data.forEach((row, index) => {
+
+                    console.log("RFP_INFO:", row.RFP_INFO);
+
+                    if (row.RFP_INFO) {
+                        const rfpInfoString = row.RFP_INFO;
+                        const hasRfpInfo = !!rfpInfoString;
+                        const rfpInfo = hasRfpInfo ? JSON.parse(rfpInfoString) : '';
+
+                        row.RFP_COMPANY = rfpInfo.RFP_COMPANY;
+                        row.NETWORK_PROVIDER = rfpInfo.NETWORK_PROVIDER;
+                        row.PAYABLE_TO = rfpInfo.PAYABLE_TO;
+                    }
+
+                    const tr = document.createElement("tr");
+                    tr.classList.add("bg-white", "border-b");
+                    if (tr.index === undefined || tr.index === null) {
+                        tr.index = index;
+                        tr.dataset.index = index;
+                    }
+
+                    // Add Action Buttons
+                    const actionTd = document.createElement("td");
+                    actionTd.classList.add("px-6", "py-3");
+                    const actionDiv = document.createElement("div");
+                    actionDiv.classList.add("action-buttons", "flex", "space-x-2");
+
+                    if (Object.entries(row).every(([key, value]) => value === "")) {
+                        const NoData = "No data";
+                        headers.forEach((header) => {
+                            const td = document.createElement("td");
+                            td.classList.add("px-6", "py-3");
+                            td.textContent = NoData;
+                            tr.appendChild(td);
+                        });
+                        actionTd.textContent = "Actions";
+                    } else {
+                        headers.forEach((header) => {
+                            const td = document.createElement("td");
+                            let value = row[header];
+                            if (header == "RFP_DATE") {
+                                value = formatIsoDate(row.RFP_DATE);
+                            } else if (header == "DATE_OF_PAYMENT") {
+                                value = formatIsoDate(row.DATE_OF_PAYMENT);
+                            } else if (header == "DATE_RECEIVED_BY_ACCTG") {
+                                value = formatIsoDate(row.DATE_RECEIVED_BY_ACCTG);
+                            } else if (header == "CV_DATE") {
+                                value = formatIsoDate(row.CV_DATE);
+                            } else if (header == "CHECK_DATE") {
+                                value = formatIsoDate(row.CHECK_DATE);
+                            } else if (header == "DEPOSIT_DATE") {
+                                value = formatIsoDate(row.DEPOSIT_DATE);
+                            }
+                            else if (header == "RFP_AMOUNT") {
+                                value = row.TOTAL_RFP_AMOUNT;
+                            } else if (header == "WITHHOLDING_TAX") {
+                                value = row.TOTAL_WITHHOLDING_TAX;
+                            } else if (header == "AMOUNT_AFTER_TAX") {
+                                value = row.TOTAL_AMOUNT_AFTER_TAX;
+                            }
+                            td.classList.add("px-6", "py-3");
+                            const numberValues = [
+                                "RFP_AMOUNT",
+                                "WITHHOLDING_TAX",
+                                "AMOUNT_AFTER_TAX",
+                            ];
+                            switch (true) {
+                                case numberValues.includes(header):
+                                    td.textContent = formatNumber(value);
+                                    td.classList.add("text-right");
+                                    break;
+                                default:
+                                    td.textContent = value;
+                                    break;
+                            }
+                            tr.appendChild(td);
+                        });
+
+                        const reportButton = generateActionButton(
+                            vectors.reports,
+                            {
+                                class: "px-2 py-2 bg-green-500 text-white rounded",
+                                onClick: () =>
+                                    onClickEvents.generateReports({
+                                        ...row,
+                                    }),
+                            },
+                            row
+                        );
+                        const viewButton = generateActionButton(
+                            vectors.view,
+                            {
+                                class: "px-2 py-2 bg-teal-500 text-white rounded",
+                                onClick: () =>
+                                    onClickEvents.viewData({
+                                        ...row,
+                                        // COMPANY: company,
+                                        // NETWORK_PROVIDER: networkProvider,
+                                        // PAYABLE_TO: payableTo,
+                                        // BILL_PERIOD: billPeriod,
+                                        // RFP_AMOUNT: totalRfpAmount,
+                                        // WITHHOLDING_TAX: totalWithholdingTax,
+                                        // AMOUNT_AFTER_TAX: totalAmountAfterTax,
+                                    }),
+                            },
+                            row
+                        );
+                        const editButton = generateActionButton(
+                            vectors.edit,
+                            {
+                                class: "px-2 py-2 bg-blue-500 text-white rounded",
+                                onClick: () =>
+                                    onClickEvents.editData({
+                                        ...row,
+                                    }),
+                            },
+                            row
+                        );
+                        const deleteButton = generateActionButton(
+                            vectors.delete,
+                            {
+                                class: "px-2 py-2 bg-red-500 text-white rounded",
+                                onClick: () =>
+                                    onClickEvents.deleteData({
+                                        ...row,
+                                        rfpNo: row.RFP_NO,
+                                    }),
+                            },
+                            row
+                        );
+                        actionDiv.appendChild(reportButton);
+                        actionDiv.appendChild(viewButton);
+                        actionDiv.appendChild(editButton);
+                        actionDiv.appendChild(deleteButton);
+                        actionTd.appendChild(actionDiv);
+                    }
+
+                    tr.appendChild(actionTd);
+                    tbody.appendChild(tr);
+                });
+            }
+
+            const reportsHeaders = [
+                "RFP_NO",
+                "SIM_CARD_ID",
+                "EMPLOYEE_NAME",
+                "ACCOUNTING_CODE",
+                "ACCOUNT_NO",
+                "MOBILE_NO",
+                "BILL_PERIOD_FROM",
+                "BILL_PERIOD_TO",
+                "CHARGE_TO_BDC",
+                "EXCESS_CHARGES",
+                "RFP_AMOUNT",
+                "WITHHOLDING_TAX",
+                "AMOUNT_AFTER_TAX",
+            ];
+
+            async function renderReportsTable({ data, table }) {
+                const thead = table.querySelector("thead");
+                const tbody = table.querySelector("tbody");
+                const tfoot = table.querySelector("tfoot");
+
+                // Clear existing content
+                thead.innerHTML = "";
+                tbody.innerHTML = "";
+                tfoot.innerHTML = "";
+
+                // Create Header
+                const headerRow = document.createElement("tr");
+                reportsHeaders.forEach((header) => {
+                    const th = document.createElement("th");
+                    th.scope = "col";
+                    th.classList.add("px-6", "py-3");
+                    th.textContent = header.replace(/[_\s]{1,}/g, " ");
+                    headerRow.appendChild(th);
+                });
+                thead.appendChild(headerRow);
+
+                // Initialize totals
+                const totals = {
+                    RFP_AMOUNT: 0,
+                    WITHHOLDING_TAX: 0,
+                    AMOUNT_AFTER_TAX: 0,
+                    CHARGE_TO_BDC: 0,
+                    EXCESS_CHARGES: 0,
+                };
+
+                // Create Body and Calculate Totals
+                data.forEach((row, index) => {
+
+                    const employeeInfoString = row.EMPLOYEE_INFO;
+                    const hasEmployeeInfo = !!employeeInfoString;
+                    const employeeInfo = hasEmployeeInfo ? JSON.parse(employeeInfoString) : '';
+
+                    row.EMPLOYEE_NAME = employeeInfo.FULL_NAME;
+                    row.ACCOUNTING_CODE = employeeInfo.ACCOUNTING_CODE;
+                    // row.GROUP_ID = employeeInfo.GROUP_ID;
+
+                    if (row.SIM_INFO) {
+                        const simInfoString = row.SIM_INFO;
+                        const hasSimInfo = !!simInfoString;
+                        const simInfo = hasSimInfo ? JSON.parse(simInfoString) : '';
+
+                        row.MOBILE_NO = simInfo.MOBILE_NO;
+                        row.ACCOUNT_NO = simInfo.ACCOUNT_NO;
+                        // row.NETWORK_PROVIDER = simInfo.NETWORK_PROVIDER;
+                        // row.PLAN_DETAILS = simInfo.PLAN_DETAILS;
+                        // Must be added on SIM_INFO
+                        row.RFP_GROUP_NAME = simInfo.RFP_GROUP_NAME;
+                        // row.CATEGORY = simInfo.CATEGORY;
+                    }
+
+                    const tr = document.createElement("tr");
+                    tr.classList.add("bg-white", "border-b");
+                    tr.index = index;
+                    tr.dataset.index = index;
+
+                    // Check if the row has no data
+                    if (Object.entries(row).every(([key, value]) => value === "")) {
+                        reportsHeaders.forEach(() => {
+                            const td = document.createElement("td");
+                            td.classList.add("px-6", "py-3");
+                            td.textContent = "No data";
+                            tr.appendChild(td);
+                        });
+                    } else {
+                        // Populate row cells
+                        reportsHeaders.forEach((header) => {
+                            const td = document.createElement("td");
+                            let value = row[header];
+                            // if (header == 'CODES') {
+                            //     value = row.ACCOUNTING_CODE;
+                            // }
+                            // } else if (header == "MOBILE_NO") {
+                            //     value = mobileNo;
+                            // } else if (header == "SIM_CARD_ID") {
+                            //     value = simCardId;
+                            // } else if (header == "EMPLOYEE_NAME") {
+                            //     value = employeeName;
+                            // } else if (header == "GROUP_ID") {
+                            //     value = employeeId;
+                            // } else if (header == "ACCOUNT_NO") {
+                            //     value = accountNo;
+                            // } else if (header == "CODES") {
+                            //     value = employeeAccountingCode;
+                            // }
+                            td.classList.add("px-6", "py-3");
+                            const numberValues = [
+                                "MONTHLY_RECURRING_FEE",
+                                "EXCESS_CHARGES",
+                                "OTHER_CHARGES",
+                                "PREVIOUS_BILL_AMOUNT",
+                                "PREVIOUS_BILL_PAYMENT",
+                                "CURRENT_CHARGE_AMOUNT",
+                                "ADJ_AMOUNT",
+                                "AMOUNT_DUE",
+                                "RFP_AMOUNT",
+                                "WITHHOLDING_TAX",
+                                "AMOUNT_AFTER_TAX",
+                                "CHARGE_TO_BDC",
+                            ];
+                            if (numberValues.includes(header)) {
+                                td.textContent = formatNumber(value);
+                                td.classList.add("text-right");
+                                // Update totals
+                                if (header in totals) {
+                                    totals[header] += parseFloat(value || 0);
+                                }
+                            } else {
+                                td.textContent = value;
+                            }
+                            tr.appendChild(td);
+                        });
+                    }
+
+                    tbody.appendChild(tr);
+                });
+
+                // Add a new row with totals inside the tfoot
+                const totalRow = document.createElement("tr");
+                totalRow.classList.add("bg-gray-100", "border-t");
+
+                const desiredValues = {
+                    RFP_NO: "TOTAL",
+                    RFP_AMOUNT: totals.RFP_AMOUNT.toFixed(2),
+                    WITHHOLDING_TAX: totals.WITHHOLDING_TAX.toFixed(2),
+                    AMOUNT_AFTER_TAX: totals.AMOUNT_AFTER_TAX.toFixed(2),
+                    CHARGE_TO_BDC: totals.CHARGE_TO_BDC.toFixed(2),
+                    EXCESS_CHARGES: totals.EXCESS_CHARGES.toFixed(2),
+                };
+
+                reportsHeaders.forEach((header) => {
+                    const td = document.createElement("td");
+                    td.classList.add("px-6", "py-3");
+                    const value = desiredValues[header] || "";
+                    if (header in desiredValues) {
+                        if (["RFP_AMOUNT", "WITHHOLDING_TAX", "AMOUNT_AFTER_TAX", "CHARGE_TO_BDC", "EXCESS_CHARGES"].includes(header)) {
+                            td.textContent = formatNumber(value);
+                            td.classList.add("text-right");
+                        } else {
+                            td.textContent = value;
+                        }
+                    }
+                    totalRow.appendChild(td);
+                });
+
+                tfoot.appendChild(totalRow);
+
+                // Adjust the table container to have a max-height and overflow
+                table.parentElement.classList.add("table-container");
+            }
+
+            function initializeTable(
+                tableId,
+                colvisElement,
+                csvButtonId,
+                paginationLimitId,
+                paginationNextId,
+                paginationPreviousId,
+                paginationSearchId,
+                renderingFunction,
+                exportFileName
+            ) {
+                const table = document.querySelector(tableId);
+                return new TableJS(table, {
+                    dataset: {
+                        init: false,
+                        collection: [],
+                        rendering: renderingFunction,
+                    },
+                    colvis: {
+                        element: colvisElement,
+                        exclude: [".checkbox-column", ".actions-column"],
+                        hide: [],
+                    },
+                    exportAs: [
+                        {
+                            as: "csv",
+                            element: csvButtonId,
+                            filename: exportFileName,
+                            exclude: [".checkbox-column", ".actions-column"],
+                        },
+                    ],
+                    paginate: [
+                        {
+                            to: "api",
+                            as: "limit",
+                            element: paginationLimitId,
+                            output: output.pagination,
+                        },
+                        {
+                            to: "api",
+                            as: "next",
+                            element: paginationNextId,
+                            output: output.pagination,
+                        },
+                        {
+                            to: "api",
+                            as: "previous",
+                            element: paginationPreviousId,
+                            output: output.pagination,
+                        },
+                        {
+                            to: "local",
+                            as: "search",
+                            element: paginationSearchId,
+                            exclude: [".checkbox-column", ".actions-column"],
+                            output: output.pagination,
+                        },
+                    ],
+                });
+            }
+
+            // Initialize the first table with its specific rendering function
+            const instance = initializeTable(
+                "#tablejs", // tableId
+                "div#table-colvis", // colvisElement
+                "button#export-csv", // csvButtonId
+                "select#pagination-limit", // paginationLimitId
+                "button#pagination-next", // paginationNextId
+                "button#pagination-previous", // paginationPreviousId
+                "input#pagination-search", // paginationSearchId
+                renderTable, // renderingFunction
+                "rfp"
+            );
+
+            const reportsTableInstance = initializeTable(
+                "#reportsTable", // tableId
+                "div#reports-table-colvis", // colvisElement
+                "button#reports-export-csv", // csvButtonId
+                "select#pagination-limit", // paginationLimitId
+                "button#pagination-next", // paginationNextId
+                "button#pagination-previous", // paginationPreviousId
+                "input#reports-pagination-search", // paginationSearchId
+                renderReportsTable, // renderingFunction
+                "payment-breakdown"
+            );
+
+            // renderReportsTable
+
+            async function refreshTable() {
+                try {
+                    const dataset = await $.getRfpData();
+                    // console.warn({
+                    //     dataset
+                    // });
+                    const parsed = JSON.parse(dataset);
+                    const array = Array.from(parsed);
+                    console.warn({
+                        array
+                    });
+                    instance.setDataset(array).render();
+
+                    const billingRfpNos = [... new Set(billingData.map(item => item.RFP_NO))];
+                    const rfpSummaryNos = new Set(array.map(item => item.RFP_NO));
+
+                    const uniqueRfpNos = billingRfpNos.filter(rfpNo => !rfpSummaryNos.has(rfpNo));
+
+                    console.log("uniqueRfpNos", uniqueRfpNos);
+
+                    populateDropdown(uniqueRfpNos, ids.rfpNoId);
+
+
+                    // Hiding the spinner / loading animation 
+                    spinner.classList.add('hidden');
+                    tableContainer.classList.remove('hidden');
+
+                    // Remove the disable attribute from the buttons when the  
+                    document.querySelectorAll('.disable-on-load').forEach(button => {
+                        button.disabled = false;
+                        button.classList.remove('cursor-not-allowed');
+                    });
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+
+
+            // async function refreshReportsTable(instance, rfpNo) {
+            //     // Select the print button directly
+            //     const printButton = document.querySelector(".disable-print");
+
+            //     // Disable the print button while loading data
+            //     printButton.disabled = true;
+            //     printButton.classList.add("cursor-not-allowed");
+
+            //     const dataset = await $.getBillingSimAndEmployeeDetailsByRfpNo(rfpNo);
+
+            //     const parsed = JSON.parse(dataset);
+
+            //     const array = Array.from(parsed);
+            //     // console.warn("PAYMENT BREAKDOWN:", array); 
+            //     cachedPaymentBreakdown = array;
+
+            //     instance.setDataset(array).render();
+
+            //     // Hide the spinner once the data was loaded
+            //     reportsTableSpinner.classList.add("hidden");
+            //     // Show the Table Container once the data was loaded
+            //     reportsTableContainer.classList.remove("hidden");
+
+            //     // Re-enable the print button when the data has loaded
+            //     printButton.disabled = false;
+            //     printButton.classList.remove("cursor-not-allowed");
+
+            //     // Remove the disable attribute from the buttons when the
+            //     document.querySelectorAll("button").forEach((button) => {
+            //         button.disabled = false;
+            //         button.classList.remove("cursor-not-allowed");
+            //     });
+            // }
+
+
+
+            async function refreshReportsTable(instance, rfpNo) {
+                // Select the print button directly
+                const printButton = document.querySelector(".disable-print");
+
+                // Disable the print button while loading data
+                printButton.disabled = true;
+                printButton.classList.add("cursor-not-allowed");
+
+                // Check if the dataset is already cached for the given rfpNo
+                if (cache.paymentBreakdown[rfpNo]) {
+                    console.log(`Using cached data for RFP No: ${rfpNo}`);
+                    const cachedData = cache.paymentBreakdown[rfpNo];
+                    instance.setDataset(cachedData).render();
+                    cachedPaymentBreakdown = cachedData;
+                } else {
+                    // If not cached, fetch the dataset from the server
+                    console.log(`Fetching data from the server for RFP No: ${rfpNo}`);
+                    const dataset = await $.getBillingSimAndEmployeeDetailsByRfpNo(rfpNo);
+
+                    const parsed = JSON.parse(dataset);
+                    const array = Array.from(parsed);
+
+                    // Store the fetched dataset in the cache
+                    cache.paymentBreakdown[rfpNo] = array;
+                    cachedPaymentBreakdown = array;
+
+                    // Use the fetched data
+                    instance.setDataset(array).render();
+                }
+
+                // Hide the spinner once the data was loaded
+                reportsTableSpinner.classList.add("hidden");
+                // Show the Table Container once the data was loaded
+                reportsTableContainer.classList.remove("hidden");
+
+                // Re-enable the print button when the data has loaded
+                printButton.disabled = false;
+                printButton.classList.remove("cursor-not-allowed");
+
+                // Remove the disable attribute from the buttons when the data has been loaded
+                document.querySelectorAll(".disable-on-load").forEach((button) => {
+                    button.disabled = false;
+                    button.classList.remove("cursor-not-allowed");
+                });
+            }
+
+
+
+            refreshTable();
+            // refresh the table
+
+            // Function to populate RFP Group Dropdown
+            function populateDropdown(array, dropdownId) {
+                // Get the dropdown element
+                const dropdown = dropdownId;
+                if (!dropdown) {
+                    console.error("Dropdown element not found.");
+                    return;
+                }
+
+                // Clear existing options
+                dropdown.innerHTML = "";
+
+                // Create a DocumentFragment to minimize reflows
+                const fragment = document.createDocumentFragment();
+
+                if (array.length == 0) {
+                    const defaultOption = document.createElement("option");
+                    defaultOption.text = "No Available RFP No";
+                    defaultOption.value = "";
+                    defaultOption.disabled = true;
+                    defaultOption.selected = true;
+                    fragment.appendChild(defaultOption);
+                } else {
+                    const defaultOption = document.createElement("option");
+                    defaultOption.text = "Select RFP No";
+                    defaultOption.value = "";
+                    defaultOption.disabled = true;
+                    defaultOption.selected = true;
+                    fragment.appendChild(defaultOption);
+
+                    // Iterate through the array and create option elements
+                    array.forEach((item) => {
+                        console.log(`THIS IS ITEM: ${item}`);
+                        const option = document.createElement("option");
+                        option.text = item; // Use the 'name' property for the option text
+                        option.value = item; // Use the 'id' property for the option value
+                        fragment.appendChild(option);
+                    });
+                }
+
+                // Append the fragment to the dropdown
+                dropdown.appendChild(fragment);
+            }
+
+            // Event listener for dropdown change
+            ids.rfpNoId.addEventListener("change", function () {
+                const selectedRfpNo = this.value;
+                console.log("Dropdown Changed To:", selectedRfpNo);
+
+                // Find the corresponding RFP details from the dataset
+                const selectedRfpData = window.rfpSummaryData.find(item => item.RFP_NO === selectedRfpNo);
+
+                // If the RFP is found, populate the relevant fields
+                if (selectedRfpData) {
+                    populateRfpDetails(selectedRfpData);
+                }
+            });
+
+            // async function initializeRfpDetails() {
+
+            //   try {
+            //     const dataset = await $.getRfpDetails();
+            //     // console.warn(dataset);
+            //     const parsed = JSON.parse(dataset);
+            //     const array = Array.from(parsed);
+            //     // console.warn("RFP Summary Dataset:", array);
+
+            //     const uniqueRfpNos = [...new Set(billingData.map(item => item.RFP_NO))];
+            //     console.log("uniqueRfpNos", uniqueRfpNos);
+
+            //     return dataset;
+            //   } catch (error) {
+            //     console.error(error);
+            //   }
+            //     // console.log("RFP Details:", rfpDetails);
+            // }
+
+            async function populateRfpDetails(data) {
+                console.log(data);
+                // ids.billPeriodId.value = `${DateTime(data.BILL_PERIOD_FROM, {format: "MM/DD/YYYY"})} - ${DateTime(data.BILL_PERIOD_TO, { format: "MM/DD/YYYY"})}`;
+                ids.rfpGroupId.value = data.RFP_GROUP_ID;
+                ids.rfpGroupNameId.value = data.RFP_GROUP_NAME;
+                ids.billPeriodId.value = `${data.BILL_PERIOD_FROM} - ${data.BILL_PERIOD_TO}`;
+                ids.companyId.value = (data.RFP_COMPANY == "BDC") ? "Borland Development Corporation" : (data.RFP_COMPANY == "WFC") ? "Westbrook Finance Corporation" : "";
+                // ids.companyId.value = data.RFP_COMPANY;
+                ids.networkProviderId.value = data.NETWORK_PROVIDER;
+                ids.payableToId.value = data.PAYABLE_TO;
+                ids.totalAmountId.value = formatNumber(data.TOTAL_RFP_AMOUNT);
+                ids.withholdingTaxId.value = formatNumber(data.TOTAL_WITHHOLDING_TAX);
+                ids.amountAfterTaxId.value = formatNumber(data.TOTAL_AMOUNT_AFTER_TAX);
+            }
+
+            async function populateTotalFields(rfpNo) {
+                if (window.rfpSummaryData[rfpNo]) {
+                    const { totalRfpAmount, totalWithholdingTax, totalAmountAfterTax } =
+                        window.rfpSummaryData[rfpNo];
+                    ids.amountId.value = totalRfpAmount.toFixed(2);
+                    ids.withholdingTaxId.value = totalWithholdingTax.toFixed(2);
+                    ids.amountAfterTaxId.value = totalAmountAfterTax.toFixed(2);
+                } else {
+                    ids.amountId.value = "";
+                    ids.withholdingTaxId.value = "";
+                    ids.amountAfterTaxId.value = "";
+                }
+            }
+
+            function loadViewFields(data = {}) {
+                data.BILL_PERIOD = `${data.BILL_PERIOD_FROM} - ${data.BILL_PERIOD_TO}`;
+                const matching = [
+                    { element: ids.viewRfpNoId, data: "RFP_NO", type: "string" },
+                    { element: ids.viewRfpDateId, data: "RFP_DATE", type: "date" },
+                    {
+                        element: ids.viewBillPeriodId,
+                        data: "BILL_PERIOD",
+                        type: "string",
+                    },
+                    { element: ids.viewCompanyId, data: "RFP_COMPANY", type: "string" },
+                    {
+                        element: ids.viewNetworkProviderId,
+                        data: "NETWORK_PROVIDER",
+                        type: "string",
+                    },
+                    {
+                        element: ids.viewPayableToId,
+                        data: "PAYABLE_TO",
+                        type: "string",
+                    },
+                    { element: ids.viewAmountId, data: "TOTAL_RFP_AMOUNT", type: "number" },
+                    {
+                        element: ids.viewWithholdingTaxId,
+                        data: "TOTAL_WITHHOLDING_TAX",
+                        type: "number",
+                    },
+                    {
+                        element: ids.viewAmountAfterTaxId,
+                        data: "TOTAL_AMOUNT_AFTER_TAX",
+                        type: "number",
+                    },
+                    {
+                        element: ids.viewDateReceivedByAccountingId,
+                        data: "DATE_RECEIVED_BY_ACCTG",
+                        type: "date",
+                    },
+                    { element: ids.viewCvNoId, data: "CV_NO", type: "string" },
+                    { element: ids.viewCvDateId, data: "CV_DATE", type: "date" },
+                    { element: ids.viewCheckNoId, data: "CHECK_NO", type: "string" },
+                    { element: ids.viewCheckDateId, data: "CHECK_DATE", type: "date" },
+                    {
+                        element: ids.viewDepositDateId,
+                        data: "DEPOSIT_DATE",
+                        type: "date",
+                    },
+                    {
+                        element: ids.viewDateOfPaymentId,
+                        data: "DATE_OF_PAYMENT",
+                        type: "date",
+                    },
+                ];
+
+                matching.forEach(
+                    ({ element, data: keyValue, type, default: defaultValue }) => {
+                        const value =
+                            data[keyValue] !== "" ? data[keyValue] : defaultValue;
+                        if (type === "number") {
+                            // element.textContent = toNumber(value, 0).toFixed(2);
+                            element.textContent = formatNumber(value);
+                        } else if (type === "date") {
+                            console.log("THIS IS THE DATE:", value);
+                            element.textContent =
+                                value == undefined ? "" : formatDate(value);
+                        } else {
+                            element.textContent = value;
+                        }
+                    }
+                );
+            }
+
+            // Function to load data into edit fields
+            function loadEditFields(data = {}) {
+                const matching = [
+                    { element: ids.editRfpNoId, data: "RFP_NO", type: "string", default: '' },
+                    { element: ids.editDateReceivedByAccountingId, data: "DATE_RECEIVED_BY_ACCTG", type: "date", default: '' },
+                    { element: ids.editCvNoId, data: "CV_NO", type: "string", default: '' },
+                    { element: ids.editCvDateId, data: "CV_DATE", type: "date", default: '' },
+                    { element: ids.editCheckNoId, data: "CHECK_NO", type: "string", default: '' },
+                    { element: ids.editCheckDateId, data: "CHECK_DATE", type: "date", default: '' },
+                    { element: ids.editDepositDateId, data: "DEPOSIT_DATE", type: "date", default: '' },
+                    { element: ids.editDateOfPaymentId, data: "DATE_OF_PAYMENT", type: "date", default: '' },
+                ];
+
+                matching.forEach(
+                    ({ element, data: keyValue, type, default: defaultValue }) => {
+                        const value =
+                            data[keyValue] !== "" ? data[keyValue] : defaultValue;
+                        if (type === "number") {
+                            element.value = toNumber(value, 0).toFixed(2);
+                        } else if (type === "date") {
+                            console.log("THIS IS THE DATE:", value);
+                            element.value =
+                                value == undefined ? "" : formatDate(value);
+                        } else {
+                            element.value = value;
+                        }
+                    }
+                );
+            }
+
+
+            // asdf
+
+            // Function to handle form submission
+            async function handleFormSubmission(form, modalId) {
+                form.addEventListener('submit', async function (event) {
+                    event.preventDefault();
+                    const formData = new FormData(form);
+                    const dataObject = Object.fromEntries(formData.entries());
+                    const buttons = form.querySelectorAll('button.to-disable');
+                    toggleButtonState(buttons, true);
+
+                    const action = form.dataset.action;
+                    const { submitCallback, additionalOperations } = await getFormConfig(action);
+
+                    try {
+                        // Perform additional operations before submission
+                        if (additionalOperations) {
+                            await additionalOperations(dataObject);
+                        }
+                        // clearForm(form);
+                        // Submit form data after additional operations
+                        await submitCallback(dataObject);
+                        refreshTable();
+                        // showToast("Record successfully processed", "success");
+                        toast.success({
+                            title: "Record successfully processed",
+                            description: "Record successfully processed",
+                            timeout: 4000,
+                            closeButton: false,
+                        })
+                        if (modalId) toggleModal(modalId); // Use the dynamic modal ID if present
+                        // document.querySelector('[data-modal-toggle="add-modal"]').click();
+                        clearForm(form);
+                    } catch (error) {
+                        console.error("Error:", error);
+                        // showToast("An error occurred. Please try again.", "error");
+                        toast.error({
+                            title: "An error occurred. Please try again.",
+                            description: "An error occurred. Please try again.",
+                            timeout: 4000,
+                            closeButton: false,
+                        })
+                    } finally {
+                        setTimeout(() => toggleButtonState(buttons, false), 2000);
+                    }
+                });
+            }
+
+            // Function to handle the deletion logic
+            async function handleDelete(dataId, options = {}) {
+                if (dataId != null) {
+
+                    const result = await $.deleteRfpSummary(dataId);
+
+                    if (result.status === 'Success') {
+                        console.info(result);
+                        await refreshTable();
+                        initializeRfpSummary();
+                        toast.success({
+                            title: "Item deleted successfully",
+                            description: "Item deleted successfully",
+                            timeout: 4000,
+                            closeButton: false,
+                        })
+                        return true;
+                    } else {
+                        console.error(result);
+                        toast.error({
+                            title: "Item deletion unsuccessful",
+                            description: "Item deletion unsuccessful",
+                            timeout: 4000,
+                            closeButton: false,
+                        })
+                        return false;
+                    }
+                }
+            }
+
+            async function getFormConfig(action) {
+                switch (action) {
+                    case 'createRfpSummary':
+                        return {
+                            submitCallback: async formData => {
+                                console.log(formData);
+
+                                // RFP_NO	RFP_DATE	BILL_PERIOD	DATE_OF_PAYMENT	DATE_RECEIVED_BY_ACCTG	CV_NO	CV_DATE	CHECK_NO	CHECK_DATE	DEPOSIT_DATE	RFP_INFO																
+
+                                const formDataArray = [
+                                    formData.rfpNo,
+                                    formData.rfpDate,
+                                    // formData.billPeriod,
+                                    null,
+                                    null,
+                                    null,
+                                    null,
+                                    null,
+                                    null,
+                                    null,
+                                    formData.rfpInfo,
+                                ];
+
+                                console.log(formDataArray)
+                                // Format rfpDate to a string
+                                // formData.rfpDate = new Date(formData.rfpDate).toISOString().split('T')[0];
+                                // console.log(formData);
+                                // formData.rfpDate = `${formData.rfpDate}`;
+                                return new Promise((resolve, reject) => {
+                                    google.script.run
+                                        .withSuccessHandler(async () => {
+                                            // Perform additional operations after successful submission
+                                            console.log("Performing additional operations for createRfp");
+                                            // initializeRfpSummary();
+                                            resolve();
+                                        })
+                                        .withFailureHandler(reject)
+                                        .createRfpSummary(formDataArray);
+                                });
+                            },
+                            additionalOperations: formData => {
+                                var rfpInfo = {
+                                    RFP_GROUP_ID: formData.rfpGroupId,
+                                    RFP_GROUP_NAME: formData.rfpGroupName,
+                                    RFP_COMPANY: formData.company,
+                                    NETWORK_PROVIDER: formData.networkProvider,
+                                    PAYABLE_TO: formData.payableTo
+                                    // RFP_GROUP_ID	RFP_GROUP_NAME	RFP_COMPANY	NETWORK_PROVIDER	PAYABLE_TO
+                                }
+                                formData.rfpInfo = JSON.stringify(rfpInfo);
+                            } // No additional operations before submission
+                        };
+
+                    case 'editRfpSummary':
+                        return {
+                            submitCallback: async formData => {
+                                // Optional: Calculate withholding tax and amount after tax
+                                const withholdingTax = (formData.editRfpAmount / 1.12 * 0.02).toFixed(2);
+                                formData.editWithholdingTax = withholdingTax;
+                                formData.editAmountAfterTax = formData.editRfpAmount - withholdingTax;
+                                console.log(formData);
+
+                                return new Promise((resolve, reject) => {
+                                    google.script.run
+                                        .withSuccessHandler(async () => {
+                                            // Refresh and update the UI after successful update
+                                            // await refreshTable(instance, RFP_SUMMARY);
+                                            initializeRfpSummary();
+                                            clearForm(ids.editModalForm);
+                                            hideModal("edit");
+                                            resolve();
+                                        })
+                                        .withFailureHandler(reject)
+                                        .editRfpSummary(formData);
+                                });
+                            },
+                            additionalOperations: null // No additional operations before submission
+                        };
+                    // Add more cases for other actions as needed
+                    default:
+                        throw new Error('Unknown action: ' + action);
+                }
+            }
+
+            // Function to disable and enable buttons
+            function toggleButtonState(buttons, state) {
+                buttons.forEach(function (button) {
+                    button.disabled = state;
+                    button.classList.toggle('cursor-not-allowed', state);
+                });
+            }
+
+            function formatIsoDate(isoDateString) {
+                if (!isoDateString) {
+                    return ''; // Return empty string if input is empty
+                }
+
+                const date = new Date(isoDateString);
+
+                if (isNaN(date.getTime())) {
+                    return ''; // Return empty string if date is invalid
+                }
+
+                const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed, so add 1
+                const day = String(date.getDate()).padStart(2, '0');
+                const year = date.getFullYear();
+
+                return `${month}/${day}/${year}`;
+            }
+
+            function toggleModal(modalId) {
+                const modalToggle = document.querySelector(`[data-modal-toggle="${modalId}"]`);
+                if (modalToggle) {
+                    modalToggle.click();
+                } else {
+                    console.error(`Modal with identifier "${modalId}" not found.`);
+                }
+            }
+
+
+            // Initialize all forms
+            document.querySelectorAll('.form-to-submit').forEach(form => {
+                // Get modal ID from data attribute if present
+                const modalId = form.dataset.modalId;
+                handleFormSubmission(form, modalId);
+            });
+
+            const datepickerInputs = document.querySelectorAll('input[datepicker]');
+
+            datepickerInputs.forEach(function (inputField) {
+                inputField.addEventListener('keydown', function (event) {
+                    const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', '/'];
+                    if (!event.key.match(/[0-9/]/) && !allowedKeys.includes(event.key)) {
+                        event.preventDefault();
+                    }
+                });
+            });
+
+            // Select all links with the class 'disableable-link'
+            const links = document.querySelectorAll('.disableable-link');
+
+            // Add event listeners to each link
+            links.forEach(link => {
+                link.addEventListener('click', function (event) {
+                    disableLink(event, this);
+                });
+            });
+
+            function disableLink(event, link) {
+                // Prevent the default action (if any)
+                event.preventDefault();
+
+                // Store the original text in a data attribute
+                const originalText = link.textContent;
+                link.dataset.originalText = originalText; // Store original text
+
+                // Disable the link visually
+                link.style.pointerEvents = 'none'; // Prevent further clicks
+                link.style.opacity = '0.5'; // Optional: change opacity for visual feedback
+                link.textContent = 'Please wait...'; // Change the text
+
+                // Re-enable the link after 10 seconds
+                setTimeout(() => {
+                    link.style.pointerEvents = 'auto'; // Allow clicks again
+                    link.style.opacity = '1'; // Restore opacity
+                    link.textContent = link.dataset.originalText; // Restore original text from data attribute
+                }, 10000); // 5 seconds in milliseconds
+            }
+
+            // Call initializeRfpSummary to fetch data and populate the dropdown initially
+            initializeRfpSummary();
+        });
+
+        document.getElementById("billsAndPayment").classList.remove("hidden");
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1227 @@
+<script>
+    const EMPLOYEE_DETAILS = 'EMPLOYEE_DETAILS';
+    const SIM_INVENTORY = 'SIM_INVENTORY';
+    const SIM_PLANS = 'SIM_PLANS';
+    const SIM_REQUEST_AND_ISSUANCE = 'SIM_REQUEST_AND_ISSUANCE';
+    const RFP_GROUP = 'RFP_GROUP';
+    const BILLING = 'BILLING';
+    const RFP_SUMMARY = 'RFP_SUMMARY';
+    const PAYMENT = 'PAYMENT';
+    const EXCESS_CHARGES = "EXCESS_CHARGES";
+
+    const SHEETS = {
+        EMPLOYEE_DETAILS: {
+            DATE_FIELDS: [
+                'DATE_HIRED'
+            ]
+        },
+        SIM_INVENTORY: {
+            DATE_FIELDS: [
+                'RR_DATE',
+                // 'PURCHASING_RS_DATE', // MOVED TO SIM REQUEST AND ISSUANCE
+                'PLAN_EFFECTIVITY',
+                'TERMINATED_DATE',
+                'LOCK_IN_PERIOD_FROM',
+                'LOCK_IN_PERIOD_TO'
+            ]
+        },
+        SIM_PLANS: {
+            DATE_FIELDS: []
+        },
+        SIM_REQUEST_AND_ISSUANCE: {
+            DATE_FIELDS: [
+                'RECEIVED_AND_APPROVED_DATE',
+                'PRE_ISSUANCE_DATE',
+                'ISSUANCE_DATE',
+                'PURCHASING_RS_DATE' // NEWLY ADDED
+            ]
+        },
+        RFP_GROUP: {
+            DATE_FIELDS: []
+        },
+        BILLING: {
+            DATE_FIELDS: [
+                'BILL_PERIOD_FROM',
+                'BILL_PERIOD_TO'
+            ]
+        },
+        RFP_SUMMARY: {
+            DATE_FIELDS: [
+                'RFP_DATE',
+                'DATE_OF_PAYMENT',
+                'DATE_RECEIVED_BY_ACCTG',
+                'CV_DATE',
+                'CHECK_DATE',
+                'DEPOSIT_DATE'
+            ]
+        },
+        PAYMENT: {
+            DATE_FIELDS: [
+                'OR_DATE',
+                'PAYMENT_POSTED_DATE',
+                'PAYMENT_BREAKDOWN_RECEIPT_DATE'
+            ]
+        },
+        EXCESS_CHARGES: {
+            DATE_FIELDS: [
+                'DEDUCTION_DATE',
+                'APPROVAL_DATE',
+                'REFERENCE',
+                'EXCESS_CHARGE_DATE'
+            ]
+        },
+    }
+
+    const $ = (() => {
+        const handlerKeys = [
+            'withSuccessHandler',
+            'withFailureHandler',
+            'withUserObject',
+        ];
+        const GoogleInstance = {};
+
+        Object.keys(google.script.run)
+            .filter((k) => handlerKeys.indexOf(k) < 0)
+            .forEach((k) => {
+                GoogleInstance[k] = (...args) =>
+                    new Promise((resolve, reject) => {
+                        google.script.run
+                            .withSuccessHandler(resolve)
+                            .withFailureHandler(reject)
+                        [k](...args);
+                    });
+            });
+
+        return GoogleInstance;
+    })();
+
+    const vectors = {
+        view: {
+            svg: {
+                xmlns: "http://www.w3.org/2000/svg",
+                fill: "none",
+                viewBox: "0 0 24 24",
+                "stroke-width": "1.5",
+                stroke: "currentColor",
+                class: "w-3 h-3",
+            },
+            path: [
+                {
+                    "stroke-linecap": "round",
+                    "stroke-linejoin": "round",
+                    d: "M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z",
+                },
+                {
+                    "stroke-linecap": "round",
+                    "stroke-linejoin": "round",
+                    d: "M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z",
+                },
+            ],
+        },
+        edit: {
+            svg: {
+                xmlns: "http://www.w3.org/2000/svg",
+                fill: "none",
+                viewBox: "0 0 24 24",
+                "stroke-width": "1.5",
+                stroke: "currentColor",
+                class: "w-3 h-3",
+            },
+            path: [
+                {
+                    "stroke-linecap": "round",
+                    "stroke-linejoin": "round",
+                    d: "m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125",
+                },
+            ],
+        },
+        delete: {
+            svg: {
+                xmlns: "http://www.w3.org/2000/svg",
+                fill: "none",
+                viewBox: "0 0 24 24",
+                "stroke-width": "1.5",
+                stroke: "currentColor",
+                class: "w-3 h-3",
+            },
+            path: [
+                {
+                    "stroke-linecap": "round",
+                    "stroke-linejoin": "round",
+                    d: "m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0",
+                },
+            ],
+        },
+        reports: {
+            svg: {
+                xmlns: "http://www.w3.org/2000/svg",
+                fill: "none",
+                viewBox: "0 0 24 24",
+                "stroke-width": "1.5",
+                stroke: "currentColor",
+                class: "w-3 h-3",
+            },
+            path: [
+                {
+                    "stroke-linecap": "round",
+                    "stroke-linejoin": "round",
+                    d: "M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z",
+                },
+            ],
+        },
+        print: {
+            svg: {
+                xmlns: "http://www.w3.org/2000/svg",
+                fill: "none",
+                viewBox: "0 0 24 24",
+                "stroke-width": "1.5",
+                stroke: "currentColor",
+                class: "size-4",
+            },
+            path: [
+                {
+                    "stroke-linecap": "round",
+                    "stroke-linejoin": "round",
+                    d: "M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 0 0-1.913-.247M6.34 18H5.25A2.25 2.25 0 0 1 3 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z",
+                },
+            ],
+        },
+    };
+
+
+    // Modal Functions
+    function initializeModal(modalId, options = {}) {
+        const $targetEl = document.getElementById(modalId);
+
+        if (!$targetEl) {
+            console.error(`Modal with id ${modalId} not found.`);
+            return null;
+        }
+
+        // Default options
+        const defaultOptions = {
+            placement: 'bottom-right',
+            backdrop: 'static',
+            backdropClasses: 'bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-40',
+            closable: true,
+            onHide: () => {
+                console.log(`Modal with id ${modalId} is hidden`);
+            },
+            onShow: () => {
+                console.log(`Modal with id ${modalId} is shown`);
+            },
+            onToggle: () => {
+                console.log(`Modal with id ${modalId} has been toggled`);
+            }
+        };
+
+        // Merge default options with provided options
+        const modalOptions = { ...defaultOptions, ...options };
+
+        const modalInstance = new Modal($targetEl, modalOptions);
+
+        const hideTriggers = document.querySelectorAll(`[data-modal-hide="${modalId}"]`);
+
+        hideTriggers.forEach(element => {
+            element.addEventListener("click", (e) => {
+                // e.preventDefault();
+                modalInstance.hide();
+            });
+        })
+
+        return modalInstance;
+    }
+
+    // Initialize the delete and edit modals
+    const modals = {
+        delete: initializeModal('delete-modal', {
+            onHide: () => console.log('Delete modal is hidden'),
+            onShow: () => console.log('Delete modal is shown'),
+            onToggle: () => console.log('Delete modal has been toggled')
+        }),
+        edit: initializeModal('edit-modal', {
+            onHide: () => console.log('Edit modal is hidden'),
+            onShow: () => console.log('Edit modal is shown'),
+            onToggle: () => console.log('Edit modal has been toggled')
+        }),
+        view: initializeModal('view-modal', {
+            onHide: () => console.log('View modal is hidden'),
+            onShow: () => console.log('View modal is shown'),
+            onToggle: () => console.log('View modal has been toggled')
+        }),
+        reports: initializeModal('reports-modal', {
+            onHide: () => console.log('Report modal is hidden'),
+            onShow: () => console.log('Report modal is shown'),
+            onToggle: () => console.log('Report modal has been toggled')
+        }),
+    };
+
+    // Check if the modal was initialized successfully
+    function showModal(modalType) {
+        const modal = modals[modalType];
+        if (modal) {
+            modal.show();
+        } else {
+            console.error(`Modal of type ${modalType} could not be shown because it was not initialized.`);
+        }
+    }
+
+    function hideModal(modalType) {
+        const modal = modals[modalType];
+        if (modal) {
+            modal.hide();
+        } else {
+            console.error(`Modal of type ${modalType} could not be shown because it was not initialized.`);
+        }
+    }
+    // End of Modal functions
+
+    // Function to show toast notification
+    function showToast(message, type = 'info') {
+        const toastContainer = document.getElementById('toast-container');
+
+        const toastVectors = {
+            error: {
+                svg: {
+                    xmlns: "http://www.w3.org/2000/svg",
+                    fill: "currentColor",
+                    viewBox: "0 0 20 20",
+                    stroke: "currentColor",
+                    class: "w-5 h-5",
+                },
+                path: [
+                    {
+                        d: "M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM10 15a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm1-4a1 1 0 0 1-2 0V6a1 1 0 0 1 2 0v5Z",
+                    }
+                ],
+            },
+            close: {
+                svg: {
+                    fill: "none",
+                    viewBox: "0 0 14 14",
+                    xmlns: "http://www.w3.org/2000/svg",
+                    class: "w-3 h-3"
+                },
+                path: [
+                    {
+                        stroke: "currentColor",
+                        "stroke-linecap": "round",
+                        "stroke-linejoin": "round",
+                        "stroke-width": "2",
+                        d: "M1 1l6 6m0 0l6 6M7 7l6-6M7 7l-6 6"
+                    }
+                ],
+            }
+        };
+
+        const toastTypes = {
+            info: {
+                vector: {
+                    svg: {
+                        xmlns: "http://www.w3.org/2000/svg",
+                        fill: "currentColor",
+                        viewBox: "0 0 20 20",
+                        stroke: "currentColor",
+                        class: "w-5 h-5",
+                    },
+                    path: [
+                        {
+                            d: "M9 2a7 7 0 110 14A7 7 0 019 2zm1 10.93a1 1 0 00-2 0V14a1 1 0 002 0v-1.07zM9 4a1 1 0 00-1 1v5a1 1 0 002 0V5a1 1 0 00-1-1z",
+                        },
+                    ],
+                },
+                bgColor: "bg-blue-100 dark:bg-blue-800 text-blue-500 dark:text-blue-200",
+                srText: "Info icon",
+            },
+            success: {
+                vector: {
+                    svg: {
+                        xmlns: "http://www.w3.org/2000/svg",
+                        fill: "currentColor",
+                        viewBox: "0 0 20 20",
+                        stroke: "currentColor",
+                        class: "w-5 h-5",
+                    },
+                    path: [
+                        {
+                            d: "M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z",
+                        },
+                    ],
+                },
+                bgColor: "bg-green-100 dark:bg-green-800 text-green-500 dark:text-green-200",
+                srText: "Check icon",
+            },
+            error: {
+                vector: toastVectors.error,
+                bgColor: "bg-red-100 dark:bg-red-800 text-red-500 dark:text-red-200",
+                srText: "Error icon",
+            },
+            warning: {
+                vector: {
+                    svg: {
+                        xmlns: "http://www.w3.org/2000/svg",
+                        fill: "currentColor",
+                        viewBox: "0 0 20 20",
+                        stroke: "currentColor",
+                        class: "w-5 h-5",
+                    },
+                    path: [
+                        {
+                            d: "M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM10 15a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm1-4a1 1 0 0 1-2 0V6a1 1 0 0 1 2 0v5Z",
+                        },
+                    ],
+                },
+                bgColor: "bg-orange-100 dark:bg-orange-800 text-orange-500 dark:text-orange-200",
+                srText: "Warning icon",
+            },
+        };
+
+        // Create the toast element
+        const toastElement = document.createElement('div');
+        toastElement.className = `flex items-center w-80 max-w-md p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800`;
+        toastElement.setAttribute('role', 'alert');
+
+        // Create the icon container
+        const iconContainer = document.createElement('div');
+        iconContainer.className = `inline-flex items-center justify-center flex-shrink-0 w-8 h-8 ${toastTypes[type].bgColor} rounded-lg`;
+
+        // Create the icon element using createSVG
+        const icon = createSVG(toastTypes[type].vector);
+        iconContainer.appendChild(icon);
+
+        // Add screen reader text
+        const srText = document.createElement('span');
+        srText.className = 'sr-only';
+        srText.textContent = toastTypes[type].srText;
+        iconContainer.appendChild(srText);
+
+        toastElement.appendChild(iconContainer);
+
+        // Create the message element
+        const messageElement = document.createElement('div');
+        messageElement.className = 'ms-3 text-sm font-normal';
+        messageElement.textContent = message;
+        toastElement.appendChild(messageElement);
+
+        // Create the close button element
+        const closeButton = document.createElement('button');
+        closeButton.className = 'ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700';
+        closeButton.setAttribute('aria-label', 'Close');
+
+        // Create the close icon element using createSVG
+        const closeIcon = createSVG(toastVectors.close);
+        closeButton.appendChild(closeIcon);
+
+        toastElement.appendChild(closeButton);
+
+        // Add close button functionality
+        closeButton.addEventListener('click', function () {
+            toastElement.remove();
+        });
+
+        // Append toast to container
+        toastContainer.appendChild(toastElement);
+
+        // Automatically remove toast after 5 seconds
+        setTimeout(function () {
+            toastElement.remove();
+        }, 5000);
+    }
+
+
+
+    function createSVG(svgData) {
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+
+        Object.entries(svgData.svg).forEach(([attr, value]) => {
+            svg.setAttribute(attr, value);
+        });
+
+        svgData.path.forEach((pathData) => {
+            const path = document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "path"
+            );
+            Object.entries(pathData).forEach(([attr, value]) => {
+                path.setAttribute(attr, value);
+            });
+            svg.appendChild(path);
+        });
+
+        return svg;
+    }
+
+    function generateActionButton(svgData, attributes, row) {
+        const button = document.createElement("button");
+
+        // Create SVG element
+        const svg = createSVG(svgData);
+
+        // Append SVG to button
+        button.appendChild(svg);
+
+        // Add attributes to button
+        Object.entries(attributes).forEach(([attr, value]) => {
+            if (typeof value === "string" || typeof value === "number") {
+                button.setAttribute(attr, value);
+            }
+            if (typeof value === "function") {
+                if (attr.startsWith("on")) {
+                    button.addEventListener(attr.substring(2).toLowerCase(), function () {
+                        value.call(this, row);
+                    });
+                }
+            }
+            if (attr.startsWith("data-")) {
+                button.dataset[attr.substring(5)] = value; // `substring(5)` to remove "data-"
+            }
+        });
+
+
+        return button;
+    }
+
+    function clsx(classes) {
+        return classes.split(" ");
+    }
+
+    function toNumber(value, fallback = 0) {
+        try {
+            return !value || isNaN(+value) ? fallback : +value;
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
+    }
+
+    function formatDate(dateString) {
+        // const options = { year: 'numeric', month: 'short', day: '2-digit' };
+        if (!dateString) return '';
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-us', options);
+    }
+
+    function generateIds(...args) {
+        let ids;
+
+        if (args.length === 1) {
+            const arg = args[0];
+
+            if (Array.isArray(arg)) {
+                ids = arg;
+            } else if (arg instanceof NodeList) {
+                ids = Array.from(arg).map(element => element.id);
+            } else {
+                ids = [arg];
+            }
+        } else {
+            ids = args;
+        }
+
+        return ids.reduce((acc, id) => {
+            const element = document.getElementById(id);
+            if (!element) {
+                console.warn(`Element with id ${id} not found`);
+            } else {
+                acc[id] = element;
+            }
+            return acc;
+        }, {});
+    }
+
+    // Function to get input fields from a form
+    function getInputFields(form) {
+        const formData = new FormData(form);
+        return Object.fromEntries(formData.entries());
+    }
+
+    // Function to clear the form
+    function clearForm(form) {
+        form.reset();
+
+        // Reset any custom dropdowns to the first disabled option if needed
+        const dropdowns = form.querySelectorAll('select');
+        dropdowns.forEach(dropdown => {
+            dropdown.selectedIndex = 0; // Sets to the default disabled option
+        });
+    }
+
+
+    class Toast {
+        constructor(options) {
+            let defaults = {
+                position: "bottom-left",
+                stack: [],
+                offsetX: 20,
+                offsetY: 20,
+                gap: 20,
+                numToasts: 0,
+                duration: ".5s",
+                timing: "ease",
+                dimOld: true,
+            };
+            this.options = Object.assign(defaults, options);
+        }
+
+        cn(...classes) {
+            return classes
+                .join(" ")
+                .replace(/[\s]{2,}/g, "")
+                .trim()
+                .split(" ");
+        }
+
+        create(obj) {
+            const transform = {
+                "top-center": "translate(calc(50vw - 50%), -150%)",
+                "top-left": "translate(0, -150%)",
+                "top-right": "translate(0, -150%)",
+                "bottom-center": "translate(calc(50vw - 50%), 150%)",
+                "bottom-left": "translate(0, 150%)",
+                "bottom-right": "translate(0, 150%)",
+            };
+
+            const icon = {
+                success: `
+                  <span class="rounded-lg aspect-square bg-green-100 dark:bg-green-800 col-span-1 flex justify-center items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-check-big size-6 text-green-500 dark:text-green-200">
+                          <path d="M21.801 10A10 10 0 1 1 17 3.335"/>
+                          <path d="m9 11 3 3L22 4"/>
+                      </svg>
+                  </span>
+              `,
+                warning: `
+                  <span class="rounded-lg aspect-square bg-yellow-100 dark:bg-yellow-800 col-span-1 flex justify-center items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-alert size-6 text-yellow-500 dark:text-yellow-100">
+                          <circle cx="12" cy="12" r="10"/>
+                          <line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/>
+                      </svg>
+                  </span>
+              `,
+                info: `
+                  <span class="rounded-lg aspect-square bg-blue-100 dark:bg-blue-800 col-span-1 flex justify-center items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lightbulb size-6 text-blue-500 dark:text-blue-100">
+                          <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/>
+                          <path d="M9 18h6"/>
+                          <path d="M10 22h4"/>
+                      </svg>
+                  </span>
+              `,
+                error: `
+                  <span class="rounded-lg aspect-square bg-red-100 dark:bg-red-800 col-span-1 flex justify-center items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-triangle-alert size-6 text-red-500 dark:text-red-100">
+                          <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/>
+                          <path d="M12 9v4"/><path d="M12 17h.01"/>
+                      </svg>
+                  </span>
+              `,
+                close: `
+                  <span class="rounded-lg aspect-square col-span-1 flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5">
+                          <path fill-rule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                      </svg>
+                  </span>
+              `,
+            };
+
+            this.numToasts++;
+
+            let toast = document.createElement(obj.link ? "a" : "div");
+
+            if (obj.link) {
+                toast.href = obj.link;
+                toast.target = obj.linkTarget ? obj.linkTarget : "_self";
+            }
+
+            toast.classList.add(
+                "dark:bg-neutral-800",
+                "dark:text-white",
+                "fixed",
+                "no-underline",
+                "z-[9999]",
+                "max-w-sm",
+                "bg-white",
+                "text-black",
+                "rounded-lg",
+                "shadow-lg",
+                "transition",
+                "items-center",
+                "p-4",
+                "grid",
+                "grid-cols-7",
+                "gap-x-3"
+            );
+
+            toast.style.transform = transform[this.position] || "";
+
+            const div = {
+                svg: (() => {
+                    const fragment = document.createDocumentFragment();
+                    const range = document.createRange();
+                    const innerHTML = icon[obj.type] || "";
+                    const nodes = range.createContextualFragment(innerHTML);
+                    fragment.appendChild(nodes);
+                    return fragment;
+                })(),
+                title: (() => {
+                    const element = document.createElement("div");
+                    element.classList.add("flex", "text-sm", "font-bold");
+                    element.textContent = obj.title;
+                    return element;
+                })(),
+                description: (() => {
+                    const element = document.createElement("div");
+                    element.classList.add("flex", "text-xs");
+                    element.textContent = obj.description;
+                    return element;
+                })(),
+                container: (() => {
+                    let span = 7;
+                    if (!!icon[obj.type]) span--;
+                    if (obj.action && typeof obj.action === "string") span--;
+                    if (obj.action && typeof obj.action === "function") span--;
+
+                    const colSpan = "col-span-" + span;
+                    const element = document.createElement("div");
+
+                    element.classList.add(
+                        colSpan,
+                        "flex",
+                        "flex-col",
+                        "items-start",
+                        "justify-center",
+                        "truncate"
+                    );
+
+                    return element;
+                })(),
+                action: (() => {
+                    const fragment = document.createDocumentFragment();
+                    const element = document.createElement("button");
+                    if (obj.action === null || obj.action === undefined) {
+                        return fragment;
+                    }
+                    if (typeof obj.action === "string") {
+                        if (obj.action === "close") {
+                            element.classList.add(
+                                "flex",
+                                "justify-end",
+                                "items-center",
+                                "p-1",
+                                "col-span-1",
+                                "rounded-lg",
+                                "aspect-square"
+                            );
+                            element.innerHTML = icon.close || "×";
+                            element.addEventListener("click", (event) => {
+                                event.preventDefault();
+                                this.closeToast(this.stack[index - 1]);
+                            });
+                            return element;
+                        }
+                    } else if (typeof obj.action === "function") {
+                        const value = obj.action({
+                            onClose: () => this.closeToast(this.stack[index - 1]),
+                        });
+                        if (value instanceof HTMLElement) {
+                            return value;
+                        }
+                    }
+                    return fragment;
+                })(),
+            };
+
+            toast.appendChild(div.svg);
+
+            div.container.appendChild(div.title);
+            div.container.appendChild(div.description);
+
+            toast.appendChild(div.container);
+            toast.appendChild(div.action);
+
+            document.body.appendChild(toast);
+            toast.getBoundingClientRect();
+
+            if (this.position == "top-left") {
+                toast.style.top = 0;
+                toast.style.left = this.offsetX + "px";
+            } else if (this.position == "top-center") {
+                toast.style.top = 0;
+                toast.style.left = 0;
+            } else if (this.position == "top-right") {
+                toast.style.top = 0;
+                toast.style.right = this.offsetX + "px";
+            } else if (this.position == "bottom-left") {
+                toast.style.bottom = 0;
+                toast.style.left = this.offsetX + "px";
+            } else if (this.position == "bottom-center") {
+                toast.style.bottom = 0;
+                toast.style.left = 0;
+            } else if (this.position == "bottom-right") {
+                toast.style.bottom = 0;
+                toast.style.right = this.offsetX + "px";
+            }
+            if (obj.width || this.width) {
+                toast.style.width = (obj.width || this.width) + "px";
+            }
+
+            toast.dataset.transitionState = "queue";
+
+            let index = this.stack.push({
+                element: toast,
+                props: obj,
+                offsetX: this.offsetX,
+                offsetY: this.offsetY,
+                index: 0,
+            });
+            this.stack[index - 1].index = index - 1;
+            if (obj.link) {
+                toast.onclick = () => this.closeToast(this.stack[index - 1]);
+            }
+            this.openToast(this.stack[index - 1]);
+            if (obj.onOpen) obj.onOpen(this.stack[index - 1]);
+            if (obj.timeout)
+                setTimeout(
+                    () => this.closeToast(this.stack[index - 1]),
+                    obj.timeout
+                );
+        }
+
+        success(obj) {
+            return this.create({ ...obj, type: "success" });
+        }
+
+        warning(obj) {
+            return this.create({ ...obj, type: "warning" });
+        }
+
+        info(obj) {
+            return this.create({ ...obj, type: "info" });
+        }
+
+        error(obj) {
+            return this.create({ ...obj, type: "error" });
+        }
+
+        openToast(toast) {
+            if (this.isOpening() === true) {
+                return false;
+            }
+            toast.element.dataset.transitionState = "opening";
+            toast.element.style.transition =
+                this.duration + " transform " + this.timing;
+            this._transformToast(toast);
+            toast.element.addEventListener("transitionend", () => {
+                if (toast.element.dataset.transitionState == "opening") {
+                    toast.element.dataset.transitionState = "complete";
+                    for (let i = 0; i < this.stack.length; i++) {
+                        if (
+                            this.stack[i].element.dataset.transitionState == "queue"
+                        ) {
+                            this.openToast(this.stack[i]);
+                        }
+                    }
+                    if (toast.props.dismissAfter) {
+                        this.closeToast(toast, toast.props.dismissAfter);
+                    }
+                }
+            });
+            for (let i = 0; i < this.stack.length; i++) {
+                if (this.stack[i].element.dataset.transitionState == "complete") {
+                    this.stack[i].element.dataset.transitionState = "opening";
+                    this.stack[i].element.style.transition =
+                        this.duration +
+                        " transform " +
+                        this.timing +
+                        (this.dimOld ? ", " + this.duration + " opacity ease" : "");
+                    if (this.dimOld) {
+                        this.stack[i].element.classList.add(
+                            "toast-notification-dimmed"
+                        );
+                    }
+                    this.stack[i].offsetY += toast.element.offsetHeight + this.gap;
+                    this._transformToast(this.stack[i]);
+                }
+            }
+            return true;
+        }
+
+        closeToast(toast, delay = null) {
+            if (this.isOpening() === true) {
+                setTimeout(() => this.closeToast(toast, delay), 100);
+                return false;
+            }
+            if (toast.element.dataset.transitionState == "close") {
+                return true;
+            }
+            if (toast.element.querySelector(".toast-notification-close")) {
+                toast.element.querySelector(".toast-notification-close").onclick =
+                    null;
+            }
+            toast.element.dataset.transitionState = "close";
+            toast.element.style.transition =
+                ".2s opacity ease" + (delay ? " " + delay : "");
+            toast.element.style.opacity = 0;
+            toast.element.addEventListener("transitionend", () => {
+                if (toast.element.dataset.transitionState == "close") {
+                    let offsetHeight = toast.element.offsetHeight;
+                    if (toast.props.onClose) toast.props.onClose(toast);
+                    toast.element.remove();
+                    for (let i = 0; i < toast.index; i++) {
+                        this.stack[i].element.style.transition =
+                            this.duration + " transform " + this.timing;
+                        this.stack[i].offsetY -= offsetHeight + this.gap;
+                        this._transformToast(this.stack[i]);
+                    }
+                    let focusedToast = this.getFocusedToast();
+                    if (focusedToast) {
+                        focusedToast.element.classList.remove(
+                            "toast-notification-dimmed"
+                        );
+                    }
+                }
+            });
+            return true;
+        }
+
+        isOpening() {
+            let opening = false;
+            for (let i = 0; i < this.stack.length; i++) {
+                if (this.stack[i].element.dataset.transitionState == "opening") {
+                    opening = true;
+                }
+            }
+            return opening;
+        }
+
+        getFocusedToast() {
+            for (let i = 0; i < this.stack.length; i++) {
+                if (this.stack[i].offsetY == this.offsetY) {
+                    return this.stack[i];
+                }
+            }
+            return false;
+        }
+
+        _transformToast(toast) {
+            if (this.position == "top-center") {
+                toast.element.style.transform = `translate(calc(50vw - 50%), ${toast.offsetY}px)`;
+            } else if (
+                this.position == "top-right" ||
+                this.position == "top-left"
+            ) {
+                toast.element.style.transform = `translate(0, ${toast.offsetY}px)`;
+            } else if (this.position == "bottom-center") {
+                toast.element.style.transform = `translate(calc(50vw - 50%), -${toast.offsetY}px)`;
+            } else if (
+                this.position == "bottom-left" ||
+                this.position == "bottom-right"
+            ) {
+                toast.element.style.transform = `translate(0, -${toast.offsetY}px)`;
+            }
+        }
+
+        set stack(value) {
+            this.options.stack = value;
+        }
+
+        get stack() {
+            return this.options.stack;
+        }
+
+        set position(value) {
+            this.options.position = value;
+        }
+
+        get position() {
+            return this.options.position;
+        }
+
+        set offsetX(value) {
+            this.options.offsetX = value;
+        }
+
+        get offsetX() {
+            return this.options.offsetX;
+        }
+
+        set offsetY(value) {
+            this.options.offsetY = value;
+        }
+
+        get offsetY() {
+            return this.options.offsetY;
+        }
+
+        set gap(value) {
+            this.options.gap = value;
+        }
+
+        get gap() {
+            return this.options.gap;
+        }
+
+        set numToasts(value) {
+            this.options.numToasts = value;
+        }
+
+        get numToasts() {
+            return this.options.numToasts;
+        }
+
+        set width(value) {
+            this.options.width = value;
+        }
+
+        get width() {
+            return this.options.width;
+        }
+
+        set duration(value) {
+            this.options.duration = value;
+        }
+
+        get duration() {
+            return this.options.duration;
+        }
+
+        set timing(value) {
+            this.options.timing = value;
+        }
+
+        get timing() {
+            return this.options.timing;
+        }
+
+        set dimOld(value) {
+            this.options.dimOld = value;
+        }
+
+        get dimOld() {
+            return this.options.dimOld;
+        }
+    }
+
+
+    const toast = new Toast({
+        width: 400,
+        gap: 10,
+        timing: "ease-in-out",
+        duration: ".5s",
+        dimOld: true,
+        position: "bottom-left",
+    });
+
+    function DateTime(value, options = {}) {
+        const datetime = new Date(value);
+        if (isNaN(datetime)) return value;
+        if (typeof options !== "object" || options === null) {
+            throw new Error("Datetime JS: Options should be an object");
+        }
+        if (!options.format || typeof options.format !== "string") {
+            throw new Error("Datetime JS: Please input a valid string format");
+        }
+        if (
+            options.is12HourFormat !== undefined &&
+            typeof options.is12HourFormat !== "boolean"
+        ) {
+            throw new Error("Datetime JS: is12HourFormat should be a boolean");
+        }
+
+        const { format, is12HourFormat = false } = options;
+
+        // Helper function to format date components
+        const formatComponent = (component, length) =>
+            component.toString().padStart(length, "0");
+
+        // Extract date components
+        const hours24 = datetime.getHours();
+        const hours12 = hours24 % 12 || 12;
+
+        const dateComponents = {
+            M: datetime.getMonth() + 1,
+            D: datetime.getDate(),
+            YY: datetime.getFullYear().toString().slice(-2),
+            YYYY: datetime.getFullYear(),
+            h: is12HourFormat ? hours12 : hours24,
+            m: datetime.getMinutes(),
+            s: datetime.getSeconds(),
+            a: hours24 < 12 ? "am" : "pm",
+            A: hours24 < 12 ? "AM" : "PM",
+        };
+
+        // Formatted components with leading zeros
+        const formattedComponents = {
+            MM: formatComponent(dateComponents.M, 2),
+            DD: formatComponent(dateComponents.D, 2),
+            hh: formatComponent(dateComponents.h, 2),
+            mm: formatComponent(dateComponents.m, 2),
+            ss: formatComponent(dateComponents.s, 2),
+        };
+
+        // Merge plain and formatted components
+        const allComponents = { ...dateComponents, ...formattedComponents };
+
+        // Replace format string with components
+        return Object.entries(allComponents).reduce(
+            (acc, [key, value]) => acc.replace(new RegExp(`\\b${key}\\b`, "g"), value),
+            format
+        );
+    }
+
+    function populateSelectElement({ element, values = [], index } = {}) {
+        if (!(element instanceof HTMLSelectElement)) {
+            throw new Error("Element must be a <select> element");
+        }
+        if (!Array.isArray(values)) {
+            throw new Error("Values must be an array");
+        }
+        if (index && Number.isInteger(index)) {
+            throw new Error("Index must be an integer");
+        }
+
+        const fragment = new DocumentFragment();
+
+        values.forEach((item) => {
+            const existingElement = element.querySelector(
+                `option[value="${item}"]`
+            );
+            if (!existingElement) {
+                const option = document.createElement("option");
+                option.value = item[index];
+                option.textContent = item;
+                fragment.appendChild(option);
+            }
+        });
+
+        element.appendChild(fragment);
+    }
+
+    function DateTime(value, options = {}) {
+        const datetime = new Date(value);
+        if (isNaN(datetime)) return value;
+        if (typeof options !== "object" || options === null) {
+            throw new Error("Datetime JS: Options should be an object");
+        }
+        if (!options.format || typeof options.format !== "string") {
+            throw new Error("Datetime JS: Please input a valid string format");
+        }
+        if (
+            options.is12HourFormat !== undefined &&
+            typeof options.is12HourFormat !== "boolean"
+        ) {
+            throw new Error("Datetime JS: is12HourFormat should be a boolean");
+        }
+
+        const { format, is12HourFormat = false } = options;
+
+        // Helper function to format date components
+        const formatComponent = (component, length) =>
+            component.toString().padStart(length, "0");
+
+        // Extract date components
+        const hours24 = datetime.getHours();
+        const hours12 = hours24 % 12 || 12;
+
+        const dateComponents = {
+            M: datetime.getMonth() + 1,
+            D: datetime.getDate(),
+            YY: datetime.getFullYear().toString().slice(-2),
+            YYYY: datetime.getFullYear(),
+            h: is12HourFormat ? hours12 : hours24,
+            m: datetime.getMinutes(),
+            s: datetime.getSeconds(),
+            a: hours24 < 12 ? "am" : "pm",
+            A: hours24 < 12 ? "AM" : "PM",
+        };
+
+        // Formatted components with leading zeros
+        const formattedComponents = {
+            MM: formatComponent(dateComponents.M, 2),
+            DD: formatComponent(dateComponents.D, 2),
+            hh: formatComponent(dateComponents.h, 2),
+            mm: formatComponent(dateComponents.m, 2),
+            ss: formatComponent(dateComponents.s, 2),
+        };
+
+        // Merge plain and formatted components
+        const allComponents = { ...dateComponents, ...formattedComponents };
+
+        // Replace format string with components
+        return Object.entries(allComponents).reduce(
+            (acc, [key, value]) =>
+                acc.replace(new RegExp(`\\b${key}\\b`, "g"), value),
+            format
+        );
+    }
+
+    class FieldManager {
+        constructor(triggerId, mappings, resetFields = []) {
+            this.trigger = document.getElementById(triggerId);
+            this.mappings = mappings;
+            this.resetFields = resetFields;
+            this.defaultResetValue = ""; // Define a default reset value, customizable
+            this.init();
+        }
+
+        init() {
+            this.applyInitialState();
+            this.trigger.addEventListener("change", () => this.handleFieldChange());
+        }
+
+        toggleVisibility(elements, shouldShow) {
+            elements.forEach((element) => {
+                element.classList.toggle("hidden", !shouldShow);
+                const input = element.querySelector("input, select");
+                if (input) {
+                    input.disabled = !shouldShow;
+                    input.required = shouldShow;
+                }
+            });
+        }
+
+        applyInitialState() {
+            const selectedValue = this.trigger.value.toUpperCase() || "";
+            this.mappings.forEach(({ elements, condition }) => {
+                this.toggleVisibility(elements, condition(selectedValue));
+            });
+        }
+
+        handleFieldChange() {
+            const selectedValue = this.trigger.value.toUpperCase() || "";
+            this.mappings.forEach(({ elements, condition }) => {
+                this.toggleVisibility(elements, condition(selectedValue));
+            });
+            this.resetFields.forEach(({ element }) => this.resetElement(element));
+        }
+
+        resetElement(element) {
+            if (element.tagName === "SELECT") {
+                element.selectedIndex = 0; // Reset to default option
+            } else {
+                element.value = this.defaultResetValue;
+            }
+        }
+    }
+
+    // Field reset logic for both Employee and SIM fields, centralized
+    const createFieldResetList = (fieldNames) => fieldNames.map((name) => ({
+        element: document.querySelector(`[name="${name}"]`),
+        defaultValue: "",
+    }));
+
+    function formatNumber(value) {
+        // Check if the number is valid (not null or undefined)
+        if (value === null || value === undefined || isNaN(value)) {
+            return '0.00';
+        }
+
+        return Intl.NumberFormat('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(value);
+    }
+
+
+</script>
