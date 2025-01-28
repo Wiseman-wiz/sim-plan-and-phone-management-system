@@ -1,0 +1,2808 @@
+<html>
+
+<head>
+    <base target="_top">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://rawcdn.githack.com/shinxzxzxz/TableJS/55597d91c8f5165cdfaaf90798bc2e0e886a42e8/tablejs.css"
+        rel="stylesheet" />
+    <script defer type="module"
+        src="https://rawcdn.githack.com/shinxzxzxz/TableJS/55597d91c8f5165cdfaaf90798bc2e0e886a42e8/tablejs.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+
+
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/animations/scale.css" />
+
+    <script>
+        tailwind.config = {
+            darkMode: ['[data-mode="dark"]'],
+        };
+    </script>
+
+    <?!= include("CSS"); ?>
+    <?!= include("JavaScript"); ?>
+</head>
+
+<body>
+
+
+    <nav class="fixed top-0 z-[39] w-full bg-white border-b border-gray-200">
+        <div class="px-3 py-3 lg:px-5 lg:pl-3 h-14">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center justify-start rtl:justify-end">
+                    <button data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar"
+                        aria-controls="logo-sidebar" type="button"
+                        class="inline-flex items-center p-2 text-xs text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200">
+                        <span class="sr-only">Open sidebar</span>
+                        <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path clip-rule="evenodd" fill-rule="evenodd"
+                                d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z">
+                            </path>
+                        </svg>
+                    </button>
+                    <!-- <a href="https://flowbite.com" class="flex ms-5 md:me-24"> -->
+                    <span class="pl-6 self-center text-xl font-semibold sm:text-2xl whitespace-nowrap">SPPM</span>
+                    <!-- </a> -->
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- sidebar -->
+    {{SIDEBAR}}
+
+    <div class="mt-14 sm:ml-64 hidden">
+        <div class="relative bg-white border-b">
+            <div class="flex flex-col items-center p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4 h-14">
+                <div class="w-1/2 md:w-1/2"></div>
+            </div>
+        </div>
+        <!-- Table -->
+        <div class="relative overflow-x-auto sm:rounded-lg mt-5">
+            <!-- Table Footer -->
+            <div class="relative overflow-hidden bg-white">
+                <nav class="flex flex-col items-start justify-between space-y-3 md:flex-row md:items-center md:space-y-0"
+                    aria-label="Table navigation">
+                    <div class="flex items-center space-x-3">
+                        <label for="rowsPerPage" class="text-xs font-normal text-gray-500">Rows per page:</label>
+                        <select id="pagination-limit1"
+                            class="block p-2 text-xs text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-black-500 focus:border-black-500">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="all">All</option>
+                        </select>
+                        <span id="paginationInfo" class="text-xs font-normal text-gray-500">
+                        </span>
+                    </div>
+
+                    <ul class="inline-flex items-stretch -space-x-px">
+                        <li>
+                            <button id="pagination-previous1"
+                                class="flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700">
+                                <span class="sr-only">Previous</span>
+                                <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                            </button>
+                        </li>
+
+                        <li>
+                            <button id="pagination-next1"
+                                class="flex items-center justify-center h-full py-1.5 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700">
+                                <span class="sr-only">Next</span>
+                                <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <button id="export-csv" class="hidden">Export CSV</button>
+    </div>
+
+    <div class="fixed top-14 right-0 w-vw-64 h-vh-14">
+        <div class="w-full h-14 flex justify-between items-center">
+            <div class="flex space-x-2">
+                <label for="searchInput" class="sr-only">Search</label>
+
+                <div class="relative w-full">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg aria-hidden="true" class="w-5 h-5 text-gray-500" viewbox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <input type="text" id="pagination-search"
+                        class="block w-full p-2 pl-10 text-xs text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500"
+                        placeholder="Search" required="" />
+                </div>
+
+                <div class="relative w-40">
+                    <button data-dropdown-toggle="table-colvis"
+                        class="relative block w-40 p-2 border bg-neutral-50 border-neutral-300 text-neutral-900 sm:text-xs rounded-lg focus:ring-neutral-600 focus:border-neutral-600">
+                        <div
+                            class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-neutral-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
+                            </svg>
+                        </div>
+                        Columns
+                    </button>
+
+                    <div data-popover id="table-colvis"
+                        class="text-left z-50 hidden bg-white divide-y divide-neutral-100 rounded-lg shadow w-44 h-vh-36 overflow-x-auto text-uppercase">
+                        <ul class="py-2 text-xs text-neutral-700"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div
+                    class="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
+                    <button type="button" id="add-modal-toggle"
+                        class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-blue-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300">
+                        <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path clip-rule="evenodd" fill-rule="evenodd"
+                                d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+                        </svg>
+                        Add Request
+                    </button>
+                    <div class="flex items-center w-full space-x-3 md:w-auto"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="relative">
+            <div role="status" id="spinner"
+                class="absolute inset-0 flex items-center justify-center bg-white z-50 h-full">
+                <svg aria-hidden="true" class="w-8 h-8 mr-2 text-gray-200 animate-spin fill-gray-600"
+                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+                    <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                    <path
+                        d="M304 48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zm0 416a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM48 304a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm464-48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM142.9 437A48 48 0 1 0 75 369.1 48 48 0 1 0 142.9 437zm0-294.2A48 48 0 1 0 75 75a48 48 0 1 0 67.9 67.9zM369.1 437A48 48 0 1 0 437 369.1 48 48 0 1 0 369.1 437z" />
+                </svg>
+            </div>
+            <div class="h-vh-40 overflow-y-auto overflow-x-auto">
+                <div class="table-container">
+                    <table id="tablejs" class="w-full text-sm text-left rtl:text-right text-gray-500">
+                        <thead class="text-sm text-gray-700 uppercase bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">REQUEST NO</th>
+                                <th scope="col" class="px-6 py-3">REQUEST TYPE</th>
+                                <th scope="col" class="px-6 py-3">REQUEST STATUS</th>
+                                <th scope="col" class="px-6 py-3">
+                                    RECEIVED AND APPROVED DATE
+                                </th>
+                                <th scope="col" class="px-6 py-3">PRE-ISSUANCE DATE</th>
+                                <th scope="col" class="px-6 py-3">ISSUANCE DATE</th>
+                                <th scope="col" class="px-6 py-3">ISSUANCE NO</th>
+                                <th scope="col" class="px-6 py-3">USAGE TYPE</th>
+                                <th scope="col" class="px-6 py-3">OWNERSHIP</th>
+                                <th scope="col" class="px-6 py-3">SECTION GROUP NAME</th>
+                                <th scope="col" class="px-6 py-3">REMARKS</th>
+                                <th scope="col" class="px-6 py-3">SIM CARD ID</th>
+                                <th scope="col" class="px-6 py-3">SIM TYPE</th>
+                                <th scope="col" class="px-6 py-3">GROUP ID</th>
+                                <th scope="col" class="px-6 py-3">PURCHASING RS NO</th>
+                                <th scope="col" class="px-6 py-3">PURCHASING RS DATE</th>
+                                <th scope="col" class="px-6 py-3">CANCELLATION REASON</th>
+                                <th scope="col" class="px-6 py-3">CANCELLATION DATE</th>
+                                <th scope="col" class="px-6 py-3">EMPLOYEE INFO</th>
+                                <th scope="col" class="px-6 py-3">SIM INFO</th>
+                                <th scope="col" class="px-6 py-3">ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr>
+                                <td scope="col" class="px-6 py-3">No data</td>
+                                <td scope="col" class="px-6 py-3">No data</td>
+                                <td scope="col" class="px-6 py-3">No data</td>
+                                <td scope="col" class="px-6 py-3">No data</td>
+                                <td scope="col" class="px-6 py-3">No data</td>
+                                <td scope="col" class="px-6 py-3">No data</td>
+                                <td scope="col" class="px-6 py-3">No data</td>
+                                <td scope="col" class="px-6 py-3">No data</td>
+                                <td scope="col" class="px-6 py-3">No data</td>
+                                <td scope="col" class="px-6 py-3">No data</td>
+                                <td scope="col" class="px-6 py-3">No data</td>
+                                <td scope="col" class="px-6 py-3">No data</td>
+                                <td scope="col" class="px-6 py-3">No data</td>
+                                <td scope="col" class="px-6 py-3">No data</td>
+                                <td scope="col" class="px-6 py-3">No data</td>
+                                <td scope="col" class="px-6 py-3">No data</td>
+                                <td scope="col" class="px-6 py-3">No data</td>
+                                <td scope="col" class="px-6 py-3">No data</td>
+                                <td scope="col" class="px-6 py-3">No data</td>
+                                <td scope="col" class="px-6 py-3">Action</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- Table Footer -->
+        <div class="flex items-center justify-between border-t border-neutral-200 px-4 h-12">
+            <div class="text-xs">
+                <span class="text-xs" id="pagination-records">Shows 1 of 1 of 1 entries</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <div class="text-xs">Rows per page</div>
+                <div class="text-xs">
+                    <select id="pagination-limit"
+                        class="block w-full items-center justify-center px-2 h-8 text-xs font-medium text-neutral-500 bg-white border rounded-lg hover:bg-neutral-100 hover:text-neutral-700 border-neutral-300 focus-within:ring-0 focus:ring-neutral-500 focus:outline-none focus:border-neutral-500">
+                        <option value="*" selected>All</option>
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="500">500</option>
+                        <option value="1000">1000</option>
+                    </select>
+                </div>
+                <span class="text-xs" id="pagination-label">Page 1 of 10</span>
+                <button id="pagination-previous"
+                    class="aspect-square flex items-center justify-center px-2 h-8 text-xs font-medium text-neutral-500 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-100 hover:text-neutral-700"
+                    name="previous">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                    </svg>
+                </button>
+                <button id="pagination-next"
+                    class="aspect-square flex items-center justify-center px-2 h-8 text-xs font-medium text-neutral-500 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-100 hover:text-neutral-700"
+                    name="next">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+    <script>
+        window.addEventListener("DOMContentLoaded", async function () {
+            const $ = (() => {
+                const handlerKeys = [
+                    "withSuccessHandler",
+                    "withFailureHandler",
+                    "withUserObject",
+                ];
+                const GoogleInstance = {};
+
+                Object.keys(google.script.run)
+                    .filter((k) => handlerKeys.indexOf(k) < 0)
+                    .forEach((k) => {
+                        GoogleInstance[k] = (...args) =>
+                            new Promise((resolve, reject) => {
+                                google.script.run
+                                    .withSuccessHandler(resolve)
+                                    .withFailureHandler(reject)
+                                [k](...args);
+                            });
+                    });
+
+                return GoogleInstance;
+            })();
+
+            const recordElement = document.querySelector("span#pagination-records");
+            const pagingElement = document.querySelector("span#pagination-label");
+
+            const output = {
+                pagination: ({
+                    current_page,
+                    total_page,
+                    start_item,
+                    end_item,
+                    total_rows,
+                }) => {
+                    if (recordElement)
+                        recordElement.innerHTML = `Shows ${start_item} to ${end_item} of ${total_rows} entries`;
+                    if (pagingElement)
+                        pagingElement.innerHTML = `Page ${current_page} of ${total_page}`;
+                },
+            };
+
+            const headers = [
+                "REQUEST_NO",
+                "REQUEST_TYPE",
+                "REQUEST_STATUS",
+                "RECEIVED_AND_APPROVED_DATE",
+                "SIM_CARD_ID",
+                "SIM_TYPE",
+                "GROUP_ID",
+                "ISSUANCE_NO",
+                "PRE_ISSUANCE_DATE",
+                "ISSUANCE_DATE",
+                "USAGE_TYPE",
+                "OWNERSHIP",
+                "SECTION_GROUP_NAME",
+                "REMARKS",
+                "PURCHASING_RS_NO",
+                "PURCHASING_RS_DATE",
+                "CANCELLATION_REASON",
+                "CANCELLATION_DATE",
+                "EMPLOYEE_INFO",
+                "SIM_INFO",
+            ];
+
+            const spinner = document.getElementById("spinner");
+
+            async function renderTable({ data, table }) {
+                const thead = table.querySelector("thead");
+                const tbody = table.querySelector("tbody");
+
+                spinner.classList.add("hidden");
+
+                // Clear existing content
+                thead.innerHTML = "";
+                tbody.innerHTML = "";
+
+                // Create Header
+                const headerRow = document.createElement("tr");
+                headers.forEach((header) => {
+                    const th = document.createElement("th");
+                    th.scope = "col";
+                    th.classList.add("px-6", "py-3");
+                    if (header === "EMPLOYEE_INFO") {
+                        th.classList.add("hidden-column");
+                    }
+                    if (header === "SIM_INFO") {
+                        th.classList.add("hidden-column");
+                    }
+                    th.textContent = header.replace(/[_\s]{1,}/g, " ");
+                    headerRow.appendChild(th);
+                });
+
+                // Add Action Header
+                const actionHeader = document.createElement("th");
+                actionHeader.scope = "col";
+                actionHeader.classList.add("px-6", "py-3");
+                actionHeader.textContent = "Actions";
+                headerRow.appendChild(actionHeader);
+                thead.appendChild(headerRow);
+
+                // Create Body
+                data.forEach((row, index) => {
+                    const tr = document.createElement("tr");
+                    tr.classList.add("border-b");
+                    if (tr.index === undefined || tr.index === null) {
+                        tr.index = index;
+                        tr.dataset.index = index;
+                    }
+
+                    const rowData = headers.reduce((acc, header) => {
+                        const td = document.createElement("td");
+                        td.classList.add("px-6", "py-4");
+
+                        const hiddenHeaders = [
+                            "EMPLOYEE_INFO",
+                            "SIM_INFO",
+                        ];
+
+                        if (hiddenHeaders.includes(header)) {
+                            td.classList.add("hidden-column");
+                        }
+
+                        const indexOfHeader = headers.indexOf(header);
+                        const textContent = indexOfHeader >= 0 ? row[indexOfHeader] : "";
+
+                        let textValue;
+                        function formatDate(dateString) {
+                            const dateValue = new Date(dateString);
+                            return isNaN(dateValue.getTime())
+                                ? ""
+                                : DateTime(dateValue, { format: "MM/DD/YYYY" });
+                        }
+
+                        switch (header) {
+                            case "GROUP_ID":
+                                let numberValue = String(textContent).trim();
+
+                                if (numberValue.match(/[A-Za-z]/)) {
+                                    const numericPart = numberValue.replace(/[^\d]/g, '');
+                                    const alphabeticPart = numberValue.replace(/[\d]/g, '');
+
+                                    textValue = '00' + alphabeticPart + numericPart.padStart(3, '0');
+                                } else {
+                                    textValue = String(numberValue).padStart(6, '0');
+                                }
+                                break;
+                            case "RECEIVED_AND_APPROVED_DATE":
+                                textValue = formatDate(textContent);
+                                break;
+                            case "PRE_ISSUANCE_DATE":
+                                textValue = formatDate(textContent);
+                                break;
+                            case "ISSUANCE_DATE":
+                                textValue = formatDate(textContent);
+                                break;
+                            case "CANCELLATION_DATE":
+                                textValue = formatDate(textContent);
+                                break;
+                            case "PURCHASING_RS_DATE":
+                                textValue = formatDate(textContent);
+                                break;
+                            default:
+                                textValue = textContent;
+                                break;
+                        }
+                        td.textContent = textValue;
+                        tr.appendChild(td);
+                        acc[header] = textValue;
+                        return acc;
+                    }, {});
+
+                    // Add Action Buttons
+                    const actionTd = document.createElement("td");
+                    actionTd.classList.add("px-6", "py-4");
+                    const actionDiv = document.createElement("div");
+                    actionDiv.classList.add("action-buttons", "flex", "space-x-2");
+
+
+                    const viewButton = generateActionButton(vectors.view, {
+                        class: 'px-2 py-2 bg-green-500 text-white rounded',
+                    }, row);
+
+                    viewButton.addEventListener('click', function (e) {
+
+                        const indextOfRequestNo = headers.indexOf("REQUEST_NO");
+                        const requestNo = row[indextOfRequestNo];
+
+                        const simCardId = rowData["SIM_CARD_ID"];
+                        const hasSimCard = !!simCardId;
+                        const purchasingRsNoId = rowData["PURCHASING_RS_NO"];
+                        const hasPurchasingRsNo = !!purchasingRsNoId;
+                        const cancellationReasonId = rowData["CANCELLATION_REASON"];
+                        const hasCancellationReason = !!cancellationReasonId;
+                        const ownershipValue = rowData["OWNERSHIP"];
+                        const employeeInfoString = rowData["EMPLOYEE_INFO"];
+                        const hasEmployeeInfo = !!employeeInfoString;
+                        const employeeInfo = hasEmployeeInfo
+                            ? JSON.parse(employeeInfoString)
+                            : ``; // Parse the JSON string into an object
+
+                        const simInfoString = rowData["SIM_INFO"];
+                        const hasSimInfo = !!simInfoString;
+                        const simInfo = hasSimInfo ? JSON.parse(simInfoString) : ``;
+
+                        if (indextOfRequestNo >= 0) {
+
+                            Swal.fire({
+                                html: `
+                <form id="viewSimRequestDetailsId" class="p-4 md:p-5">
+                  <div>
+                    <h3 class="font-bold text-left">View Sim Request Details</h1>
+                    <hr class="h-px mt-2 mb-4 bg-gray-200 border-0 ">
+                  <div>
+                  <div class="grid gap-4 mb-4 grid-cols-4">
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        REQUEST NO
+                    </div>
+                    <div class="col-span-1 text-left text-sm text-neutral-700 w-full">
+                        ${!!rowData.REQUEST_NO ? `${rowData.REQUEST_NO}` : ` `}
+                    </div>
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        RECEIVED DATE
+                    </div>
+                    <div class="col-span-1 text-left text-sm text-neutral-700 w-full">
+                        ${!!rowData.RECEIVED_AND_APPROVED_DATE ? `${rowData.RECEIVED_AND_APPROVED_DATE}` : ` `}
+                    </div>
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        PRE-ISSUANCE DATE 
+                    </div>
+                    <div class="col-span-1 text-left text-sm text-neutral-700 w-full">
+                        ${!!rowData.PRE_ISSUANCE_DATE ? `${rowData.PRE_ISSUANCE_DATE}` : ` `}
+                    </div>
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        ISSUANCE NO
+                    </div>
+                    <div class="col-span-1 text-left text-sm text-neutral-700 w-full">
+                        ${!!rowData.ISSUANCE_NO ? `${rowData.ISSUANCE_NO}` : ` `}
+                    </div>
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        ISSUANCE DATE 
+                    </div>
+                    <div class="col-span-1 text-left text-sm text-neutral-700 w-full">
+                        ${!!rowData.ISSUANCE_DATE ? `${rowData.ISSUANCE_DATE}` : ` `}
+                    </div>
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        REQUEST TYPE
+                    </div>
+                    <div class="col-span-1 text-left text-sm text-neutral-700 w-full">
+                        ${!!rowData.REQUEST_TYPE ? `${rowData.REQUEST_TYPE}` : ` `}
+                    </div>
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        USAGE TYPE
+                    </div>
+                    <div class="col-span-1 text-left text-sm text-neutral-700 w-full">
+                        ${!!rowData.USAGE_TYPE ? `${rowData.USAGE_TYPE}` : ` `}
+                    </div>
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        OWNERSHIP
+                    </div>
+                    <div class="col-span-1 text-left text-sm text-neutral-700 w-full">
+                        ${!!rowData.OWNERSHIP ? `${rowData.OWNERSHIP}` : ` `}
+                    </div>
+                     ${ownershipValue === "Group" ? `
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        SECTION GROUP NAME
+                    </div>
+                    <div class="col-span-1 text-left text-sm text-neutral-700 w-full">
+                        ${!!rowData.SECTION_GROUP_NAME ? `${rowData.SECTION_GROUP_NAME}` : ` `}
+                    </div>
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        REMARKS
+                    </div>
+                    <div class="col-span-1 text-left text-sm text-neutral-700 w-full">
+                        ${!!rowData.REMARKS ? `${rowData.REMARKS}` : ` `}
+                    </div>
+                    `: ``}
+                    <div class="col-span-4">
+                      <div class="inline-flex items-center justify-center w-full">
+                          <hr class="w-full h-px bg-gray-300 border-0">
+                          <span class="absolute px-3 font-medium text-xs text-gray-500 -translate-x-1/2 bg-white left-1/2">Employee Details</span>
+                      </div>
+                    </div>
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        GROUP ID
+                    </div>
+                    <div class="col-span-3 text-left text-sm text-neutral-700 w-full">
+                        ${!!rowData.GROUP_ID ? `${rowData.GROUP_ID}` : ` `}
+                    </div>
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        EMPLOYEE NAME
+                    </div>
+                    <div class="col-span-3 text-left text-sm text-neutral-700 w-full">
+                        ${!!employeeInfo.FULL_NAME ? `${employeeInfo.FULL_NAME}` : ` `}
+                    </div>
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        POSITION
+                    </div>
+                    <div class="col-span-3 text-left text-sm text-neutral-700 w-full">
+                        ${!!employeeInfo.POSITION ? `${employeeInfo.POSITION}` : ` `}
+                    </div>
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        DEPARTMENT
+                    </div>
+                    <div class="col-span-3 text-left text-sm text-neutral-700 w-full">
+                        ${!!employeeInfo.DEPARTMENT ? `${employeeInfo.DEPARTMENT}` : ` `}
+                    </div>
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        SECTION
+                    </div>
+                    <div class="col-span-3 text-left text-sm text-neutral-700 w-full">
+                        ${!!employeeInfo.SECTION ? `${employeeInfo.SECTION}` : ` `}
+                    </div>
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        COMPANY NAME
+                    </div>
+                    <div class="col-span-3 text-left text-sm text-neutral-700 w-full">
+                        ${!!employeeInfo.COMPANY_NAME ? `${employeeInfo.COMPANY_NAME}` : ` `}
+                    </div>
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        BRANCH 
+                    </div>
+                    <div class="col-span-3 text-left text-sm text-neutral-700 w-full">
+                        ${!!employeeInfo.BRANCH ? `${employeeInfo.BRANCH}` : ` `}
+                    </div>
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        SITE 
+                    </div>
+                    <div class="col-span-3 text-left text-sm text-neutral-700 w-full">
+                        ${!!employeeInfo.SITE ? `${employeeInfo.SITE}` : ` `}
+                    </div>
+                     ${hasSimCard ? `
+                    
+                    <div class="col-span-4">
+                      <div class="inline-flex items-center justify-center w-full">
+                          <hr class="w-full h-px bg-gray-300 border-0">
+                          <span class="absolute px-3 font-medium text-xs text-gray-500 -translate-x-1/2 bg-white left-1/2">Sim Details</span>
+                      </div>
+                    </div>
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        SIM CARD ID 
+                    </div>
+                    <div class="col-span-1 text-left text-sm text-neutral-700 w-full">
+                        ${!!rowData.SIM_CARD_ID ? `${rowData.SIM_CARD_ID}` : ` `}
+                    </div>
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        MOBILE NUMBER 
+                    </div>
+                    <div class="col-span-1 text-left text-sm text-neutral-700 w-full">
+                        ${!!simInfo.MOBILE_NO ? `${simInfo.MOBILE_NO}` : ` `}
+                    </div>
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        NETWORK PROVIDER 
+                    </div>
+                    <div class="col-span-1 text-left text-sm text-neutral-700 w-full">
+                        ${!!simInfo.NETWORK_PROVIDER ? `${simInfo.NETWORK_PROVIDER}` : ` `}
+                    </div>
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        PLAN ID 
+                    </div>
+                    <div class="col-span-1 text-left text-sm text-neutral-700 w-full">
+                        ${!!simInfo.PLAN_ID ? `${simInfo.PLAN_ID}` : ` `}
+                    </div>
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        PLAN DETAILS 
+                    </div>
+                    <div class="col-span-3 text-left text-sm text-neutral-700 w-full">
+                        ${!!simInfo.PLAN_DETAILS ? `${simInfo.PLAN_DETAILS}` : ` `}
+                    </div>
+                    ` : ``}
+                     ${hasPurchasingRsNo ? `
+                    <div class="col-span-4">
+                      <div class="inline-flex items-center justify-center w-full">
+                          <hr class="w-full h-px bg-gray-300 border-0">
+                          <span class="absolute px-3 font-medium text-xs text-gray-500 -translate-x-1/2 bg-white left-1/2">Purchase Details</span>
+                      </div>
+                    </div>
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        PURCHASING RS NO 
+                    </div>
+                    <div class="col-span-1 text-left text-sm text-neutral-700 w-full">
+                        ${!!rowData.PURCHASING_RS_NO ? `${rowData.PURCHASING_RS_NO}` : ` `}
+                    </div>
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        PURCHASING RS DATE 
+                    </div>
+                    <div class="col-span-1 text-left text-sm text-neutral-700 w-full">
+                        ${!!rowData.PURCHASING_RS_DATE ? `${rowData.PURCHASING_RS_DATE}` : ` `}
+                    </div>
+                    `: ``}
+                     ${hasCancellationReason ? `
+                    <div class="col-span-4">
+                      <div class="inline-flex items-center justify-center w-full">
+                          <hr class="w-full h-px bg-gray-300 border-0">
+                          <span class="absolute px-3 font-medium text-xs text-gray-500 -translate-x-1/2 bg-white left-1/2">Cancellation Details</span>
+                      </div>
+                    </div>
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        CANCELLATION REASON
+                    </div>
+                    <div class="col-span-1 text-left text-sm text-neutral-700 w-full">
+                        ${!!rowData.CANCELLATION_REASON ? `${rowData.CANCELLATION_REASON}` : ` `}
+                    </div>
+                    <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                        CANCELLATION DATE
+                    </div>
+                    <div class="col-span-1 text-left text-sm text-neutral-700 w-full">
+                        ${!!rowData.CANCELLATION_DATE ? `${rowData.CANCELLATION_DATE}` : ` `}
+                    </div>
+                    ` : ``}
+                  </div>
+                  <div class="flex justify-end pt-2">
+                    <button type="button" id="closeButtonId"
+                        class="text-white inline-flex items-center bg-neutral-700 hover:bg-neutral-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                        Close
+                    </button>
+                  </div>
+                </form>
+                `,
+                                showConfirmButton: false,
+                                customClass: 'swal-wide',
+                                showCloseButton: true,
+                                allowOutsideClick: false,
+                                didOpen: () => {
+
+                                    const viewSimRequestDetailsId = document.getElementById('viewSimRequestDetailsId');
+
+                                    const namedQuery = viewSimRequestDetailsId.querySelectorAll(':is(input)[name]');
+                                    const namedElements = Array.from(namedQuery);
+
+                                    headers.forEach(header => {
+                                        const targetElement = namedElements.find(element => element.name === header);
+
+                                        if (targetElement) {
+                                            targetElement.value = rowData[header];
+                                        }
+                                    });
+
+                                    const closeButtonId = document.getElementById('closeButtonId');
+
+                                    closeButtonId.addEventListener(
+                                        "click",
+                                        function (event) {
+                                            event.preventDefault();
+                                            Swal.close();
+                                        }
+                                    );
+
+                                },
+                            });
+
+
+                        }
+                    });
+                    const editButton = generateActionButton(vectors.edit, {
+                        class: 'px-2 py-2 bg-blue-500 text-white rounded',
+                    }, row);
+
+                    const status = rowData.REQUEST_STATUS;
+                    const isRS = status === "Received RS";
+                    if (!isRS) {
+                        editButton.disabled = true;
+                        editButton.classList.add("opacity-50", "cursor-not-allowed");
+                    }
+
+                    editButton.addEventListener("click", function (e) {
+                        const indexOfRequestNo = headers.indexOf("REQUEST_NO");
+                        const requestNo = row[indexOfRequestNo];
+
+                        if (indexOfRequestNo >= 0) {
+                            const simCardId = rowData["SIM_CARD_ID"];
+                            const hasSimCard = !!simCardId;
+                            const ownershipValue = rowData["OWNERSHIP"];
+                            const newSimCard = rowData["PURCHASING_RS_NO"];
+                            const hasNewSimCard = !!newSimCard;
+                            const preIssuanceDate = rowData["PRE_ISSUANCE_DATE"];
+                            const hasPreIssuancceDate = !!preIssuanceDate;
+                            const simTypeValue = rowData["SIM_TYPE"];
+                            // ("", undefined, null, false);
+                            // !("") -> true -> !true ---> false
+                            // !(undefined) -> true -> !true ---> false
+                            // !(null) -> true -> !true ---> false
+                            // !(false) -> true -> !true ---> false
+                            Swal.fire({
+                                html: `
+                      <form id="editSimRequestFormId" class="p-4 md:p-5">
+                          <div>
+                            <h3 class="font-bold text-left">Edit Sim Request Details</h1>
+                            <hr class="h-px mt-2 mb-4 bg-gray-200 border-0 ">
+                          <div>
+                          <div class="grid gap-4 mb-4 grid-cols-4">
+                            <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                              RECEIVED DATE
+                            </div>
+                            <div class="col-span-1 text-left">
+                              <input disabled readonly type="text" id="receivedAndApproveDateId" name="RECEIVED_AND_APPROVED_DATE" placeholder=" " class="border-0 text-sm text-neutral-700 w-full" />
+                            </div>
+                            <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                              REQUEST TYPE
+                            </div>
+                            <div class="col-span-1 text-left">
+                              <input disabled readonly type="text" id="requestTypeId" name="REQUEST_TYPE" placeholder=" " class="border-0 text-sm text-neutral-700 w-full" />
+                            </div>
+                            <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                              USAGE TYPE
+                            </div>
+                            <div class="col-span-1 text-left">
+                              <input disabled readonly type="text" id="usageTypeId" name="USAGE_TYPE" placeholder=" " class="border-0 text-sm text-neutral-700 w-full" />
+                            </div>
+                            <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                              OWNERSHIP
+                            </div>
+                            <div class="col-span-1 text-left">
+                              <input disabled readonly type="text" id="ownershipId" name="OWNERSHIP" placeholder=" " class="border-0 text-sm text-neutral-700 w-full" />
+                            </div>
+                            ${ownershipValue === "Group"
+                                        ? `
+                                <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                                  SECTION GROUP NAME
+                                </div>
+                                <div class="col-span-3 text-left">
+                                  <input disabled readonly type="text" id="sectionGroupNameId" name="SECTION_GROUP_NAME" placeholder=" " class="border-0 text-sm text-neutral-700 w-full" />
+                                </div>
+                                <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                                  REMARKS
+                                </div>
+                                <div class="col-span-3 text-left">
+                                  <input disabled readonly type="text" id="remarksId" name="REMARKS" placeholder=" " class="border-0 text-sm text-neutral-700 w-full" />
+                                </div>
+                              `
+                                        : `
+                              `
+                                    }
+                            <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                              GROUP ID
+                            </div>
+                            <div class="col-span-1 text-left">
+                              <input disabled readonly type="text" id="groupId" name="GROUP_ID" placeholder=" " class="border-0 text-sm text-neutral-700 w-full" />
+                            </div>
+                            ${hasSimCard
+                                        ? `
+                              <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                                SIM CARD ID
+                              </div>
+                              <div class="col-span-1 text-left">
+                                <input disabled readonly type="text" id="simCardId" name="SIM_CARD_ID" placeholder=" " class="border-0 text-sm text-neutral-700 w-full" />
+                              </div>
+                              `
+                                        : `
+                              `
+                                    }
+                            ${hasNewSimCard
+                                        ? `
+                                <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                                  PURCHASING RS NO
+                                </div>
+                                <div class="col-span-1 text-left">
+                                  <input disabled readonly type="text" id="purchasingRsNoId" name="PURCHASING_RS_NO" placeholder=" " class="border-0 text-sm text-neutral-700 w-full" />
+                                </div>
+                                <div class="col-span-1 text-left font-semibold text-sm text-neutral-700 w-full flex space-x-2 justify-between items-center">
+                                  PURCHASING RS DATE
+                                </div>
+                                <div class="col-span-1 text-left">
+                                  <input disabled readonly type="text" id="purchasingRsDateId" name="PURCHASING_RS_DATE" placeholder=" " class="border-0 text-sm text-neutral-700 w-full" />
+                                </div>
+                              `
+                                        : `
+                              `
+                                    }
+                              <div class="col-span-4 ">
+                                <div class="inline-flex items-center justify-center w-full">
+                                    <hr class="w-full h-px bg-gray-300 border-0">
+                                </div>
+                              </div>
+                            ${hasSimCard && hasPreIssuancceDate
+                                        ? `
+                                <div class="col-span-4">
+                                  <div class="inline-flex items-center justify-center w-full">
+                                    <p class="text-left text-sm font-medium text-gray-600 font-semibold">INSTRUCTION: <span class="font-normal">Please kindly choose an action by clicking</span> Cancel Request <span class="font-normal">to cancel sim request, or</span> Issue Request <span class="font-normal">to issue sim request. </span><span class="font-normal italic">Note: Select Sim Card button is disabled.</span></p>
+                                  </div>
+                                </div>
+                                <div class="col-span-4 pb-2">
+                                  <div class="grid grid-cols-3 w-full">
+                                    <button type="button" id="cancelRequestBtn" class="px-4 py-2 text-sm font-semibold text-gray-900 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
+                                      Cancel Request
+                                    </button>
+                                    <button disabled type="button" id="selectSimCardBtn" class="px-4 py-2 text-sm font-semibold text-gray-900 bg-neutral-200 border-t border-b border-gray-300">
+                                      Select Sim Card
+                                    </button>
+                                    <button type="button" id="issueRequestBtn" class="px-4 py-2 text-sm font-semibold text-gray-900 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
+                                      Issue Request
+                                    </button>
+                                  </div>
+                                </div>
+                              `
+                                        : ``
+                                    }
+                            ${!hasSimCard
+                                        ? `
+                                <div class="col-span-4">
+                                  <div class="inline-flex items-center justify-center w-full">
+                                    <p class="text-left text-sm font-medium text-gray-600 font-semibold">INSTRUCTION: <span class="font-normal">Please kindly choose an action by clicking</span> Cancel Request <span class="font-normal">to cancel sim request, or </span>Select Sim Card <span class="font-normal">to select a SIM card.</span><span class="font-normal italic"> Note: Issue Request button is disabled.</span></p>
+                                  </div>
+                                </div>
+                                <div class="col-span-4">
+                                  <div class="grid grid-cols-3 w-full">
+                                    <button type="button" id="cancelRequestBtn" class="px-4 py-2 text-sm font-semibold text-gray-900 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
+                                      Cancel Request
+                                    </button>
+                                    <button type="button" id="selectSimCardBtn" class="px-4 py-2 text-sm font-semibold text-gray-900 bg-white border-t border-b border-gray-300 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
+                                      Select Sim Card
+                                    </button>
+                                    <button disabled type="button" id="issueRequestBtn" class="px-4 py-2 text-sm font-semibold text-gray-900 bg-neutral-200 border border-gray-300 rounded-e-lg">
+                                      Issue Request
+                                    </button>
+                                  </div>
+                                </div>
+                              `
+                                        : ``
+                                    }
+                            ${hasSimCard && !hasPreIssuancceDate
+                                        ? `
+                                <div class="col-span-4">
+                                  <div class="inline-flex items-center justify-center w-full">
+                                    <p class="text-left text-sm font-medium text-gray-600 font-semibold">INSTRUCTION: <span class="font-normal">Please kindly choose an action by clicking</span> Cancel Request <span class="font-normal">to cancel sim request.</span><span class="font-normal italic"> Note: Select Sim Card button and Issue Request button are disabled.</span></p>
+                                  </div>
+                                </div>
+                                <div class="col-span-4">
+                                  <div class="grid grid-cols-3 w-full">
+                                    <button type="button" id="cancelRequestBtn" class="px-4 py-2 text-sm font-semibold text-gray-900 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
+                                      Cancel Request
+                                    </button>
+                                    <button disabled type="button" id="selectSimCardBtn" class="px-4 py-2 text-sm font-semibold text-gray-900 bg-neutral-200 border-t border-b border-gray-300">
+                                      Select Sim Card
+                                    </button>
+                                    <button disabled type="button" id="issueRequestBtn" class="px-4 py-2 text-sm font-semibold text-gray-900 bg-neutral-200 border border-gray-300 rounded-e-lg">
+                                      Issue Request
+                                    </button>
+                                  </div>
+                                </div>
+                              `
+                                        : ``
+                                    }
+                              <div class="col-span-2 is-Cancel hidden">
+                                <label class="flex space-x-2" for="cancellationDateId">
+                                  <div class="text-sm font-semibold">Cancellation Date</div>
+                                  <span class="bg-red-100 text-red-800 text-[9px] rounded-full mb-3 py-1 px-2">Required</span>
+                                </label>
+                                <input type="date" id="cancellationDateId" name="CANCELLATION_DATE" placeholder="Cancellation Date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                              </div>
+                              <div class="col-span-2 is-Cancel hidden">
+                                <label class="flex space-x-2" for="cancellationReasonId">
+                                  <div class="text-sm font-semibold">Reason</div>
+                                  <span class="bg-red-100 text-red-800 text-[9px] rounded-full mb-3 py-1 px-2">Required</span>
+                                </label>
+                                <input type="text" id="cancellationReasonId" name="CANCELLATION_REASON" placeholder="Cancellation Reason" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                              </div>
+                              <div class="col-span-1 is-Sim hidden">
+                              <label class="flex space-x-2" for="simCardId">
+                                <div class="text-sm font-semibold">Sim Card Id</div>
+                                <span class="bg-red-100 text-red-800 text-[9px] rounded-full mb-3 py-1 px-2">Required</span>
+                              </label>
+                              <input list="simCardIds" id="simCardId" name="SIM_CARD_ID" autocomplete="off"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5">
+                              <datalist id="simCardIds">
+                              </datalist>
+                              </div>
+                              <div class="col-span-1 is-Sim hidden">
+                                <label class="flex space-x-2" for="mobileNoId">
+                                  <div class="text-sm font-semibold">Mobile No</div>
+                                  <span class="bg-red-100 text-red-800 text-[9px] rounded-full mb-3 py-1 px-2">Required</span>
+                                </label>
+                                <input list="mobileNoIds" id="mobileNoId" name="MOBILE_NO" autocomplete="off"
+                                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5">
+                                <datalist id="mobileNoIds">
+                                </datalist>
+                              </div>
+                              <div class="col-span-1 is-Sim hidden">
+                                <label class="flex space-x-2" for="networkProviderId">
+                                  <div class="text-sm font-semibold">Network</div>
+                                  <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                                  <span class="text-red-400"> </span>
+                                </label>
+                                <input type="text" id="networkProviderId" name="NETWORK_PROVIDER" placeholder="Plan Id" class="cursor-default bg-neutral-200 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                              </div>
+                              <div class="col-span-1 is-Sim hidden">
+                                <label class="flex space-x-2" for="accountNoId">
+                                  <div class="text-sm font-semibold">Account No</div>
+                                  <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                                  <span class="text-red-400"> </span>
+                                </label>
+                                <input type="text" id="accountNoId" name="ACCOUNT_NO" placeholder="Plan Id" class="cursor-default bg-neutral-200 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                              </div>
+                              <div class="col-span-1 is-Sim hidden">
+                                <label class="flex space-x-2" for="planId">
+                                  <div class="text-sm font-semibold">Plan ID</div>
+                                  <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                                  <span class="text-red-400"> </span>
+                                </label>
+                                <input type="text" id="planId" name="PLAN_ID" placeholder="Plan Id" class="cursor-default bg-neutral-200 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                              </div>
+                              <div class="col-span-2 is-Sim hidden">
+                                <label class="flex space-x-2" for="planDetailsId">
+                                  <div class="text-sm font-semibold">Plan Details</div>
+                                  <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                                  <span class="text-red-400"> </span>
+                                </label>
+                                <input type="text" id="planDetailsId" name="PLAN_DETAILS" placeholder="Plan Details" class="cursor-default bg-neutral-200 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                              </div>
+                              <div class="col-span-1 is-Sim hidden">
+                                <label class="flex space-x-2" for="monthlyRecurringFeeId">
+                                  <span class="text-sm font-semibold">MRF</span>
+                                  <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                                  <span class="text-red-400"> </span>
+                                </label>
+                                <input type="text" id="monthlyRecurringFeeId" name="MONTHLY_RECURRING_FEE" placeholder="Monthly Recurring Fee" class="cursor-default bg-neutral-200 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                              </div>
+                              <div class="col-span-1 is-Sim hidden">
+                                <label class="flex space-x-2" for="oldFullName">
+                                  <span class="text-sm font-semibold">Previous Owner</span>
+                                  <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                                  <span class="text-red-400"> </span>
+                                </label>
+                                <input type="text" id="oldFullName" name="OLD_FULL_NAME" placeholder="Employee Name" class="cursor-default bg-neutral-200 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                              </div>
+                              <div class="col-span-1 is-Sim hidden">
+                                <label class="flex space-x-2" for="usageTypeId">
+                                  <span class="text-sm font-semibold">Old Usage Type</span>
+                                  <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                                  <span class="text-red-400"> </span>
+                                </label>
+                                <input type="text" id="usageTypeId" name="OLD_USAGE_TYPE" placeholder="Usage Type" class="cursor-default bg-neutral-200 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                              </div>
+                              <div class="col-span-1 is-Sim hidden">
+                                <label class="flex space-x-2" for="oldCategoryId">
+                                  <span class="text-sm font-semibold">Category</span>
+                                  <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                                  <span class="text-red-400"> </span>
+                                </label>
+                                <input type="text" id="oldCategoryId" name="OLD_CATEGORY" placeholder="Department" class="cursor-default bg-neutral-200 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                              </div>
+                              <div class="col-span-1 is-Sim hidden">
+                                <label class="flex space-x-2" for="ownershipId">
+                                  <span class="text-sm font-semibold">Old Ownership</span>
+                                  <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                                  <span class="text-red-400"> </span>
+                                </label>
+                                <input type="text" id="ownershipId" name="OLD_OWNERSHIP" placeholder="Ownership" class="cursor-default bg-neutral-200 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                              </div>
+                              <div class="col-span-1 hidden">
+                                <label class="flex space-x-2" for="rfpGroupNameId">
+                                  <span class="text-sm font-semibold">Rfp Group Id</span>
+                                  <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                                  <span class="text-red-400"> </span>
+                                </label>
+                                <input type="text" id="rfpGroupNameId" name="RFP_GROUP_ID" placeholder="Rfp Group" class="cursor-default bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                              </div>
+                              
+                              <div class="col-span-2 is-Issue hidden">
+                                <label class="flex space-x-2" for="issuanceDateId">
+                                  <div class="text-sm font-semibold">Issuance Date</div>
+                                  <span class="bg-red-100 text-red-800 text-[9px] rounded-full mb-3 py-1 px-2">Required</span>
+                                </label>
+                                <input type="date" id="issuanceDateId" name="ISSUANCE_DATE" placeholder="Issuance Date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                              </div>
+                             
+                          </div>
+                          <div class="flex justify-end pt-2">
+                            <button id="submitButtonId" type="submit"
+                                class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                                Submit
+                            </button>
+                          </div>
+                        </form>
+                      `,
+                                showConfirmButton: false,
+                                customClass: "swal-wide",
+                                showCloseButton: true,
+                                allowOutsideClick: false,
+                                didOpen: async () => {
+                                    const editSimRequestFormId = document.getElementById("editSimRequestFormId");
+
+                                    const cancelRequestBtn = document.getElementById("cancelRequestBtn");
+                                    const selectSimCardBtn = document.getElementById("selectSimCardBtn");
+                                    const issueRequestBtn = document.getElementById("issueRequestBtn");
+                                    const cancelElements = document.querySelectorAll('.is-Cancel');
+                                    const simElements = document.querySelectorAll('.is-Sim');
+                                    const issueElements = document.querySelectorAll('.is-Issue');
+
+                                    cancelRequestBtn.addEventListener('click', function () {
+                                        cancelElements.forEach(element => {
+                                            element.classList.toggle('hidden');
+
+                                            const input = element.querySelector('input');
+                                            if (!element.classList.contains('hidden')) {
+                                                input.setAttribute('required', 'required');
+                                            } else {
+                                                input.removeAttribute('required');
+                                            }
+                                        });
+                                        simElements.forEach(element => {
+                                            element.classList.add('hidden'); // Ensure .isSim elements are hidden
+                                            const input = element.querySelector('input');
+                                            if (input) {
+                                                input.removeAttribute('required'); // Remove required attribute if it exists
+                                                input.value = ''; // Reset the value of the input
+                                            }
+                                        });
+                                        issueElements.forEach(element => {
+                                            element.classList.add('hidden'); // Ensure .isSim elements are hidden
+                                            const input = element.querySelector('input');
+                                            if (input) {
+                                                input.removeAttribute('required'); // Remove required attribute if it exists
+                                                input.value = ''; // Reset the value of the input
+                                            }
+                                        });
+                                    });
+
+                                    selectSimCardBtn.addEventListener('click', function () {
+                                        simElements.forEach(element => {
+                                            element.classList.toggle('hidden');
+
+                                            const input = element.querySelector('input');
+                                            if (!element.classList.contains('hidden')) {
+                                                input.setAttribute('required', 'required');
+                                            } else {
+                                                input.removeAttribute('required');
+                                            }
+                                        });
+                                        cancelElements.forEach(element => {
+                                            element.classList.add('hidden'); // Ensure .isSim elements are hidden
+                                            const input = element.querySelector('input');
+                                            if (input) {
+                                                input.removeAttribute('required'); // Remove required attribute if it exists
+                                                input.value = ''; // Reset the value of the input
+                                            }
+                                        });
+                                        issueElements.forEach(element => {
+                                            element.classList.add('hidden'); // Ensure .isSim elements are hidden
+                                            const input = element.querySelector('input');
+                                            if (input) {
+                                                input.removeAttribute('required'); // Remove required attribute if it exists
+                                                input.value = ''; // Reset the value of the input
+                                            }
+                                        });
+                                    });
+
+                                    issueRequestBtn.addEventListener('click', function () {
+                                        issueElements.forEach(element => {
+                                            element.classList.toggle('hidden');
+
+                                            const input = element.querySelector('input');
+                                            if (!element.classList.contains('hidden')) {
+                                                input.setAttribute('required', 'required');
+                                            } else {
+                                                input.removeAttribute('required');
+                                            }
+                                        });
+                                        simElements.forEach(element => {
+                                            element.classList.add('hidden'); // Ensure .isSim elements are hidden
+                                            const input = element.querySelector('input');
+                                            if (input) {
+                                                input.removeAttribute('required'); // Remove required attribute if it exists
+                                                input.value = ''; // Reset the value of the input
+                                            }
+                                        });
+                                        cancelElements.forEach(element => {
+                                            element.classList.add('hidden'); // Ensure .isSim elements are hidden
+                                            const input = element.querySelector('input');
+                                            if (input) {
+                                                input.removeAttribute('required'); // Remove required attribute if it exists
+                                                input.value = ''; // Reset the value of the input
+                                            }
+                                        });
+                                    });
+
+                                    const namedQuery = editSimRequestFormId.querySelectorAll(":is(input, select)[name]");
+                                    const namedElements = Array.from(namedQuery);
+
+                                    headers.forEach((header) => {
+                                        const targetElement = namedElements.find(
+                                            (element) => element.name === header
+                                        );
+
+                                        if (targetElement) {
+                                            targetElement.value = rowData[header];
+                                        }
+                                    });
+
+                                    if (!rowData.SIM_CARD_ID) {
+
+                                        const simHeaders = [
+                                            "SIM_CARD_ID",
+                                            "MOBILE_NO",
+                                            "ACCOUNT_NO",
+                                            "RFP_GROUP_ID",
+                                            "NETWORK_PROVIDER",
+                                            "PLAN_DETAILS",
+                                            "PLAN_ID",
+                                            "MONTHLY_RECURRING_FEE",
+                                            "CATEGORY",
+                                            "OWNERSHIP",
+                                            "USAGE_TYPE",
+                                            "FULL_NAME",
+                                        ]
+
+                                        const sheetValues = await Promise.all([
+                                            $.getConsolidatedSimDetails(simHeaders),
+                                        ]);
+
+
+                                        const simCardIdElement = document.querySelector('input[name="SIM_CARD_ID"]');
+                                        const simCardIdDatalist = document.getElementById(simCardIdElement.getAttribute("list"));
+                                        const mobileNoElement = document.querySelector('input[name="MOBILE_NO"]');
+                                        const mobileNoDatalist = document.getElementById(mobileNoElement.getAttribute("list"));
+                                        const networkProviderElement = document.querySelector('input[name="NETWORK_PROVIDER"]');
+                                        const accountNoElement = document.querySelector('input[name="ACCOUNT_NO"]');
+                                        const planIdElement = document.querySelector('input[name="PLAN_ID"]');
+                                        const planDetailsElement = document.querySelector('input[name="PLAN_DETAILS"]');
+                                        const monthlyRecurringFeeElement = document.querySelector('input[name="MONTHLY_RECURRING_FEE"]');
+                                        const oldFullNameElement = document.querySelector('input[name="OLD_FULL_NAME"]');
+                                        const usageElement = document.querySelector('input[name="OLD_USAGE_TYPE"]');
+                                        const oldCategoryElement = document.querySelector('input[name="OLD_CATEGORY"]');
+                                        const oldOwnershipElement = document.querySelector('input[name="OLD_OWNERSHIP"]');
+                                        const rfpGroupNameElement = document.querySelector('input[name="RFP_GROUP_ID"]');
+
+                                        const [simDetails] =
+                                            sheetValues.map((json) => JSON.parse(json));
+
+                                        const simDetailsArray = simDetails.map((simDetail) => Object.values(simDetail));
+
+                                        const mappedSimDetails = {};
+
+                                        const simCardIdFragment = new DocumentFragment();
+                                        const mobileNoFragment = new DocumentFragment();
+
+                                        simDetailsArray.forEach((row) => {
+                                            const data = row.reduce((acc, cell, cellIndex) => {
+                                                const header = simHeaders[cellIndex];
+                                                acc[header] = cell;
+                                                return acc;
+                                            }, {});
+
+                                            const { SIM_CARD_ID, MOBILE_NO, NETWORK_PROVIDER, ACCOUNT_NO, RFP_GROUP_ID, PLAN_ID, PLAN_DETAILS, MONTHLY_RECURRING_FEE, CATEGORY, OWNERSHIP, USAGE_TYPE, FULL_NAME } = data;
+
+                                            if (!mappedSimDetails[MOBILE_NO]) {
+                                                mappedSimDetails[MOBILE_NO] = {
+                                                    simCardId: SIM_CARD_ID,
+                                                    networkProvider: NETWORK_PROVIDER,
+                                                    rfpGroupName: RFP_GROUP_ID,
+                                                    accountNo: ACCOUNT_NO,
+                                                    planId: PLAN_ID,
+                                                    planDetails: PLAN_DETAILS,
+                                                    monthlyRecurringFee: MONTHLY_RECURRING_FEE,
+                                                    category: CATEGORY,
+                                                    ownership: OWNERSHIP,
+                                                    usageType: USAGE_TYPE,
+                                                    fullName: FULL_NAME,
+                                                };
+
+                                                const mobileNoOption = document.createElement("option");
+                                                mobileNoOption.value = MOBILE_NO;
+                                                mobileNoOption.textContent = MOBILE_NO;
+                                                mobileNoFragment.appendChild(mobileNoOption);
+                                            }
+
+                                            mappedSimDetails[SIM_CARD_ID] = {
+                                                mobileNo: MOBILE_NO,
+                                                networkProvider: NETWORK_PROVIDER,
+                                                accountNo: ACCOUNT_NO,
+                                                rfpGroupName: RFP_GROUP_ID,
+                                                planId: PLAN_ID,
+                                                planDetails: PLAN_DETAILS,
+                                                monthlyRecurringFee: MONTHLY_RECURRING_FEE,
+                                                category: CATEGORY,
+                                                ownership: OWNERSHIP,
+                                                usageType: USAGE_TYPE,
+                                                fullName: FULL_NAME,
+                                            };
+
+                                            const simCardIdOption = document.createElement("option");
+                                            simCardIdOption.value = SIM_CARD_ID;
+                                            simCardIdOption.textContent = SIM_CARD_ID;
+                                            simCardIdFragment.appendChild(simCardIdOption);
+                                        });
+
+                                        mobileNoDatalist.appendChild(mobileNoFragment);
+                                        simCardIdDatalist.appendChild(simCardIdFragment);
+
+                                        simCardIdElement.addEventListener("change", function () {
+                                            const simCardId = this.value;
+
+                                            const details = mappedSimDetails[simCardId] || {};
+
+                                            mobileNoElement.value = details.mobileNo || "";
+                                            networkProviderElement.value = details.networkProvider || "";
+                                            accountNoElement.value = details.accountNo || "";
+                                            rfpGroupNameElement.value = details.rfpGroupName || "";
+                                            planIdElement.value = details.planId || "";
+                                            planDetailsElement.value = details.planDetails || "";
+                                            monthlyRecurringFeeElement.value = details.monthlyRecurringFee || "";
+                                            oldCategoryElement.value = details.category || "";
+                                            oldOwnershipElement.value = details.ownership || "";
+                                            usageElement.value = details.usageType || "";
+                                            oldFullNameElement.value = details.fullName || "";
+                                        });
+
+                                        mobileNoElement.addEventListener("change", function () {
+                                            const mobileNo = this.value;
+
+                                            const details = mappedSimDetails[mobileNo] || {};
+
+                                            simCardIdElement.value = details.simCardId || "";
+                                            networkProviderElement.value = details.networkProvider || "";
+                                            accountNoElement.value = details.accountNo || "";
+                                            rfpGroupNameElement.value = details.rfpGroupName || "";
+                                            planIdElement.value = details.planId || "";
+                                            planDetailsElement.value = details.planDetails || "";
+                                            monthlyRecurringFeeElement.value = details.monthlyRecurringFee || "";
+                                            oldCategoryElement.value = details.category || "";
+                                            oldOwnershipElement.value = details.ownership || "";
+                                            usageElement.value = details.usageType || "";
+                                            oldFullNameElement.value = details.fullName || "";
+                                        });
+
+                                    } else {
+                                        console.log("SIM_CARD_ID already has a value, no need to load the data.");
+                                    }
+                                    let isSubmitted = false;
+                                    editSimRequestFormId.addEventListener("submit", async function (event) {
+                                        event.preventDefault();
+
+                                        const submitButtonId = document.getElementById("submitButtonId");
+
+                                        submitButtonId.innerHTML = 'Submitting <span class="AnimatedEllipsis"></span>';
+
+                                        submitButtonId.disabled = true;
+                                        submitButtonId.classList.add('cursor-not-allowed', 'opacity-50');
+
+                                        const swalCloseButton = Swal.getCloseButton();
+                                        if (swalCloseButton) {
+                                            swalCloseButton.disabled = true;
+                                        }
+
+                                        if (isSubmitted) {
+                                            return;
+                                        }
+
+
+                                        isSubmitted = true;
+                                        try {
+                                            const formData = new FormData(this);
+                                            const formObject = Object.fromEntries(formData);
+                                            const simCardId = rowData.SIM_CARD_ID;
+                                            const existingsimInfo = rowData.SIM_INFO;
+                                            const issuanceNo = rowData.ISSUANCE_NO;
+
+                                            if (simCardId) {
+                                                formObject.SIM_CARD_ID = simCardId;
+                                            }
+                                            if (issuanceNo) {
+                                                formObject.ISSUANCE_NO = issuanceNo;
+                                            }
+                                            if (!!existingsimInfo) {
+                                                formObject.SIM_INFO = existingsimInfo;
+                                            }
+
+                                            if (!simCardId) {
+                                                const simInfo = {
+                                                    PLAN_ID: formObject.PLAN_ID,
+                                                    NETWORK_PROVIDER: formObject.NETWORK_PROVIDER,
+                                                    MOBILE_NO: formObject.MOBILE_NO,
+                                                    ACCOUNT_NO: formObject.ACCOUNT_NO,
+                                                    MONTHLY_RECURRING_FEE: formObject.MONTHLY_RECURRING_FEE,
+                                                    PLAN_DETAILS: formObject.PLAN_DETAILS,
+                                                    RFP_GROUP_ID: formObject.RFP_GROUP_ID,
+                                                    CATEGORY: formObject.OLD_CATEGORY,
+                                                }
+                                                formObject.SIM_INFO = JSON.stringify(simInfo);
+                                            }
+                                            const query = { REQUEST_NO: requestNo };
+                                            const isEdited = await $.editDataToSimRequest(query, formObject);
+
+                                            if (isEdited) {
+                                                await initializeTable();
+                                                Swal.close();
+                                                toast.success({
+                                                    title: "Record Update Success",
+                                                    description: "The record has been updated succesfully",
+                                                    timeout: 4000,
+                                                    closeButton: false,
+                                                })
+
+                                            } else {
+                                                toast.error({
+                                                    title: "Record Update Failed",
+                                                    description: "Failed to update the record. Please try again.",
+                                                    timeout: 4000,
+                                                    closeButton: false,
+                                                })
+                                            }
+                                        } catch (error) {
+                                            console.error(error);
+                                        }
+                                        finally {
+                                            isSubmitted = false; // Reset the submission lock
+                                        }
+                                    }
+                                    );
+                                },
+                            });
+                        }
+                    });
+
+                    const printButton = generateActionButton(vectors.print, {
+                        class: 'px-2 py-2 bg-neutral-500 text-white rounded',
+                    }, row);
+
+                    const issuanceNo = rowData["ISSUANCE_NO"];
+                    const hasIssuanceNo = !!issuanceNo;
+                    const preIssuanceDate = rowData["PRE_ISSUANCE_DATE"];
+                    const hasPreIssuancceDate = !!preIssuanceDate;
+
+                    if (!isRS || !hasIssuanceNo || hasPreIssuancceDate) {
+                        printButton.disabled = true;
+                        printButton.classList.add("opacity-50", "cursor-not-allowed");
+
+                    }
+
+                    printButton.addEventListener("click", function (e) {
+                        const indexOfRequestNo = headers.indexOf("REQUEST_NO");
+                        const requestNo = row[indexOfRequestNo];
+
+                        const employeeInfoString = rowData["EMPLOYEE_INFO"];
+                        const hasEmployeeInfo = !!employeeInfoString;
+                        const employeeInfo = hasEmployeeInfo
+                            ? JSON.parse(employeeInfoString)
+                            : ``; // Parse the JSON string into an object
+
+                        const simInfoString = rowData["SIM_INFO"];
+                        const hasSimInfo = !!simInfoString;
+                        const simInfo = hasSimInfo ? JSON.parse(simInfoString) : ``;
+                        const companyName = employeeInfo.COMPANY_NAME;
+                        const companyFullName = companyName == 'BDC'
+                            ? 'Borland Development Corporation'
+                            : companyName == 'WFC'
+                                ? 'Westbrook Finance Corporation'
+                                : companyName == 'GMDC'
+                                    ? 'Golden Mahogany Development Corporation'
+                                    : companyName == 'GWDC'
+                                        ? 'Greenwealth Development Corporation' : ``;
+
+                        if (indexOfRequestNo >= 0) {
+                            const dateValue = new Date();
+                            const textValue = DateTime(dateValue, {
+                                format: "MM/DD/YYYY",
+                            });
+                            Swal.fire({
+                                html: `
+                      <div id="generateIssuanceTemplateId" class="p-2 mb-2 relative">
+                        <div>
+                          <h3 class="font-bold text-left">Sim Issuance Template</h1>
+                          <div class="text-left text-sm text-gray-500 font-medium">Kindly adjust the print settings to: default settings, and paper size A4.</div>
+                          <hr class="h-px mt-2 mb-4 bg-gray-200 border-0 ">
+                        <div>
+                        <div id="issuanceContainerId" class="relative">
+                        <table id="printTable" class="w-full table-fixed bg-white border border-black border-separate border-spacing-0 noPrint">
+                          <tbody>
+                            <tr>
+                              <td class="text-left px-4 py-.5 font-bold text-xs border border-white border-b-black border-r-black">CONTROL NO.</td>
+                              <td class="px-1 py-.5 font-bold text-xs border border-white border-b-black flex items-center justify-center">
+                               HR-003-004-025
+                              </td>
+                              <td colspan="4" rowspan="3" class="font-bold px-4 py-.5 border border-white border-l-black items-center text-center">SIM PLANS ISSUANCE FORM</td>
+                              <td class="w-1 px-4 py-.5 text-center"></td>
+                            </tr>
+                            <tr>
+                             <td class="text-left px-4 py-.5 font-bold text-xs border border-white border-b-black border-r-black">DATE CREATED</td>
+                              <td class="px-1 py-.5 font-bold text-xs border border-white border-b-black flex items-center justify-center">1-1-2023
+                              </td>
+                              <td class="w-1 px-4 py-.5 text-center">
+                              
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="text-left px-4 py-.5 font-bold text-xs border border-white border-r-black"> DATE OF LAST UPDATE</td>
+                              <td class="px-1 py-.5 font-bold text-xs flex items-center justify-center">1-1-2023
+                              </td>
+                              <td class="w-1 px-4 py-.5 text-center "></td>
+                            </tr>
+                            </tbody>
+                            <tbody class="pointer-events-none">
+                            <tr>
+                             <td colspan="7" class=" bg-[#93c47d] bg-opacity-70 text-left px-4 py-1 font-bold text-xs border border-[#93c47d] border-t-black">EMPLOYEE DETAILS</td>
+                            </tr>
+                            <tr>
+                             <td colspan="7" class="text-center  px-4 py-1 font-bold text-xs"></td>
+                            </tr>
+                            <tr>
+                             <td class="text-left px-4 py-.5 font-bold text-xs">Group Id</td>
+                             <td  class="px-1 py-.5 font-bold text-xs border border-white border-b-black flex items-center justify-center">
+                               ${!!rowData.GROUP_ID
+                                        ? `${rowData.GROUP_ID}`
+                                        : ` `
+                                    }
+                             </td>
+                             <td class="text-left pl-16 py-.5 font-bold text-xs">Department</td>
+                             <td class="px-1 py-.5 font-bold text-xs border border-white border-b-black flex items-center justify-center">
+                              ${!!employeeInfo.DEPARTMENT
+                                        ? `${employeeInfo.DEPARTMENT}`
+                                        : ` `
+                                    }
+                             </td>
+                             <td class="text-left pl-12 py-.5 font-bold text-xs">Issuance No.</td>
+                             <td class="px-0 py-.5 font-bold text-sm border border-white border-b-black flex items-center justify-center text-red-700">
+                               ${!!rowData.ISSUANCE_NO
+                                        ? `${rowData.ISSUANCE_NO}`
+                                        : ` `
+                                    }
+                             </td>
+                             <td class="w-1 px-4 py-.5 text-center "></td>
+                            </tr>
+                            <tr>
+                             <td class="text-left  px-4 py-.5 font-bold text-xs">Name</td>
+                             <td  class=" px-1 py-.5 font-bold text-xs border border-white border-b-black flex items-center justify-center">
+                               ${!!employeeInfo.FULL_NAME
+                                        ? `${employeeInfo.FULL_NAME}`
+                                        : ` `
+                                    }
+                             </td>
+                             <td class="text-left  pl-16 py-.5 font-bold text-xs">Section</td>
+                             <td  class=" px-1 py-.5 font-bold text-[10px] border border-white border-b-black flex items-center justify-center">
+                               ${!!employeeInfo.SECTION
+                                        ? `${employeeInfo.SECTION}`
+                                        : ` `
+                                    }
+                             </td>
+                             <td class="text-left  pl-12 py-.5 font-bold text-xs">Form Date</td>
+                             <td  class=" px-1 py-.5 font-bold text-xs border border-white border-b-black flex items-center justify-center">
+                              ${textValue}
+                             </td>
+                             <td class="w-1 px-4 py-.5 text-center "></td>
+                            </tr>
+                            <tr>
+                             <td class="text-left  px-4 py-.5 font-bold text-xs">Position</td>
+                             <td  class=" px-1 py-.5 font-bold text-[10px] border border-white border-b-black flex items-center justify-center">
+                               ${!!employeeInfo.POSITION
+                                        ? `${employeeInfo.POSITION}`
+                                        : ` `
+                                    }
+                             </td>
+                             <td class="text-left  pl-16 py-.5 font-bold text-xs">Branch/Site</td>
+                             <td  class=" px-1 py-.5 font-bold text-xs border border-white border-b-black flex items-center justify-center">
+                              ${employeeInfo.BRANCH
+                                        ? employeeInfo.SITE
+                                            ? `${employeeInfo.BRANCH} / ${employeeInfo.SITE}`
+                                            : employeeInfo.BRANCH
+                                        : employeeInfo.SITE
+                                            ? employeeInfo.SITE
+                                            : " "
+                                    }
+                             </td>
+                             <td class="text-left  pl-12 py-.5 font-bold text-xs">Issuance Type</td>
+                             <td  class=" px-1 py-.5 font-bold text-xs border border-white border-b-black flex items-center justify-center">
+                              ${!!rowData.REQUEST_TYPE
+                                        ? `${rowData.REQUEST_TYPE}`
+                                        : ` `
+                                    }
+                             </td>
+                             <td class="w-1 px-4 py-.5 text-center "></td>
+                            </tr>
+                            <tr>
+                             <td colspan="7" class="text-center  px-4 py-1 font-bold text-xs"></td>
+                            </tr>
+                            <tr>
+                             <td colspan="7" class=" bg-[#93c47d] bg-opacity-70 text-left px-4 py-1 font-bold text-xs border border-[#93c47d] border-t-black">SIM PLAN INFORMATION</td>
+                            </tr>
+                            <tr>
+                             <td colspan="7" class="text-center  px-4 py-1 font-bold text-xs"></td>
+                            </tr>
+                            <tr>
+                             <td class="text-left px-4 py-.5 font-bold text-xs">Plan No.</td>
+                             <td  class=" px-1 py-.5 font-bold text-xs border border-white border-b-black flex items-center justify-center">
+                              ${!!simInfo.PLAN_ID ? `${simInfo.PLAN_ID}` : ` `}
+                             </td>
+                             <td class="text-left  px-4 py-.5 font-bold text-xs"></td>
+                             <td colspan="3" class="text-center  px-4 py-.5 font-bold text-xs">Plan Inclusions</td>
+                             <td class="w-1 px-4 py-.5 text-center "></td>
+                            </tr>
+                            <tr>
+                             <td class="text-left px-4 py-.5 font-bold text-xs">Network</td>
+                             <td  class=" px-1 py-.5 font-bold text-xs border border-white border-b-black flex items-center justify-center">
+                              ${!!simInfo.NETWORK_PROVIDER
+                                        ? `${simInfo.NETWORK_PROVIDER}`
+                                        : ` `
+                                    }
+                             </td>
+                             <td class="text-center px-4 py-.5 font-bold text-xs"></td>
+                             <td colspan="3" rowspan="2" class="px-1 py-.5 font-bold text-xs border text-center border-white items-center justify-center">
+                              ${!!simInfo.PLAN_DETAILS
+                                        ? `${simInfo.PLAN_DETAILS}`
+                                        : ` `
+                                    }
+                             </td>
+                             <td class="w-1 px-4 py-.5 text-center "></td>
+                            </tr>
+                            <tr>
+                             <td class="text-left px-4 py-.5 font-bold text-xs">Mobile No.</td>
+                             <td  class=" px-1 py-.5 font-bold text-xs border border-white border-b-black flex items-center justify-center">
+                              ${simInfo.MOBILE_NO
+                                        ? `${simInfo.MOBILE_NO}`
+                                        : simInfo.MOBILE_NUMBER
+                                            ? `${simInfo.MOBILE_NUMBER}`
+                                            : " "
+                                    }
+                             </td>
+                             <td class="text-left  px-4 py-.5 font-bold text-xs"></td>
+                             <td class="w-1 px-4 py-.5 text-center "></td>
+                            </tr>
+                            <tr>
+                             <td class="text-left px-4 py-.5 font-bold text-xs">Account No.</td>
+                             <td  class=" px-1 py-.5 font-bold text-xs border border-white border-b-black flex items-center justify-center">
+                              ${!!simInfo.ACCOUNT_NO
+                                        ? `${simInfo.ACCOUNT_NO}`
+                                        : ` `
+                                    }
+                             </td>
+                             <td class="text-left  px-4 py-.5 font-bold text-xs"></td>
+                             <td colspan="3" class="text-center  px-4 py-.5 font-bold text-xs"></td>
+                             <td class="w-1 px-4 py-.5 text-center "></td>
+                            </tr>
+                            <tr>
+                             <td class="text-left px-4 py-.5 font-bold text-xs">Monthly Recurring Fee</td>
+                             <td  class=" px-1 py-.5 font-bold text-xs border border-white border-b-black flex items-center justify-center">
+                              ${!!simInfo.MONTHLY_RECURRING_FEE
+                                        ? `${simInfo.MONTHLY_RECURRING_FEE}`
+                                        : ` `
+                                    }
+                             </td>
+                             <td class="text-left  px-4 py-.5 font-bold text-xs"></td>
+                             <td colspan="3" class="text-center  px-4 py-.5 font-bold text-xs"></td>
+                             <td class="w-1 px-4 py-.5 text-center "></td>
+                            </tr>
+                            <tr>
+                             <td colspan="7" class="text-center  px-4 py-1 font-bold text-xs"></td>
+                            </tr>
+                            <tr>
+                             <td colspan="7" class=" bg-[#93c47d] bg-opacity-70 text-left px-4 py-1 font-bold text-xs border border-[#93c47d] border-t-black">HUMAN RESOURCE DEPARTMENT</td>
+                            </tr>
+                            <tr>
+                             <td colspan="7" class="text-center  px-4 py-1 font-bold text-xs"></td>
+                            </tr>
+                            <tr>
+                             <td colspan="3" class="text-center  px-4 py-.5 font-bold text-xs">ISSUED BY:</td>
+                             <td colspan="3" class="text-center  px-4 py-.5 font-bold text-xs">APPROVED BY:</td>
+                             <td class="w-1 px-4 py-.5 text-center"></td>
+                            </tr>
+                            <tr>
+                             <td colspan="3" class="text-center  px-4 py-1 font-bold text-xs"></td>
+                             <td colspan="3" class="text-center  px-4 py-1 font-bold text-xs"></td>
+                             <td class="w-1 px-4 py-1 text-center"></td>
+                            </tr>
+                            </tbody>
+                            <tbody>
+                            <tr>
+                              <td class="text-center  px-4 py-.5 font-bold text-xs"></td>
+                              <td class="text-center  px-0 py-0 font-bold text-xs">DANIELLA S.D SERRANO
+                              </td>
+                              <td class="text-center  px-4 py-.5 font-bold text-xs"></td>
+                              <td class="text-center  px-4 py-.5 font-bold text-xs"></td>
+                              <td class="text-center  px-0 py-0 font-bold text-xs">RIENALYN E. VILLANUEVA
+                              </td>
+                              <td class="text-center  px-4 py-.5 font-bold text-xs"></td>
+                              <td class="w-1 px-4 py-.5 text-center"></td>
+                            </tr>
+                            </tbody>
+                            <tbody class="pointer-events-none">
+                            <tr>
+                              <td class="text-center  px-4 py-.5 font-bold text-xs"></td>
+                              <td class="text-center  px-0 py-.5 font-bold text-[11px] border border-white border-t-black">Signature over Printed Name</td>
+                              <td class="text-left  px-4 py-.5 font-bold text-xs">Date</td>
+                              <td class="text-center  px-4 py-.5 font-bold text-xs"></td>
+                              <td class="text-center  px-0 py-.5 font-bold text-[11px] border border-white border-t-black">Signature over Printed Name</td>
+                              <td class="text-left  px-4 py-.5 font-bold text-xs">Date </td>
+                              <td class="w-1 px-4 py-.5 text-center"></td>
+                            </tr>
+                            <tr>
+                             <td colspan="7" class="text-center  px-4 py-1 font-bold text-xs"></td>
+                            </tr>
+                            <tr>
+                             <td colspan="7" class=" bg-[#93c47d] bg-opacity-70 text-left px-4 py-1 font-bold text-xs border border-[#93c47d] border-t-black">TERMS & CONDITIONS</td>
+                            </tr>
+                            <tr>
+                             <td colspan="7" class="text-center  px-4 py-1 font-bold text-xs"></td>
+                            </tr>
+                            <tr>
+                             <td colspan="4" class="text-left  px-4 py-0 font-semibold text-[12px] whitespace-pre-line">1. Any loss or damages shall be reported to HR immediately. Failure to do so may be subject to disciplinary action.</td>
+                              <td colspan="2" class="text-center  px-4 py-.5 font-bold text-sm">AUTHORITY TO DEDUCT</td>
+                              <td class="w-1 px-4 py-0 text-center"></td>
+                            </tr>
+                            <tr>
+                             <td colspan="4" class="text-left  px-4 py-0 font-semibold text-[12px] whitespace-pre-line">2. In case of transfer of ownership, coordinate to HR immediately. Failure to do so may be subject to disciplinary action.</td>
+                              <td colspan="2" rowspan="3" class="text-center py-0 px-2 font-semibold  whitespace-pre-line text-[10px]">This is authorized ${companyFullName} to deduct from my salary any amount in excess of the monthly recurring fee of the above-mentioned plan Issued to me or under my custody. This is to authorize (the “Corporation”) to deduct from my salary any amount in excess of the monthly recurring fee of the above-mentioned plan Issued to me/under my custody.
+                              </td>
+                              <td class="w-1 px-4 py-0 text-center"></td>
+                            </tr>
+                            <tr>
+                             <td colspan="4" class="text-left px-4 py-0 font-semibold text-[12px] whitespace-pre-line">3. All charges in excess to monthly recurring fee may be charge to employee.</td>
+                             <td class="w-1 px-4 py-0 text-center"></td>
+                            </tr>
+                            <tr>
+                             <td colspan="4" class="text-left px-4 py-0 font-semibold text-[12px] whitespace-pre-line">4. All section/group issued plan shall be surrender to the custodian every after working hours.</td>
+                             <td class="w-1 px-4 py-0 text-center"></td>
+                            </tr>
+                            <tr>
+                             <td colspan="7" class="text-center  px-4 py-1 font-bold text-xs"></td>
+                            </tr>
+                            <tr>
+                             <td colspan="7" class=" bg-[#93c47d] bg-opacity-70 text-left px-4 py-1 font-bold text-xs border border-[#93c47d] border-t-black">EMPLOYEE CERTIFICATION</td>
+                            </tr>
+                            <tr>
+                             <td colspan="7" class="text-center px-4 py-1 font-bold text-xs"></td>
+                            </tr>
+                            <tr>
+                             <td colspan="6" class="text-center px-4 py-2 font-bold text-xs">I hereby certify that I have read, understand, and accepted the above terms and conditions and that I agree to follow by them.</td>
+                             <td class="w-1 px-4 py-.5 text-center"></td>
+                            </tr>
+                            <tr>
+                             <td colspan="4" class="text-center  px-4 py-1 font-bold text-xs"></td>
+                             <td colspan="2" class="text-center  px-4 py-1 font-bold text-xs"></td>
+                             <td class="w-1 px-4 py-1 text-center"></td>
+                            </tr>
+                            <tr>
+                             <td class="px-4 py-4 text-center"></td>
+                             <td class="text-center  px-4 py-.5 font-bold text-xs"></td>
+                             <td colspan="3" class="text-center px-1 py-.5 font-bold text-xs border border-white border-b-black flex items-center justify-center">
+                              ${!!employeeInfo.FULL_NAME
+                                        ? `${employeeInfo.FULL_NAME}`
+                                        : ` `
+                                    }
+                             </td>
+                             <td class="text-center  px-4 py-.5 font-bold text-xs"></td>
+                             <td class="w-1 px-4 py-.5 text-center"></td>
+                            </tr>
+                            <tr>
+                             <td class="px-4 py-.5 text-center"></td>
+                             <td colspan="3" class="text-center  px-4 py-.5 font-bold text-xs">Signature over Printed Name</td>
+                             <td class="px-4 py-.5 text-left font-bold text-xs">Date</td>
+                             <td class="px-4 py-.5 text-center"></td>
+                             <td class="w-1 px-4 py-.5 text-center"></td>
+                            </tr>
+                            <tr>
+                             <td colspan="7" class="text-center  px-4 py-1 font-bold text-xs"></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                         <div id="print-button-wrapper" class="hidden absolute inset-0 flex justify-center items-center">
+                            <button type="button" id="print-button-id" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                                Print Template
+                            </button>
+                        </div>
+
+                        </div>
+                      </div>
+                      `,
+                                showConfirmButton: false,
+                                customClass: "swal-template",
+                                showCloseButton: true,
+                                allowOutsideClick: false,
+                                didOpen: async () => {
+                                    const generateIssuanceTemplateId = document.getElementById(
+                                        "generateIssuanceTemplateId"
+                                    );
+                                    const issuanceContainerId = document.getElementById(
+                                        "printTable"
+                                    );
+
+                                    const btn = document.getElementById("print-button-id");
+                                    btn.addEventListener("click", async function (event) {
+                                        try {
+                                            event.preventDefault();
+
+                                            btn.innerHTML = 'Printing <span class="AnimatedEllipsis"></span>';
+
+                                            btn.disabled = true;
+                                            btn.classList.add('cursor-not-allowed');
+
+                                            const swalCloseButton = Swal.getCloseButton();
+                                            if (swalCloseButton) {
+                                                swalCloseButton.disabled = true;
+                                            }
+                                            const preIssuanceDate = {
+                                                PRE_ISSUANCE_DATE: textValue
+                                            };
+
+                                            const query = { REQUEST_NO: requestNo };
+                                            const isEdited = await $.editDataToSimRequest(
+                                                query,
+                                                preIssuanceDate
+                                            );
+
+                                            if (isEdited) {
+                                                await initializeTable();
+                                                Swal.close();
+                                                toast.success({
+                                                    title: "Template Print Success",
+                                                    description: "The template has been printed succesfully",
+                                                    timeout: 7000,
+
+                                                })
+                                                const printContents = issuanceContainerId.outerHTML;
+                                                const printWindow = window.open("", "_blank");
+                                                const currentHead = document.head.innerHTML;
+                                                printWindow.document.write(
+                                                    `<html>
+                                  <head>
+                                      <title>Preview of Sim Issuance Template</title>
+                                      ${currentHead}
+                                      <style>
+                                          body {
+                                              display: flex;
+                                              flex-direction: column;
+                                              justify-content: flex-start;
+                                              align-items: left;
+                                              box-sizing: border-box;
+                                              padding: 5px;                                         
+                                          }
+                                          .print-section {
+                                              width: 1050px !important;
+                                          }
+                                          hr.dashed-line {
+                                            border-top: 2px dashed #686D76; 
+                                            width: 100%;
+                                            margin: 20px 0;
+                                          }
+                                          @media print {
+                                            .print-section {
+                                                  margin: 0 auto;
+                                                  padding: 0; 
+                                              }
+                                            table {
+                                                width: 99% !important; 
+                                                border-collapse: collapse;
+                                                border-spacing: 0;
+                                            }
+                                            td, th {
+                                                padding: 0px; 
+                                                margin: 0; 
+                                            }
+                                            .table-wrapper {
+                                                width: 1050px;
+                                                margin: 0 auto; 
+                                                padding: 0;
+                                            }
+                                          }
+                                      </style>
+                                  </head>
+                                  <body>
+                                      <div class="print-section">${printContents}</div>
+                                      <hr class="dashed-line">
+                                      <div class="print-section">${printContents}</div>
+                                  </body>
+                              </html>`
+                                                );
+                                                printWindow.document.close();
+                                                printWindow.document.close();
+                                                printWindow.onload = async function () {
+                                                    printWindow.print();
+                                                };
+                                                printWindow.onafterprint = function () {
+                                                    btn.disabled = false;
+                                                };
+                                            } else {
+                                                toast.error({
+                                                    title: "Template Print Failed",
+                                                    description: "The template could not be printed. Please try again.",
+                                                    timeout: 7000,
+
+                                                })
+                                            }
+
+                                        } catch (error) {
+                                            console.error(error);
+                                        }
+                                    });
+                                },
+                            });
+                        }
+                    });
+
+                    actionDiv.appendChild(viewButton);
+                    actionDiv.appendChild(editButton);
+                    actionDiv.appendChild(printButton);
+                    actionTd.appendChild(actionDiv);
+                    tr.appendChild(actionTd);
+
+                    tbody.appendChild(tr);
+                });
+            }
+
+            const table = document.getElementById("tablejs");
+            const instance = new TableJS(table, {
+                dataset: {
+                    init: false,
+                    collection: Array.from({ length: 1 }, () =>
+                        headers.reduce((acc, item) => ({ ...acc, [item]: "No data " }))
+                    ),
+                    rendering: renderTable,
+                },
+                colvis: {
+                    element: "div#table-colvis",
+                    exclude: [".checkbox-column", ".actions-column"],
+                    hide: [],
+                },
+                exportAs: [
+                    {
+                        as: "csv",
+                        element: "button#export-csv",
+                        filename: "check",
+                        exclude: [".checkbox-column", ".actions-column"],
+                    },
+                ],
+                paginate: [
+                    {
+                        to: "api",
+                        as: "limit",
+                        element: "select#pagination-limit",
+                        output: output.pagination,
+                    },
+                    {
+                        to: "api",
+                        as: "next",
+                        element: "button#pagination-next",
+                        output: output.pagination,
+                    },
+                    {
+                        to: "api",
+                        as: "previous",
+                        element: "button#pagination-previous",
+                        output: output.pagination,
+                    },
+                    {
+                        to: "local",
+                        as: "search",
+                        element: "input#pagination-search",
+                        exclude: [".checkbox-column", ".actions-column"],
+                        output: output.pagination,
+                    },
+                ],
+            });
+
+            async function initializeTable() {
+                try {
+                    const dataset = await $.selectColumnsFromSheet(
+                        "SIM_REQUEST_AND_ISSUANCE",
+                        headers
+                    );
+                    console.warn({ dataset });
+                    const parsed = JSON.parse(dataset);
+                    const array = Array.from(parsed);
+                    instance.setDataset(array).render();
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+
+            document
+                .getElementById("add-modal-toggle")
+                .addEventListener("click", function () {
+                    Swal.fire({
+                        html: `
+                  <form id="addSimRequestFormId" class="p-4 md:p-5">
+                    <div>
+                      <h3 class="font-bold text-left">Add Sim Request Details</h1>
+                      <hr class="h-px mt-2 mb-4 bg-gray-200 border-0 ">
+                    <div>
+                    <div class="grid gap-4 mb-4 grid-cols-4">
+                      <div class="col-span-1">
+                        <label class="flex space-x-2" for="requestTypeId">
+                          <div class="text-sm font-semibold ">Request Type</div>
+                          <span class="bg-red-100 text-red-800 text-[9px] rounded-full mb-3 py-1 px-2">Required</span>
+                        </label>
+                        <select id="requestTypeId" name="REQUEST_TYPE" required
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5">
+                            <option selected value="">Select Request Type</option>
+                            <option value="New">New</option>
+                            <option value="Replacement">Replacement</option>
+                            <option value="Upgrade">Upgrade</option>
+                            <option value="Temporary">Temporary</option>
+                        </select>
+                      </div>
+                      <div class="col-span-1">
+                        <label class="flex space-x-2" for="receivedAndApproveDateId">
+                          <div class="text-sm font-semibold">Received Date</div>
+                          <span class="bg-red-100 text-red-800 text-[9px] rounded-full mb-3 py-1 px-2">Required</span>
+                        </label>
+                        <input required type="date" id="receivedAndApproveDateId" name="RECEIVED_AND_APPROVED_DATE" placeholder="Received and Approved Date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                      </div>
+                      <div class="col-span-1">
+                        <label class="flex space-x-2" for="usageTypeId">
+                          <div class="text-sm font-semibold">Usage Type</div>
+                          <svg id="labelWithTooltip" class="w-3 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                          <span class="bg-red-100 text-red-800 text-[9px] rounded-full mb-3 py-1 px-2">Required</span>
+                        </svg>
+                        </label>
+                        <select id="usageTypeId" name="USAGE_TYPE" required
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5">
+                            <option selected value="">Select Usage Type</option>
+                            <option value="Internal">Internal</option>
+                            <option value="External">External</option>
+                            <option value="Both">Both</option>
+                        </select>
+                      </div>
+                      <div class="col-span-1">
+                        <label class="flex space-x-2" for="ownershipId">
+                          <div class="text-sm font-semibold">Ownership</div>
+                          <span class="bg-red-100 text-red-800 text-[9px] rounded-full mb-3 py-1 px-2">Required</span>
+                        </label>
+                        <select id="ownershipId" name="OWNERSHIP" required
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5">
+                            <option selected value="">Select Ownership</option>
+                            <option value="Individual">Individual</option>
+                            <option value="Group">Group</option>
+                        </select>
+                      </div>
+                      <div class="col-span-2 hidden is-group">
+                        <label class="flex space-x-2" for="sectionGroupNameId">
+                          <div class="text-sm font-semibold">Section Group Name</div>
+                          <span class="bg-red-100 text-red-800 text-[9px] rounded-full mb-3 py-1 px-2">Required</span>
+                        </label>
+                        <input type="text" id="sectionGroupNameId" name="SECTION_GROUP_NAME" placeholder="Section Group Name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" disabled/>
+                      </div>
+                      <div class="col-span-2 hidden is-group">
+                        <label class="flex space-x-2" for="remarksId">
+                          <div class="text-sm font-semibold">Remarks</div>
+                          <span class="bg-red-100 text-red-800 text-[9px] rounded-full mb-3 py-1 px-2">Required</span>
+                        </label>
+                        <input disabled type="text" id="remarksId" name="REMARKS" placeholder="Remarks" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                      </div>
+                      <div class="col-span-1">
+                        <label class="flex space-x-2" for="groupId">
+                          <div class="text-sm font-semibold">Group Id</div>
+                          <span class="bg-red-100 text-red-800 text-[9px] rounded-full mb-3 py-1 px-2">Required</span>
+                        </label>
+                        <input required list="groupIds" id="groupId" name="GROUP_ID" autocomplete="off"
+                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5">
+                        <datalist id="groupIds">
+                        </datalist>
+                      </div>
+                      <div class="col-span-1">
+                        <label class="flex space-x-2" for="employeeNoId">
+                          <div class="text-sm font-semibold">Employee NO</div>
+                          <span class="bg-red-100 text-red-800 text-[9px] rounded-full mb-3 py-1 px-2">Required</span>
+                        </label>
+                        <input required list="employeeNoIds" id="employeeNoId" name="EMPLOYEE_NO" autocomplete="off"
+                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5">
+                        <datalist id="employeeNoIds">
+                        </datalist>
+                      </div>
+                      <div class="col-span-1">
+                        <label class="flex space-x-2" for="employeeNameId">
+                          <div class="text-sm font-semibold">Employee Name</div>
+                          <span class="bg-red-100 text-red-800 text-[9px] rounded-full mb-3 py-1 px-2">Required</span>
+                        </label>
+                        <input required list="employeeNameIds" id="employeeNameId" name="FULL_NAME" autocomplete="off"
+                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5">
+                        <datalist id="employeeNameIds">
+                        </datalist>
+                      </div>
+                      <div class="col-span-1">
+                        <label class="flex space-x-2" for="positionId">
+                          <span class="text-sm font-semibold">Position</span>
+                          <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                          <span class="text-red-400"> </span>
+                        </label>
+                        <input type="text" id="positionId" name="POSITION" placeholder="Position" class=" cursor-default bg-neutral-200 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                      </div>
+                      <div class="col-span-1">
+                        <label class="flex space-x-2" for="departmentId">
+                          <span class="text-sm font-semibold">Department</span>
+                          <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                          <span class="text-red-400"> </span>
+                        </label>
+                        <input type="text" id="departmentId" name="DEPARTMENT" placeholder="Department" class="cursor-default bg-neutral-200 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                      </div>
+                      <div class="col-span-1">
+                        <label class="flex space-x-2" for="sectionId">
+                          <span class="text-sm font-semibold">Section</span>
+                          <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                          <span class="text-red-400"> </span>
+                        </label>
+                        <input type="text" id="sectionId" name="SECTION" placeholder="Section" class="cursor-default bg-neutral-200 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                      </div>
+                      <div class="col-span-1">
+                        <label class="flex space-x-2" for="companyNameId">
+                          <span class="text-sm font-semibold">Company</span>
+                          <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                          <span class="text-red-400"> </span>
+                        </label>
+                        <input type="text" id="companyNameId" name="COMPANY_NAME" placeholder="Company (Employee)" class="cursor-default bg-neutral-200 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                      </div>
+                      <div class="col-span-1 hidden">
+                        <label class="flex space-x-2" for="branchId">
+                          <span class="text-sm font-semibold">Branch</span>
+                          <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                          <span class="text-red-400"> </span>
+                        </label>
+                        <input type="text" id="branchId" name="BRANCH" placeholder="Branch" class="cursor-default bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                      </div>
+                      <div class="col-span-1 hidden">
+                        <label class="flex space-x-2" for="siteId">
+                          <span class="text-sm font-semibold">Site</span>
+                          <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                          <span class="text-red-400"> </span>
+                        </label>
+                        <input type="text" id="siteId" name="SITE" placeholder="Site" class="cursor-default bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                      </div>
+                      <div class="col-span-1 hidden">
+                        <label class="flex space-x-2" for="siteId">
+                          <span class="text-sm font-semibold">AccountingCode</span>
+                          <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                          <span class="text-red-400"> </span>
+                        </label>
+                        <input type="text" id="accountingCodeId" name="ACCOUNTING_CODE" placeholder="Site" class="cursor-default bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                      </div>
+                      <div class="col-span-1 hidden">
+                        <label class="flex space-x-2" for="employmentTypeId">
+                          <span class="text-sm font-semibold">Employment Type</span>
+                          <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                          <span class="text-red-400"> </span>
+                        </label>
+                        <input type="text" id="employmentTypeId" name="EMPLOYMENT_TYPE" placeholder="Employment Type" class="cursor-default bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                      </div>
+
+                      <div class="col-span-1">
+                        <label class="flex space-x-2" for="simTypeId">
+                          <div class="text-sm font-semibold ">Sim Type</div>
+                          <span class="bg-red-100 text-red-800 text-[9px] rounded-full mb-3 py-1 px-2">Required</span>
+                        </label>
+                        <select id="simTypeId" name="SIM_TYPE" required
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5">
+                            <option selected value="">Select Sim Type</option>
+                            <option value="New">New Purchased</option>
+                            <option value="Stocked">Stocked</option>
+                        </select>
+                      </div>
+                      <div class="hidden col-span-1 is-stocked">
+                        <label class="flex space-x-2" for="simCardId">
+                          <div class="text-sm font-semibold">Sim Card Id</div>
+                          <span class="bg-red-100 text-red-800 text-[9px] rounded-full mb-3 py-1 px-2">Required</span>
+                        </label>
+                        <input required list="simCardIds" id="simCardId" name="SIM_CARD_ID" autocomplete="off"
+                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5">
+                        <datalist id="simCardIds">
+                        </datalist>
+                      </div>
+                      <div class="hidden col-span-1 is-stocked">
+                        <label class="flex space-x-2" for="mobileNoId">
+                          <div class="text-sm font-semibold">Mobile No</div>
+                          <span class="bg-red-100 text-red-800 text-[9px] rounded-full mb-3 py-1 px-2">Required</span>
+                        </label>
+                        <input required list="mobileNoIds" id="mobileNoId" name="MOBILE_NO" autocomplete="off"
+                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5">
+                        <datalist id="mobileNoIds">
+                        </datalist>
+                      </div>
+                      <div class="hidden col-span-1 is-stocked">
+                        <label class="flex space-x-2" for="accountNoId">
+                          <span class="text-sm font-semibold">Account No</span>
+                          <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                          <span class="text-red-400"> </span>
+                        </label>
+                        <input type="text" id="accountNoId" name="ACCOUNT_NO" placeholder="Account No" class="cursor-default bg-neutral-200 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                      </div>
+                      <div class="hidden col-span-1 is-stocked">
+                        <label class="flex space-x-2" for="networkProviderId">
+                          <div class="text-sm font-semibold">Network</div>
+                          <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                          <span class="text-red-400"> </span>
+                        </label>
+                        <input type="text" id="networkProviderId" name="NETWORK_PROVIDER" placeholder="Plan Id" class="cursor-default bg-neutral-200 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                      </div>
+                      <div class="hidden col-span-2 is-stocked">
+                        <label class="flex space-x-2" for="planDetailsId">
+                          <div class="text-sm font-semibold">Plan Details</div>
+                          <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                          <span class="text-red-400"> </span>
+                        </label>
+                        <input type="text" id="planDetailsId" name="PLAN_DETAILS" placeholder="Plan Details" class="cursor-default bg-neutral-200 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                      </div>
+                      <div class="hidden col-span-1 is-stocked">
+                        <label class="flex space-x-2" for="planId">
+                          <span class="text-sm font-semibold">Plan Id</span>
+                          <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                          <span class="text-red-400"> </span>
+                        </label>
+                        <input type="text" id="planId" name="PLAN_ID" placeholder="Plan Id" class="cursor-default bg-neutral-200 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                      </div>
+                      <div class="hidden col-span-1 is-stocked">
+                        <label class="flex space-x-2" for="monthlyRecurringFeeId">
+                          <span class="text-sm font-semibold">MRF</span>
+                          <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                          <span class="text-red-400"> </span>
+                        </label>
+                        <input type="text" id="monthlyRecurringFeeId" name="MONTHLY_RECURRING_FEE" placeholder="Monthly Recurring Fee" class="cursor-default bg-neutral-200 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                      </div>
+                      <div class="hidden col-span-4 is-stocked">
+                        <div class="inline-flex items-center justify-center w-full">
+                            <hr class="w-full h-px bg-gray-300 border-0">
+                            <span class="absolute px-3 font-medium text-sm font-semibold text-gray-500 -translate-x-1/2 bg-white left-1/2">Previous Details</span>
+                        </div>
+                      </div>
+                      <div class="hidden col-span-1 is-stocked">
+                        <label class="flex space-x-2" for="oldFullName">
+                          <span class="text-sm font-semibold">Previous Owner</span>
+                          <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                          <span class="text-red-400"> </span>
+                        </label>
+                        <input type="text" id="oldFullName" name="OLD_FULL_NAME" placeholder="Employee Name" class="cursor-default bg-neutral-200 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                      </div>
+                      <div class="hidden col-span-1 is-stocked">
+                        <label class="flex space-x-2" for="usageTypeId">
+                          <span class="text-sm font-semibold">Usage Type</span>
+                          <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                          <span class="text-red-400"> </span>
+                        </label>
+                        <input type="text" id="usageTypeId" name="OLD_USAGE_TYPE" placeholder="Usage Type" class="cursor-default bg-neutral-200 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                      </div>
+                      <div class="hidden col-span-1 is-stocked">
+                        <label class="flex space-x-2" for="oldCategoryId">
+                          <span class="text-sm font-semibold">Category</span>
+                          <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                          <span class="text-red-400"> </span>
+                        </label>
+                        <input type="text" id="oldCategoryId" name="OLD_CATEGORY" placeholder="Department" class="cursor-default bg-neutral-200 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                      </div>
+                      <div class="hidden col-span-1 is-stocked">
+                        <label class="flex space-x-2" for="oldOwnershipId">
+                          <span class="text-sm font-semibold">Ownership</span>
+                          <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                          <span class="text-red-400"> </span>
+                        </label>
+                        <input type="text" id="oldOwnershipId" name="OLD_OWNERSHIP" placeholder="Ownership" class="cursor-default bg-neutral-200 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                      </div>
+                      <div class="col-span-1 hidden">
+                        <label class="flex space-x-2" for="rfpGroupNameId">
+                          <span class="text-sm font-semibold">Rfp Group Name</span>
+                          <span class="bg-blue-100 text-blue-800 text-[9px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                          <span class="text-red-400"> </span>
+                        </label>
+                        <input type="text" id="rfpGroupNameId" name="RFP_GROUP_ID" placeholder="Rfp Group" class="cursor-default bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 focus:ring-white focus:border-gray-300 dark:focus:ring-white dark:focus:border-gray-300" readonly/>
+                      </div>
+                      <input type="hidden" name="REQUEST_STATUS" value="Received RS">
+                      <div class="hidden col-span-2 is-new">
+                        <label class="flex space-x-2" for="purchasingRsNoId">
+                          <div class="text-sm font-semibold">Purchasing RS No</div>
+                          <span class="bg-red-100 text-red-800 text-[9px] rounded-full mb-3 py-1 px-2">Required</span>
+                        </label>
+                        <input  type="text" id="purchasingRsNoId" name="PURCHASING_RS_NO" placeholder="Purchasing RS No" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                      </div>
+                      <div class="hidden col-span-2 is-new">
+                        <label class="flex space-x-2" for="purchasingRsDateId">
+                          <div class="text-sm font-semibold">Purchasing RS Date</div>
+                          <span class="bg-red-100 text-red-800 text-[9px] rounded-full mb-3 py-1 px-2">Required</span>
+                        </label>
+                        <input  type="date" id="purchasingRsDateId" name="PURCHASING_RS_DATE" placeholder="Purchasing RS Date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                      </div>
+                    
+                    </div>
+                    <div class="flex justify-end pt-2">
+                      <button id="submitButtonId" type="submit"
+                          class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                          Submit
+                      </button>
+                    </div>
+
+                  </form>
+                `,
+                        showConfirmButton: false,
+                        customClass: "swal-wide",
+                        showCloseButton: true,
+                        allowOutsideClick: false,
+                        didOpen: async () => {
+                            tippy("#labelWithTooltip", {
+                                content: `
+                                <div class="col-span-1">
+                                    <div class="text-sm text-center font-bold mb-4 mt-4">Guidelines in Returning and Reissuance of Sim</div>
+                                </div>
+                                <div class="p-2 mb-2">
+                                  <table class="min-w-full bg-white">
+                                    <thead class="border px-4 py-2">
+                                      <tr>
+                                        <th class="border px-4 py-2"></th>
+                                        <th class="border px-4 py-2">External</th>
+                                        <th class="border px-4 py-2">Internal</th>
+                                        <th class="border px-4 py-2"></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td rowspan="2" class="border px-4 py-2 font-bold">Individual</td>
+                                        <td class="border px-4 py-2 text-center">✔</td>
+                                        <td class="border px-4 py-2"></td>
+                                        <td class="border px-4 py-2">It must be issued to the same section group only.</td>
+                                      </tr>
+                                      <tr>
+                                        <td class="border px-4 py-2"></td>
+                                        <td class="border px-4 py-2 text-center">✔</td>
+                                        <td class="border px-4 py-2">It can be issued to another individual/section group.</td>
+                                      </tr>
+                                      <tr>
+                                        <td rowspan="3" class="border px-4 py-2 font-bold">Section Group</td>
+                                        <td class="border px-4 py-2"></td>
+                                        <td class="border px-4 py-2 text-center">✔</td>
+                                        <td class="border px-4 py-2">It must be issued to their group only.</td>
+                                      </tr>
+                                      <tr>
+                                        <td class="border px-4 py-2 text-center">✔</td>
+                                        <td class="border px-4 py-2 text-center">✔</td>
+                                        <td class="border px-4 py-2">It cannot be issued to individual or another group.</td>
+                                      </tr>
+                                      <tr>
+                                        <td class="border px-4 py-2 text-center">✔</td>
+                                        <td class="border px-4 py-2"></td>
+                                        <td class="border px-4 py-2">It must be issued to their group only.</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+  
+                            `,
+                                placement: "top", // Adjust the position as needed
+                                theme: "custom-white", // Optional theme for the tooltip
+                                animation: "scale", // Optional animation
+                                allowHTML: true, // Enable HTML content
+                                maxWidth: "none",
+                            });
+
+                            const addSimRequestFormId =
+                                document.getElementById("addSimRequestFormId");
+
+                            new FieldManager("ownershipId", [
+                                {
+                                    elements: document.querySelectorAll(".is-group"),
+                                    condition: (value) => value === "GROUP",
+                                },
+                            ]);
+
+                            const simFieldsToReset = [
+                                {
+                                    element: document.querySelector(
+                                        'select[name="SIM_CARD_ID"]'
+                                    ),
+                                    defaultValue: "",
+                                },
+                                {
+                                    element: document.querySelector(
+                                        'select[name="MOBILE_NO"]'
+                                    ),
+                                    defaultValue: "",
+                                },
+                                {
+                                    element: document.querySelector(
+                                        'input[name="MOBILE_NO"]'
+                                    ),
+                                    defaultValue: "",
+                                },
+                                {
+                                    element: document.querySelector(
+                                        'input[name="SIM_CARD_ID"]'
+                                    ),
+                                    defaultValue: "",
+                                },
+                                {
+                                    element: document.querySelector(
+                                        'input[name="PLAN_ID"]'
+                                    ),
+                                    defaultValue: "",
+                                },
+                                {
+                                    element: document.querySelector(
+                                        'input[name="PLAN_DETAILS"]'
+                                    ),
+                                    defaultValue: "",
+                                },
+                                {
+                                    element: document.querySelector(
+                                        'input[name="NETWORK_PROVIDER"]'
+                                    ),
+                                    defaultValue: "",
+                                },
+                                {
+                                    element: document.querySelector(
+                                        'input[name="MONTHLY_RECURRING_FEE"]'
+                                    ),
+                                    defaultValue: "",
+                                },
+                                {
+                                    element: document.querySelector(
+                                        'select[name="PLAN_DETAILS"]'
+                                    ),
+                                    defaultValue: "",
+                                },
+                                {
+                                    element: document.querySelector(
+                                        'select[name="NETWORK_PROVIDER"]'
+                                    ),
+                                    defaultValue: "",
+                                },
+                                {
+                                    element: document.querySelector(
+                                        'select[name="MOBILE_NUMBER"]'
+                                    ),
+                                    defaultValue: "",
+                                },
+                            ];
+
+                            new FieldManager("simTypeId", [
+                                { elements: document.querySelectorAll(".is-stocked"), condition: (value) => value === "STOCKED" },
+                                { elements: document.querySelectorAll(".is-new"), condition: (value) => value === "NEW" },
+                            ], simFieldsToReset);
+
+
+
+                            const employeeHeaders = [
+                                "GROUP_ID",
+                                "EMPLOYEE_NO",
+                                "FULL_NAME",
+                                "DATE_HIRED",
+                                "EMPLOYEE_INFO",
+                            ];
+
+                            const headers = [
+                                "SIM_CARD_ID",
+                                "MOBILE_NO",
+                                "ACCOUNT_NO",
+                                "RFP_GROUP_ID",
+                                "NETWORK_PROVIDER",
+                                "PLAN_DETAILS",
+                                "PLAN_ID",
+                                "MONTHLY_RECURRING_FEE",
+                                "CATEGORY",
+                                "OWNERSHIP",
+                                "USAGE_TYPE",
+                                "FULL_NAME",
+                            ]
+
+                            const sheetValues = await Promise.all([
+                                $.selectColumnsFromSheet("EMPLOYEE_DETAILS", employeeHeaders),
+                                $.getConsolidatedSimDetails(headers),
+                            ]);
+
+                            const groupIdElement = document.querySelector('input[name="GROUP_ID"]');
+                            const groupIdDatalist = document.getElementById(groupIdElement.getAttribute("list"));
+                            const employeeNoElement = document.querySelector('input[name="EMPLOYEE_NO"]');
+                            const employeeNoDatalist = document.getElementById(employeeNoElement.getAttribute("list"));
+                            const fullNameElement = document.querySelector('input[name="FULL_NAME"]');
+                            const fullNameDatalist = document.getElementById(fullNameElement.getAttribute("list"));
+                            const companyNameElement = document.querySelector('input[name="COMPANY_NAME"]');
+                            const departmentElement = document.querySelector('input[name="DEPARTMENT"]');
+                            const sectionElement = document.querySelector('input[name="SECTION"]');
+                            const positionElement = document.querySelector('input[name="POSITION"]');
+                            const branchElement = document.querySelector('input[name="BRANCH"]');
+                            const siteElement = document.querySelector('input[name="SITE"]');
+                            const accountingCodeElement = document.querySelector('input[name="ACCOUNTING_CODE"]');
+                            const employmentTypeElement = document.querySelector('input[name="EMPLOYMENT_TYPE"]');
+
+                            const simCardIdElement = document.querySelector('input[name="SIM_CARD_ID"]');
+                            const simCardIdDatalist = document.getElementById(simCardIdElement.getAttribute("list"));
+                            const mobileNoElement = document.querySelector('input[name="MOBILE_NO"]');
+                            const mobileNoDatalist = document.getElementById(mobileNoElement.getAttribute("list"));
+                            const networkProviderElement = document.querySelector('input[name="NETWORK_PROVIDER"]');
+                            const planDetailsElement = document.querySelector('input[name="PLAN_DETAILS"]');
+                            const accountNoElement = document.querySelector('input[name="ACCOUNT_NO"]');
+                            const planIdElement = document.querySelector('input[name="PLAN_ID"]');
+                            const monthlyRecurringFeeElement = document.querySelector('input[name="MONTHLY_RECURRING_FEE"]');
+                            const oldFullNameElement = document.querySelector('input[name="OLD_FULL_NAME"]');
+                            const usageElement = document.querySelector('input[name="OLD_USAGE_TYPE"]');
+                            const oldCategoryElement = document.querySelector('input[name="OLD_CATEGORY"]');
+                            const oldOwnershipElement = document.querySelector('input[name="OLD_OWNERSHIP"]');
+                            const rfpGroupNameElement = document.querySelector('input[name="RFP_GROUP_ID"]');
+
+
+                            const [employeeDetails, simDetails] =
+                                sheetValues.map((json) => JSON.parse(json));
+
+                            const simDetailsArray = simDetails.map((simDetail) => Object.values(simDetail));
+
+                            const mappedEmployeeDetails = {};
+                            const mappedSimDetails = {};
+
+                            const groupIdFragment = new DocumentFragment();
+                            const employeeNoFragment = new DocumentFragment();
+                            const fullNameFragment = new DocumentFragment();
+
+                            const simCardIdFragment = new DocumentFragment();
+                            const mobileNoFragment = new DocumentFragment();
+                            const networkProviderFragment = new DocumentFragment();
+                            const planDetailsFragment = new DocumentFragment();
+
+                            employeeDetails.forEach((row) => {
+                                const data = row.reduce((acc, cell, cellIndex) => {
+                                    const header = employeeHeaders[cellIndex];
+                                    acc[header] = cell;
+                                    return acc;
+                                }, {});
+
+                                const { GROUP_ID, EMPLOYEE_NO, FULL_NAME, EMPLOYEE_INFO } = data;
+
+                                const employeeInfoParsed = typeof EMPLOYEE_INFO === 'string' ? JSON.parse(EMPLOYEE_INFO) : EMPLOYEE_INFO || {};
+
+                                console.log(employeeInfoParsed)
+
+                                const { COMPANY_NAME, DEPARTMENT, SECTION, POSITION, BRANCH, SITE, ACCOUNTING_CODE, EMPLOYMENT_TYPE } = employeeInfoParsed;
+
+                                if (!mappedEmployeeDetails[GROUP_ID]) {
+                                    mappedEmployeeDetails[GROUP_ID] = {
+                                        employeeNo: EMPLOYEE_NO,
+                                        fullName: FULL_NAME,
+                                        companyName: COMPANY_NAME,
+                                        department: DEPARTMENT,
+                                        section: SECTION,
+                                        position: POSITION,
+                                        branch: BRANCH,
+                                        site: SITE,
+                                        employmentType: EMPLOYMENT_TYPE,
+                                        accountingCode: ACCOUNTING_CODE,
+                                    };
+
+                                    const groupIdOption = document.createElement("option");
+                                    groupIdOption.value = GROUP_ID;
+                                    groupIdOption.textContent = GROUP_ID;
+                                    groupIdFragment.appendChild(groupIdOption);
+                                }
+
+                                if (!mappedEmployeeDetails[EMPLOYEE_NO]) {
+                                    mappedEmployeeDetails[EMPLOYEE_NO] = {
+                                        groupId: GROUP_ID,
+                                        fullName: FULL_NAME,
+                                        companyName: COMPANY_NAME,
+                                        department: DEPARTMENT,
+                                        section: SECTION,
+                                        position: POSITION,
+                                        branch: BRANCH,
+                                        site: SITE,
+                                        employmentType: EMPLOYMENT_TYPE,
+                                        accountingCode: ACCOUNTING_CODE,
+                                    };
+
+                                    const employeeNoOption = document.createElement("option");
+                                    employeeNoOption.value = EMPLOYEE_NO;
+                                    employeeNoOption.textContent = EMPLOYEE_NO;
+                                    employeeNoFragment.appendChild(employeeNoOption);
+                                }
+                                mappedEmployeeDetails[FULL_NAME] = {
+                                    groupId: GROUP_ID,
+                                    employeeNo: EMPLOYEE_NO,
+                                    companyName: COMPANY_NAME,
+                                    department: DEPARTMENT,
+                                    section: SECTION,
+                                    position: POSITION,
+                                    branch: BRANCH,
+                                    site: SITE,
+                                    employmentType: EMPLOYMENT_TYPE,
+                                    accountingCode: ACCOUNTING_CODE,
+                                };
+
+                                const fullNameOption = document.createElement("option");
+                                fullNameOption.value = FULL_NAME;
+                                fullNameOption.textContent = FULL_NAME;
+                                fullNameFragment.appendChild(fullNameOption);
+
+                            });
+
+                            groupIdDatalist.appendChild(groupIdFragment);
+                            employeeNoDatalist.appendChild(employeeNoFragment);
+                            fullNameDatalist.appendChild(fullNameFragment);
+
+                            groupIdElement.addEventListener("change", function () {
+                                const groupId = this.value;
+
+                                const details = mappedEmployeeDetails[groupId] || {};
+
+                                fullNameElement.value = details.fullName || "";
+                                employeeNoElement.value = details.employeeNo || "";
+                                companyNameElement.value = details.companyName || "";
+                                departmentElement.value = details.department || "";
+                                sectionElement.value = details.section || "";
+                                positionElement.value = details.position || "";
+                                branchElement.value = details.branch || "";
+                                siteElement.value = details.site || "";
+                                employmentTypeElement.value = details.employmentType || "";
+                                accountingCodeElement.value = details.accountingCode || "";
+                            });
+
+                            employeeNoElement.addEventListener("change", function () {
+                                const employeeNo = this.value;
+
+                                const details = mappedEmployeeDetails[employeeNo] || {};
+
+                                groupIdElement.value = details.groupId || "";
+                                fullNameElement.value = details.fullName || "";
+                                companyNameElement.value = details.companyName || "";
+                                departmentElement.value = details.department || "";
+                                sectionElement.value = details.section || "";
+                                positionElement.value = details.position || "";
+                                branchElement.value = details.branch || "";
+                                siteElement.value = details.site || "";
+                                employmentTypeElement.value = details.employmentType || "";
+                                accountingCodeElement.value = details.accountingCode || "";
+                            });
+
+                            fullNameElement.addEventListener("change", function () {
+                                const fullName = this.value;
+
+                                const details = mappedEmployeeDetails[fullName] || {};
+
+                                groupIdElement.value = details.groupId || "";
+                                employeeNoElement.value = details.employeeNo || "";
+                                companyNameElement.value = details.companyName || "";
+                                departmentElement.value = details.department || "";
+                                sectionElement.value = details.section || "";
+                                positionElement.value = details.position || "";
+                                branchElement.value = details.branch || "";
+                                siteElement.value = details.site || "";
+                                employmentTypeElement.value = details.employmentType || "";
+                                accountingCodeElement.value = details.accountingCode || "";
+                            });
+
+                            simDetailsArray.forEach((row) => {
+                                const data = row.reduce((acc, cell, cellIndex) => {
+                                    const header = headers[cellIndex];
+                                    acc[header] = cell;
+                                    return acc;
+                                }, {});
+
+                                const { SIM_CARD_ID, MOBILE_NO, ACCOUNT_NO, RFP_GROUP_ID, NETWORK_PROVIDER, PLAN_DETAILS, PLAN_ID, MONTHLY_RECURRING_FEE, CATEGORY, OWNERSHIP, USAGE_TYPE, FULL_NAME } = data;
+
+                                if (!mappedSimDetails[MOBILE_NO]) {
+                                    mappedSimDetails[MOBILE_NO] = {
+                                        simCardId: SIM_CARD_ID,
+                                        accountNo: ACCOUNT_NO,
+                                        rfpGroupName: RFP_GROUP_ID,
+                                        networkProvider: NETWORK_PROVIDER,
+                                        planDetails: PLAN_DETAILS,
+                                        planId: PLAN_ID,
+                                        monthlyRecurringFee: MONTHLY_RECURRING_FEE,
+                                        category: CATEGORY,
+                                        ownership: OWNERSHIP,
+                                        usageType: USAGE_TYPE,
+                                        fullName: FULL_NAME,
+                                    };
+
+                                    const mobileNoOption = document.createElement("option");
+                                    mobileNoOption.value = MOBILE_NO;
+                                    mobileNoOption.textContent = MOBILE_NO;
+                                    mobileNoFragment.appendChild(mobileNoOption);
+                                }
+
+                                mappedSimDetails[SIM_CARD_ID] = {
+                                    mobileNo: MOBILE_NO,
+                                    accountNo: ACCOUNT_NO,
+                                    rfpGroupName: RFP_GROUP_ID,
+                                    networkProvider: NETWORK_PROVIDER,
+                                    planDetails: PLAN_DETAILS,
+                                    planId: PLAN_ID,
+                                    monthlyRecurringFee: MONTHLY_RECURRING_FEE,
+                                    category: CATEGORY,
+                                    ownership: OWNERSHIP,
+                                    usageType: USAGE_TYPE,
+                                    fullName: FULL_NAME,
+                                };
+
+                                const simCardIdOption = document.createElement("option");
+                                simCardIdOption.value = SIM_CARD_ID;
+                                simCardIdOption.textContent = SIM_CARD_ID;
+                                simCardIdFragment.appendChild(simCardIdOption);
+                            });
+
+                            mobileNoDatalist.appendChild(mobileNoFragment);
+                            simCardIdDatalist.appendChild(simCardIdFragment);
+
+                            simCardIdElement.addEventListener("change", function () {
+                                const simCardId = this.value;
+
+                                const details = mappedSimDetails[simCardId] || {};
+
+                                mobileNoElement.value = details.mobileNo || "";
+                                accountNoElement.value = details.accountNo || "";
+                                rfpGroupNameElement.value = details.rfpGroupName || "";
+                                networkProviderElement.value = details.networkProvider || "";
+                                planDetailsElement.value = details.planDetails || "";
+                                planIdElement.value = details.planId || "";
+                                monthlyRecurringFeeElement.value = details.monthlyRecurringFee || "";
+                                oldCategoryElement.value = details.category || "";
+                                oldOwnershipElement.value = details.ownership || "";
+                                usageElement.value = details.usageType || "";
+                                oldFullNameElement.value = details.fullName || "";
+
+                            });
+
+                            mobileNoElement.addEventListener("change", function () {
+                                const mobileNo = this.value;
+
+                                const details = mappedSimDetails[mobileNo] || {};
+
+                                simCardIdElement.value = details.simCardId || "";
+                                accountNoElement.value = details.accountNo || "";
+                                rfpGroupNameElement.value = details.rfpGroupName || "";
+                                networkProviderElement.value = details.networkProvider || "";
+                                planDetailsElement.value = details.planDetails || "";
+                                planIdElement.value = details.planId || "";
+                                monthlyRecurringFeeElement.value = details.monthlyRecurringFee || "";
+                                oldCategoryElement.value = details.category || "";
+                                oldOwnershipElement.value = details.ownership || "";
+                                usageElement.value = details.usageType || "";
+                                oldFullNameElement.value = details.fullName || "";
+                            });
+
+
+                            let isSubmitted = false;
+                            addSimRequestFormId.addEventListener(
+                                "submit",
+                                async function (event) {
+                                    event.preventDefault();
+
+                                    const submitButtonId = document.getElementById("submitButtonId");
+
+                                    submitButtonId.innerHTML = 'Submitting <span class="AnimatedEllipsis"></span>';
+
+                                    submitButtonId.disabled = true;
+                                    submitButtonId.classList.add('cursor-not-allowed', 'opacity-50');
+
+                                    const swalCloseButton = Swal.getCloseButton();
+                                    if (swalCloseButton) {
+                                        swalCloseButton.disabled = true;
+                                    }
+
+
+
+                                    if (isSubmitted) {
+                                        return;
+                                    }
+
+                                    isSubmitted = true;
+                                    try {
+                                        const formData = new FormData(this);
+                                        const formObject = Object.fromEntries(formData);
+
+                                        const employeeInfo = {
+                                            EMPLOYEE_NO: formObject.EMPLOYEE_NO,
+                                            FULL_NAME: formObject.FULL_NAME,
+                                            COMPANY_NAME: formObject.COMPANY_NAME,
+                                            DEPARTMENT: formObject.DEPARTMENT,
+                                            SECTION: formObject.SECTION,
+                                            POSITION: formObject.POSITION,
+                                            BRANCH: formObject.BRANCH,
+                                            SITE: formObject.SITE,
+                                            EMPLOYMENT_TYPE: formObject.EMPLOYMENT_TYPE,
+                                            ACCOUNTING_CODE: formObject.ACCOUNTING_CODE,
+                                        };
+
+                                        const simInfo = {
+                                            PLAN_ID: formObject.PLAN_ID,
+                                            NETWORK_PROVIDER: formObject.NETWORK_PROVIDER,
+                                            MOBILE_NO: formObject.MOBILE_NO,
+                                            ACCOUNT_NO: formObject.ACCOUNT_NO,
+                                            MONTHLY_RECURRING_FEE: formObject.MONTHLY_RECURRING_FEE,
+                                            PLAN_DETAILS: formObject.PLAN_DETAILS,
+                                            RFP_GROUP_ID: formObject.RFP_GROUP_ID,
+                                            CATEGORY: formObject.OLD_CATEGORY,
+                                        };
+
+                                        formObject.SIM_INFO = JSON.stringify(simInfo);
+
+                                        formObject.EMPLOYEE_INFO = JSON.stringify(employeeInfo);
+
+                                        const isInserted = await $.insertDataToSimRequest(
+                                            formObject
+                                        );
+
+                                        if (isInserted) {
+                                            await initializeTable();
+                                            Swal.close();
+                                            toast.success({
+                                                title: "Record Insertion Success",
+                                                description: "The record has been inserted succesfully",
+                                                timeout: 4000,
+                                                closeButton: false,
+                                            })
+                                        } else {
+                                            toast.error({
+                                                title: "Record Insertion Failed",
+                                                description: "The record could not be inserted. Please try again.",
+                                                timeout: 4000,
+                                                closeButton: false,
+                                            })
+                                        }
+                                    } catch (error) {
+                                        console.error(error);
+                                    } finally {
+                                        isSubmitted = false; // Reset the submission lock
+                                    }
+                                }
+                            );
+                        },
+                    });
+                });
+            initializeTable();
+        });
+
+        function clsx(classes) {
+            return classes.split("");
+        }
+
+        document.getElementById("sim-card").classList.remove("hidden");
+
+        // SAVE STATE
+    </script>
+</body>
+
+</html>

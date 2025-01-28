@@ -128,20 +128,14 @@
                                 <div class="hidden col-span-2">
                                     <label for="employeeName"
                                         class="mb-2 block text-sm font-medium text-gray-900">Employee Name</label>
-                                    <!-- <input type="text" id="employeeName"
-                                      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-gray-700 focus:ring-gray-700"
-                                      placeholder="Search..." autocomplete="off" required /> -->
-                                    <select id="employeeName" name="employeeName"
+                                    <input type="text" id="employeeName"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-gray-700 focus:ring-gray-700"
-                                        placeholder="Search..." autocomplete="off">
-                                        <option value="" selected>Select an employee</option>
-                                    </select>
+                                        placeholder="Search..." autocomplete="off" />
                                     <div id="employeeDropdownList"
                                         class="absolute z-10 mt-1 w-[815px] text-sm bg-white border border-gray-300 rounded-lg shadow-lg max-h-40 overflow-y-auto hidden">
                                     </div>
                                     <div id="errorMessage" class="error" style="display: none;">Please select a valid
-                                        option
-                                        from the list.</div>
+                                        option from the list.</div>
                                 </div>
 
                                 <!-- Device Identifier -->
@@ -1237,7 +1231,8 @@
                     case 'addTicketRecord':
                         return {
                             submitCallback: async formData => {
-                                dropdownList.innerHTML = ""
+                                dropdownList.innerHTML = "";
+                                employeeNameContainer.classList.add('hidden');
                                 // formData.rfpNo = formData.rfpNo.toUpperCase();
                                 // console.log("FormData RFP No:", formData.rfpNo);
 
@@ -1543,42 +1538,70 @@
                 }
             });
 
-            // Populate Employee Names
+            // Populate Employee Names with Combobox Search (Show filtered list on focus)
             function populateEmployeeNames(type) {
                 const employees = dataset[type]
                     .map((item) => item.EMPLOYEE_NAME)
-                    .filter((name, index, self) => name && self.indexOf(name) === index); // Get unique employee names
+                    .filter((name, index, self) => name && self.indexOf(name) === index) // Get unique employee names
+                    .sort((a, b) => a.localeCompare(b)); // Sort names alphabetically
 
-                employeeNameSelect.innerHTML = '<option value="" disabled selected>Select</option>';
+                const employeeInput = document.getElementById("employeeName");
+                const employeeDropdownList = document.getElementById("employeeDropdownList");
+                const deviceDropdownList = document.getElementById("dropdownList"); // Device identifier dropdown
 
+                // Function to populate the dropdown with filtered employees
+                function populateDropdown(query = "") {
+                    const filteredEmployees = employees.filter((name) =>
+                        name.toLowerCase().includes(query.toLowerCase())
+                    );
 
-                employees.forEach((name) => {
-                    const option = document.createElement("option");
-                    option.value = name;
-                    option.textContent = name;
-                    employeeNameSelect.appendChild(option);
+                    employeeDropdownList.innerHTML = ""; // Clear previous results
+
+                    if (filteredEmployees.length > 0) {
+                        filteredEmployees.forEach((name) => {
+                            const dropdownItem = document.createElement("div");
+                            dropdownItem.textContent = name;
+                            dropdownItem.className =
+                                "dropdown-item px-4 py-2 cursor-pointer hover:bg-gray-100";
+                            employeeDropdownList.appendChild(dropdownItem);
+
+                            // Event: Handle selection
+                            dropdownItem.addEventListener("mousedown", (e) => {
+                                e.preventDefault();
+                                employeeInput.value = name; // Set selected name in input
+                                employeeDropdownList.classList.add("hidden"); // Hide dropdown
+                                deviceIdentifier.value = ""; // Reset device identifier field
+                                deviceDropdownList.innerHTML = ""; // Clear device dropdown
+                                deviceInfoList.textContent = ""; // Clear device info list
+                                populateDeviceIdentifierByEmployee(type, name);
+                            });
+                        });
+
+                        employeeDropdownList.classList.remove("hidden"); // Show dropdown
+                    } else {
+                        // No matches: Clear related fields and hide dropdown
+                        employeeDropdownList.classList.add("hidden");
+                        deviceIdentifier.value = ""; // Reset device identifier field
+                        deviceDropdownList.innerHTML = ""; // Clear device dropdown
+                        deviceInfoList.textContent = ""; // Clear device info list
+                    }
+                }
+
+                // Event: Update dropdown based on user input
+                employeeInput.addEventListener("input", () => {
+                    const query = employeeInput.value.trim();
+                    populateDropdown(query);
                 });
 
-                // employees.forEach((name) => {
-                //     const dropdownItem = document.createElement("div");
-                //     dropdownItem.textContent = name;
-                //     dropdownItem.className =
-                //         "dropdown-item px-4 py-2 cursor-pointer hover:bg-gray-100";
-                //     employeeDropdownList.appendChild(dropdownItem);
+                // Event: Show filtered results on focus
+                employeeInput.addEventListener("focus", () => {
+                    const query = employeeInput.value.trim(); // Retain the user's query
+                    populateDropdown(query); // Show filtered results
+                });
 
-                //     dropdownItem.addEventListener("mousedown", (e) => {
-                //         e.preventDefault();
-                //         employeeName.value = name;
-                //         employeeDropdownList.classList.add("hidden");
-                //         // displayDeviceInfo(details, type, deviceInfoList);
-                //     });
-                // });
-
-                employeeNameSelect.addEventListener("change", () => {
-                    const selectedEmployee = employeeNameSelect.value;
-                    deviceIdentifier.value = "";
-                    deviceInfoList.textContent = "";
-                    populateDeviceIdentifierByEmployee(type, selectedEmployee);
+                // Event: Hide dropdown when focus is lost
+                employeeInput.addEventListener("blur", () => {
+                    setTimeout(() => employeeDropdownList.classList.add("hidden"), 200);
                 });
             }
 
@@ -1618,7 +1641,7 @@
                     clearDeviceInfo();
                     console.warn("No devices found for the selected employee.");
                 } else {
-                    dropdownList.classList.remove("hidden"); // Show dropdown if items exist
+                    // dropdownList.classList.remove("hidden"); // Show dropdown if items exist
                 }
             }
 
