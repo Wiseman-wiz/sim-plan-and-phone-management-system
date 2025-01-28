@@ -1,0 +1,2115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+    <link href="https://rawcdn.githack.com/shinxzxzxz/TableJS/c8218ba13b4d74c34af06f9f25d5063b6a99956f/tablejs.css"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer type="module"
+        src="https://rawcdn.githack.com/shinxzxzxz/TableJS/55597d91c8f5165cdfaaf90798bc2e0e886a42e8/tablejs.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/datepicker.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        tailwind.config = {
+            darkMode: ['[data-mode="dark"]']
+        }
+    </script>
+    <?!= include("CSS"); ?>
+</head>
+
+<body>
+    <nav class="fixed top-0 z-[39] w-full bg-white border-b border-gray-200">
+        <div class="px-3 py-3 lg:px-5 lg:pl-3 h-14">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center justify-start rtl:justify-end">
+                    <button data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar"
+                        aria-controls="logo-sidebar" type="button"
+                        class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200">
+                        <span class="sr-only">Open sidebar</span>
+                        <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path clip-rule="evenodd" fill-rule="evenodd"
+                                d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z">
+                            </path>
+                        </svg>
+                    </button>
+                    <!-- <a href="https://flowbite.com" class="flex ms-5 md:me-24"> -->
+                    <span class="pl-6 self-center text-xl font-semibold sm:text-2xl whitespace-nowrap">
+                        SPPM
+                    </span>
+                    <!-- </a> -->
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- sidebar -->
+    {{SIDEBAR}}
+
+    <!-- Add Form Modal -->
+    <div id="add-modal" tabindex="-1" aria-hidden="true" data-modal-backdrop="static"
+        class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden md:inset-0">
+        <div class="relative mx-auto max-h-full w-full max-w-[90rem] p-4">
+            <!-- Modal content -->
+            <div class="relative rounded-lg bg-white shadow">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between rounded-t border-b p-4 md:p-5">
+                    <h3 class="text-lg font-semibold text-gray-900">Generate Billing</h3>
+                    <button type="button"
+                        class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900"
+                        data-modal-toggle="add-modal">
+                        <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <form id="addModalForm" class="form-to-submit p-4 md:p-5" data-action="appendBillingSheetData"
+                    data-modal-id="add-modal">
+                    <div class="mb-0 grid grid-cols-12 gap-4">
+                        <!-- left side -->
+                        <div class="col-span-8">
+                            <!-- SIM cards container -->
+                            <div class="mb-0 grid grid-cols-12 gap-2">
+                                <!-- search (left side) -->
+                                <div class="col-span-4 w-full sm:col-span-4">
+                                    <label for="searchInput" class="sr-only">Search</label>
+                                    <div class="relative w-full">
+                                        <div
+                                            class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                            <svg aria-hidden="true" class="h-5 w-5 text-gray-500" viewbox="0 0 20 20"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd"
+                                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                        <input type="text" id="simSearchInput"
+                                            class="block w-full rounded border border-gray-300 bg-gray-50 p-2 pl-10 text-sm text-gray-900 focus:border-black focus:ring-black"
+                                            placeholder="Search" />
+
+                                    </div>
+                                </div>
+
+                                <div class="justify col-span-8 flex items-center justify-end sm:col-span-8">
+                                    <span id="selectedItems" class="mr-2"></span>
+                                    <!-- <button id="logButton" type="button"> Log Selected Items</button> -->
+
+                                    <input type="checkbox" name="toggleSelectButton" id="toggleSelectButton"
+                                        class="mr-3 h-8 w-8 rounded border border-gray-300 bg-gray-100 checked:border-transparent checked:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 hover:cursor-pointer indeterminate:bg-gray-600" />
+                                </div>
+
+                                <!-- SIM cards div (full width) -->
+                                <div class="col-span-12">
+                                    <div class="relative h-[40rem] min-h-96 w-full overflow-x-hidden overflow-y-scroll">
+                                        <div id="simCardsId" class="simCardsContainer mt-0 grid grid-cols-3 gap-2">
+                                            <!-- SIM card IDs will be populated here -->
+                                        </div>
+                                        <div id="simCardInitialStateId"
+                                            class="item-center absolute inset-0 flex w-full flex-col justify-center rounded text-center bg-neutral-50">
+                                            <div class="text-sm font-semibold">Oh no! There's no SIM Cards found.</div>
+                                            <!-- <div class="text-xs">(Please select an RFP Group)</div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- right side -->
+                        <div class="col-span-4 mt-12 flex flex-col justify-between">
+                            <!-- Input fields -->
+                            <div class="mb-4 grid grid-cols-2 gap-4">
+                                <div class="col-span-2 sm:col-span-2">
+                                    <label for="rfpGroupId" class="mb-2 block text-sm font-medium text-gray-900">RFP
+                                        Group</label>
+                                    <select id="rfpGroupId" name="rfpGroupId" required
+                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-gray-700 focus:ring-gray-700">
+                                        <option value="" disabled selected>Select RFP Group</option>
+                                        <option value="1">1 (BDC - Smart)</option>
+                                        <option value="2">2 (WFC - Smart)</option>
+                                        <option value="3">3 (BDC - Globe)</option>
+                                    </select>
+                                </div>
+                                <div class="col-span-2 sm:col-span-2">
+                                    <label for="rfpNoId" class="mb-2 block text-sm font-medium text-gray-900"> RFP No
+                                    </label>
+                                    <div class="relative w-full">
+                                        <input type="text" name="rfpNo" id="rfpNoId"
+                                            class="z-20 block w-full rounded-lg rounded-e-lg border border-gray-300 bg-gray-50 p-2.5 text-sm uppercase text-gray-900 placeholder:normal-case focus:border-gray-500 focus:ring-gray-500"
+                                            autocomplete="off" placeholder="Enter RFP No" required="" />
+                                        <!-- check button -->
+                                        <button id="checkRfpNoId" type="button"
+                                            class="group absolute end-0 top-0 h-full rounded-e-lg border border-gray-700 bg-gray-700 p-2.5 text-sm font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor"
+                                                class="block size-5 group-hover:hidden">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                fill="currentColor" class="hidden size-5 group-hover:block">
+                                                <path fill-rule="evenodd"
+                                                    d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- <div class="col-span-1 flex flex-col justify-end sm:col-span-1"></div> -->
+                                <div class="col-span-1 sm:col-span-1">
+                                    <label for="billPeriodFromId" class="mb-2 block text-sm font-medium text-gray-900">
+                                        Bill Period From </label>
+                                    <div class="relative max-w-full">
+                                        <div
+                                            class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
+                                            <svg class="h-4 w-4 text-gray-500" aria-hidden="true"
+                                                xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                                viewBox="0 0 20 20">
+                                                <path
+                                                    d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                                            </svg>
+                                        </div>
+                                        <input datepicker datepicker-autohide datepicker-format="mm/dd/yyyy"
+                                            datepicker-autoselect-today type="text" name="billPeriodFrom"
+                                            id="billPeriodFromId" autocomplete="off" required
+                                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 ps-10 text-sm text-gray-900 focus:border-gray-700 focus:ring-gray-700"
+                                            placeholder="Select date" />
+                                    </div>
+                                </div>
+                                <div class="col-span-1 sm:col-span-1">
+                                    <label for="billPeriodToId" class="mb-2 block text-sm font-medium text-gray-900">
+                                        Bill Period To </label>
+                                    <div class="relative max-w-full">
+                                        <div
+                                            class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
+                                            <svg class="h-4 w-4 text-gray-500" aria-hidden="true"
+                                                xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                                viewBox="0 0 20 20">
+                                                <path
+                                                    d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                                            </svg>
+                                        </div>
+                                        <input datepicker datepicker-autohide datepicker-format="mm/dd/yyyy"
+                                            autocomplete="off" required datepicker-autoselect-today type="text"
+                                            name="billPeriodTo" id="billPeriodToId"
+                                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 ps-10 text-sm text-gray-900 focus:border-gray-700 focus:ring-gray-700"
+                                            placeholder="Select date" />
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Other input fields -->
+                            <!-- <div class="mb-4 grid grid-cols-2 gap-4"></div> -->
+                            <!-- Submit Button -->
+                            <div class="flex justify-end">
+                                <button type="submit"
+                                    class="to-disable inline-flex items-center rounded-lg bg-gray-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300">Generate
+                                    Bill</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Form Modal -->
+    <div id="edit-modal" tabindex="-1" aria-hidden="true" data-modal-backdrop="static"
+        class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-4xl max-h-full">
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        Edit Billing Information
+                    </h3>
+                    <button type="button"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+                        data-modal-toggle="edit-modal">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <form id="editModalForm" class="p-4 md:p-4 form-to-submit" data-action="editBillingRecord"
+                    data-modal-id="edit-modal">
+                    <!-- Currently working on -->
+                    <div class="grid gap-y-1.5 grid-cols-2">
+                        <!-- Start of modification -->
+
+                        <!-- End of modification -->
+                        <!-- Displaying of Bill Information -->
+                        <div class="col-span-1 flex items-center text-md font-semibold">
+                            <label for="" class="block text-gray-900 text-left w-1/3">
+                                Bill ID
+                            </label>
+                            <input type="text" name="billId" id="billId"
+                                class="pointer-events-none w-full border-none bg-transparent p-0 text-left text-gray-900"
+                                placeholder="" required="" readonly tabindex="-1">
+                        </div>
+                    </div>
+
+                    <!-- SIM Plan Information -->
+                    <h3 class="text-md font-semibold text-gray-700 mb-2">SIM Plan Information</h3>
+                    <!-- <div class="grid gap-y-1.5 mb-4 grid-cols-3"> -->
+
+
+                    <!-- </div> -->
+
+                    <div class="grid gap-y-1.5 gap-x-4 mb-4 grid-cols-2 ps-4">
+                        <div class="col-span-1 flex items-center">
+                            <label for="" class="block text-sm font-medium text-gray-900 text-left w-1/2">
+                                SIM Card ID
+                            </label>
+                            <input type="text" name="simCardId" id="simCardId"
+                                class="pointer-events-none w-full border-none bg-transparent p-0 text-left text-sm text-gray-900"
+                                placeholder="" required="" readonly tabindex="-1">
+                        </div>
+                        <div class="col-span-1 flex items-center">
+                            <label for="" class="block text-sm font-medium text-gray-900 text-left w-full">
+                                Account No
+                            </label>
+                            <input type="text" name="accountNo" id="accountNoId"
+                                class="pointer-events-none w-full border-none bg-transparent p-0 text-left text-sm text-gray-900"
+                                placeholder="" required="" readonly tabindex="-1">
+                        </div>
+                        <div class="col-span-1 flex items-center">
+                            <label for="" class="block text-sm font-medium text-gray-900 text-left w-1/2">
+                                Mobile No
+                            </label>
+                            <input type="text" name="mobileNo" id="mobileNoId"
+                                class="pointer-events-none w-full border-none bg-transparent p-0 text-left text-sm text-gray-900"
+                                placeholder="" required="" readonly tabindex="-1">
+                        </div>
+                        <div class="col-span-1 flex items-center">
+                            <label for="" class="block text-sm font-medium text-gray-900 text-left w-full">
+                                Network Provider
+                            </label>
+                            <input type="text" name="networkProvider" id="networkProviderId"
+                                class="pointer-events-none w-full border-none bg-transparent p-0 text-left text-sm text-gray-900"
+                                placeholder="" required="" readonly tabindex="-1">
+                        </div>
+                        <div class="col-span-1 flex items-center">
+                            <label for="" class="block text-sm font-medium text-gray-900 text-left w-1/2">
+                                Category
+                            </label>
+                            <input type="text" name="category" id="categoryId"
+                                class="pointer-events-none w-full border-none bg-transparent p-0 text-left text-sm text-gray-900"
+                                placeholder="" required="" readonly tabindex="-1">
+                        </div>
+                        <div class="col-span-1 flex items-center">
+                            <label for="" class="block text-sm font-medium text-gray-900 text-left w-full">
+                                Monthly Recurring Fee
+                            </label>
+                            <input type="text" name="editMrf" id="editMrfId"
+                                class="pointer-events-none w-full border-none bg-transparent p-0 text-left text-sm text-gray-900"
+                                placeholder="" required="" readonly tabindex="-1">
+                        </div>
+                        <div class="col-span-2 flex items-center">
+                            <label for="" class="block text-sm font-medium text-gray-900 text-left w-[160px]">
+                                Plan Details
+                            </label>
+                            <input type="text" name="planDetails" id="planDetailsId"
+                                class="pointer-events-none w-full border-none bg-transparent p-0 text-left text-sm text-gray-900"
+                                placeholder="-" required="" readonly tabindex="-1">
+                        </div>
+
+                    </div>
+
+                    <!-- Employee Information -->
+                    <h3 class="text-md font-semibold text-gray-700 mb-2">Employee Information</h3>
+                    <div class="grid gap-y-1.5 gap-x-4 mb-4 grid-cols-2 ps-4">
+                        <div class="col-span-1 flex items-center">
+                            <label for="" class="block text-sm font-medium text-gray-900 text-left w-full">
+                                Group ID
+                            </label>
+                            <input type="text" name="employeeGroupId" id="employeeGroupId"
+                                class="pointer-events-none w-full border-none bg-transparent p-0 text-left text-sm text-gray-900"
+                                placeholder="" required="" readonly tabindex="-1">
+                            <input type="text" name="employeeNoId" id="employeeNoId"
+                                class="hidden pointer-events-none w-full border-none bg-transparent p-0 text-left text-sm text-gray-900"
+                                placeholder="" required="" readonly tabindex="-1">
+                        </div>
+                        <div class="col-span-1 flex items-center">
+                            <label for="" class="block text-sm font-medium text-gray-900 text-left w-full">
+                                Employee Full Name
+                            </label>
+                            <input type="text" name="editEmployeeName" id="employeeNameId"
+                                class="pointer-events-none w-full border-none bg-transparent p-0 text-left text-sm text-gray-900"
+                                placeholder="" required="" readonly tabindex="-1">
+                        </div>
+                    </div>
+
+                    <!-- <span class="bg-blue-100 text-blue-800 text-[7px] rounded-full mb-3 py-1 px-2">Automatic</span>
+
+                    <label class="flex space-x-2" for="networkProviderId">
+                        <span class="text-xs font-bold">Network Provider</span>
+                        <span class="bg-blue-100 text-blue-800 text-[7px] rounded-full mb-3 py-1 px-2">Automatic</span>
+                        <span class="text-red-400"> </span>
+                    </label> -->
+
+                    <!-- Other Information -->
+                    <h3 class="text-md font-semibold text-gray-700 mb-2">Other Information</h3>
+                    <div class="grid gap-y-1.5 gap-x-4 mb-4 grid-cols-2 ps-4">
+                        <div class="col-span-1 flex items-center">
+                            <input checked id="editWithSoaId" name="editWithSoa" type="checkbox"
+                                class="w-4 h-4 text-gray-700 rounded focus:ring-gray-300 focus:ring-2">
+                            <label for="editWithSoaId" class="ms-2 mr-2 text-sm font-medium text-gray-900">With SOA
+                                <span class="bg-blue-100 text-blue-800 text-[10px] rounded-full mb-3 py-1 px-2">Uncheck
+                                    this field if Bill has no SOA</span>
+                            </label>
+                        </div>
+                        <div class="col-span-1 flex items-center">
+                            <label for="" class="block text-sm font-medium text-gray-900 text-left w-full">
+                                RFP No
+                            </label>
+                            <input type="text" name="editRfpNo" id="editRfpNoId"
+                                class="pointer-events-none w-full border-none bg-transparent p-0 text-left text-sm text-gray-900"
+                                autocomplete="off" placeholder="" required="" readonly tabindex="-1">
+                        </div>
+                        <div class="col-span-1 flex items-center">
+                            <label for="" class="block text-sm font-medium text-gray-900 text-left w-full">
+                                Bill Period From
+                            </label>
+                            <input type="text" name="editBillPeriodFrom" id="editBillPeriodFromId"
+                                class="pointer-events-none w-full border-none bg-transparent p-0 text-left text-sm text-gray-900"
+                                placeholder="" required="" readonly tabindex="-1">
+                        </div>
+                        <div class="col-span-1 flex items-center">
+                            <label for="" class="block text-sm font-medium text-gray-900 text-left w-full">
+                                Bill Period To
+                            </label>
+                            <input type="text" name="editBillPeriodTo" id="editBillPeriodToId"
+                                class="pointer-events-none w-full border-none bg-transparent p-0 text-left text-sm text-gray-900"
+                                placeholder="" required="" readonly tabindex="-1">
+                        </div>
+                    </div>
+
+                    <!-- Input fields -->
+                    <div class="grid gap-4 mb-4 grid-cols-2">
+                        <div class="col-span-1">
+                            <label for="editPreviousBillAmountId" class="block mb-2 text-sm font-medium text-gray-900">
+                                Previous Bill Amount
+                            </label>
+                            <input type="text" name="editPreviousBillAmount" id="editPreviousBillAmountId"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-700 focus:border-gray-700 block w-full p-2.5"
+                                autocomplete="off" placeholder="0.00">
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="editPreviousBillPaymentId" class="block mb-2 text-sm font-medium text-gray-900">
+                                Previous Bill Payment
+                            </label>
+                            <input type="text" name="editPreviousBillPayment" id="editPreviousBillPaymentId"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-700 focus:border-gray-700 block w-full p-2.5"
+                                autocomplete="off" placeholder="0.00">
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="editExcessChargesId" class="block mb-2 text-sm font-medium text-gray-900">
+                                Excess Charges
+                            </label>
+                            <input type="text" name="editExcessCharges" id="editExcessChargesId"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-700 focus:border-gray-700 block w-full p-2.5"
+                                autocomplete="off" placeholder="0.00">
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="editOtherChargesId" class="block mb-2 text-sm font-medium text-gray-900">
+                                Other Charges
+                            </label>
+                            <input type="text" name="editOtherCharges" id="editOtherChargesId"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-700 focus:border-gray-700 block w-full p-2.5"
+                                autocomplete="off" placeholder="0.00">
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="editAdjAmountId" class="block mb-2 text-sm font-medium text-gray-900">
+                                ADJ Amount
+                            </label>
+                            <input type="text" name="editAdjAmount" id="editAdjAmountId"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-700 focus:border-gray-700 block w-full p-2.5"
+                                autocomplete="off" placeholder="0.00">
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="editRfpAmountId" class="block mb-2 text-sm font-medium text-gray-900">
+                                RFP Amount
+                            </label>
+                            <input type="text" name="editRfpAmount" id="editRfpAmountId"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-700 focus:border-gray-700 block w-full p-2.5"
+                                autocomplete="off" placeholder="0.00" required="">
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="editAmountDueId" class="block mb-2 text-sm font-medium text-gray-900">
+                                Amount Due
+                            </label>
+                            <input type="text" name="editAmountDue" id="editAmountDueId"
+                                class="pointer-events-none read-only:bg-neutral-200 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-700 focus:border-gray-700 block w-full p-2.5"
+                                placeholder="0.00" readonly tabindex="-1">
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="editCurrentChargeAmountId" class="block mb-2 text-sm font-medium text-gray-900">
+                                Current Charge Amount
+                            </label>
+                            <input type="text" name="editCurrentChargeAmount" id="editCurrentChargeAmountId"
+                                class="pointer-events-none read-only:bg-neutral-200 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-700 focus:border-gray-700 block w-full p-2.5"
+                                placeholder="0.00" readonly tabindex="-1">
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="editExcessChargesEmployeeId"
+                                class="block mb-2 text-sm font-medium text-gray-900">
+                                Excess Charge C/O by Employee
+                            </label>
+                            <input type="text" name="editExcessChargesEmployee" id="editExcessChargesEmployeeId"
+                                class="pointer-events-none read-only:bg-neutral-200 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-700 focus:border-gray-700 block w-full p-2.5"
+                                placeholder="0.00" readonly tabindex="-1">
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="editChargeToBdcId" class="block mb-2 text-sm font-medium text-gray-900">
+                                Charge To BDC
+                            </label>
+                            <input type="text" name="editChargeToBdc" id="editChargeToBdcId"
+                                class="pointer-events-none read-only:bg-neutral-200 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-700 focus:border-gray-700 block w-full p-2.5"
+                                placeholder="0.00" readonly tabindex="-1">
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="flex justify-end pt-2">
+                        <button type="submit"
+                            class="to-disable text-white inline-flex items-center bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                            Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Modal -->
+    <div id="view-modal" tabindex="-1" aria-hidden="true" data-modal-backdrop="static"
+        class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-4xl max-h-full ">
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow max-h-[100vh]">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        View Billing Information
+                    </h3>
+                    <button type="button"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+                        data-modal-hide="view-modal">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <div id="viewModal" class="p-4 md:p-5 overflow-y-auto max-h-[80vh]">
+                    <div class="grid gap-y-1.5 grid-cols-3">
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            BILL ID
+                        </div>
+                        <div id="viewBillId" class="col-span-2 text-left text-sm text-neutral-700">
+                        </div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            ISSUANCE NO
+                        </div>
+                        <div id="viewIssuanceNoId" class="col-span-2 text-left text-sm text-neutral-700">
+                        </div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            EMPLOYEE GROUP ID
+                        </div>
+                        <div id="viewEmpGroupId" class="col-span-2 text-left text-sm text-neutral-700">
+                        </div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            EMPLOYEE NAME
+                        </div>
+                        <div id="viewEmployeeNameId" class="col-span-2 text-left text-sm text-neutral-700">
+                        </div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            RFP GROUP NAME
+                        </div>
+                        <div id="viewRfpGroupNameId" class="col-span-2 text-left text-sm text-neutral-700">
+                        </div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            SIM CARD ID
+                        </div>
+                        <div id="viewSimCardId" class="col-span-2 text-left text-sm text-neutral-700">
+                        </div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            MOBILE NO
+                        </div>
+                        <div id="viewMobileNoId" class="col-span-2 text-left text-sm text-neutral-700">
+                        </div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            ACCOUNT NO
+                        </div>
+                        <div id="viewAccountNoId" class="col-span-2 text-left text-sm text-neutral-700">
+                        </div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            RFP NO
+                        </div>
+                        <div id="viewRfpNoId" class="col-span-2 text-left text-sm text-neutral-700">
+                        </div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            BILL PERIOD
+                        </div>
+                        <div id="viewBillPeriodFromToId" class="col-span-2 text-left text-sm text-neutral-700">
+                        </div>
+                        <!-- <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            BILL PERIOD TO
+                        </div>
+                        <div id="viewBillPeriodToId" class="col-span-2 text-left text-sm text-neutral-700">
+                        </div> -->
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            MONTHLY RECURRING FEE
+                        </div>
+                        <div id="viewMrfId" class="col-span-2 text-left text-sm text-neutral-700">
+                        </div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            PREVIOUS BILL AMOUNT
+                        </div>
+                        <div id="viewPreviousBillAmountId" class="col-span-2 text-left text-sm text-neutral-700">
+                        </div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            PREVIOUS BILL PAYMENT
+                        </div>
+                        <div id="viewPreviousBillPaymentId" class="col-span-2 text-left text-sm text-neutral-700">
+                        </div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            EXCESS CHARGES
+                        </div>
+                        <div id="viewExcessChargesId" class="col-span-2 text-left text-sm text-neutral-700">
+                        </div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            OTHER CHARGES
+                        </div>
+                        <div id="viewOtherChargesId" class="col-span-2 text-left text-sm text-neutral-700">
+                        </div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            ADJ AMOUNT
+                        </div>
+                        <div id="viewAdjAmountId" class="col-span-2 text-left text-sm text-neutral-700">
+                        </div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            RFP AMOUNT
+                        </div>
+                        <div id="viewRfpAmountId" class="col-span-2 text-left text-sm text-neutral-700">
+                        </div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            AMOUNT DUE
+                        </div>
+                        <div id="viewAmountDueId" class="col-span-2 text-left text-sm text-neutral-700">
+                        </div>
+                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
+                            CURRENT CHARGE AMOUNT
+                        </div>
+                        <div id="viewCurrentChargeAmountId" class="col-span-2 text-left text-sm text-neutral-700">
+                        </div>
+                    </div>
+                    <div class="flex justify-end pt-2">
+                        <button type="button" data-modal-hide="view-modal"
+                            class="text-white inline-flex items-center bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div id="delete-modal" tabindex="-1"
+        class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+            <div class="relative bg-white rounded-lg shadow">
+                <button type="button"
+                    class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+                    data-modal-hide="delete-modal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+                <div class="p-4 md:p-5 text-center">
+                    <svg class="mx-auto mb-4 text-gray-400 w-12 h-12" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                    <h3 class="mb-5 text-lg font-normal text-gray-500">Are you sure you
+                        want to delete this record?</h3>
+                    <button type="button" id="deleteConfirmButtonId"
+                        class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                        Yes, I'm sure
+                    </button>
+                    <button data-modal-hide="delete-modal" type="button" id="cancel-delete"
+                        class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100">
+                        No, cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast container -->
+    <div id="toast-container" class="fixed z-50 bottom-5 left-5 space-y-4"></div>
+
+    <div class="mt-14 sm:ml-64 hidden">
+
+        <!-- <input type="text" id="pagination-search" /> -->
+        <!-- <select name="" id="pagination-limit"></select> -->
+        <!-- <button id="pagination-next">Next</button> -->
+        <!-- <button id="pagination-previous">Previous</button> -->
+        <!-- <button id="export-csv" class="hidden">Export CSV</button> -->
+        <!-- <div id="table-colvis"></div> -->
+
+    </div>
+
+    <div class="fixed top-14 right-0 w-vw-64 h-vh-14">
+        <!-- Table Header Controller -->
+        <div class="w-full h-14 flex justify-between items-center border-b border-neutral-200">
+            <div class="flex space-x-2">
+                <!-- search -->
+                <label for="searchInput" class="sr-only">Search</label>
+                <div class="relative w-full">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg aria-hidden="true" class="w-5 h-5 text-gray-500" viewbox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <input type="text" id="pagination-search"
+                        class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded bg-gray-50 focus:ring-black focus:border-black"
+                        placeholder="Search" required="">
+                </div>
+                <!-- colvis -->
+                <div class="relative w-40">
+                    <button data-dropdown-toggle="table-colvis"
+                        class="relative block w-40 p-1.5 border bg-neutral-50 border-neutral-300 text-neutral-900 sm:text-sm rounded focus:ring-neutral-600 focus:border-neutral-600">
+                        <div
+                            class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-neutral-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
+                            </svg>
+                        </div>
+                        Columns
+                    </button>
+                    <div data-popover id="table-colvis"
+                        class="text-left z-50 hidden bg-white divide-y divide-neutral-100 rounded-lg shadow w-44 max-h-vh-36 overflow-x-auto">
+                        <ul class="py-2 text-sm text-neutral-700"></ul>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <!-- add button -->
+                <!-- Add Form Modal toggle -->
+                <div
+                    class="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
+                    <button data-modal-target="add-modal" data-modal-toggle="add-modal" type="button"
+                        id="add-modal-toggle"
+                        class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-blue-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 disable-on-load">
+                        <!-- <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path clip-rule="evenodd" fill-rule="evenodd"
+                                d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+                        </svg> -->
+                        Generate Bill
+                    </button>
+                    <button type="button" id="export-csv"
+                        class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 disable-on-load">
+                        Export CSV
+                    </button>
+                    <div class="flex items-center w-full space-x-3 md:w-auto">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="h-vh-40 overflow-y-auto overflow-x-auto">
+            <!-- Spinner -->
+            <div class="flex items-center justify-center h-vh-40" id="spinner">
+                <div role="status" class="flex items-center space-x-2">
+                    <svg aria-hidden="true" class="w-8 h-8 mr-2 text-gray-200 animate-spin fill-gray-600"
+                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+                        <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                        <path
+                            d="M304 48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zm0 416a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM48 304a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm464-48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM142.9 437A48 48 0 1 0 75 369.1 48 48 0 1 0 142.9 437zm0-294.2A48 48 0 1 0 75 75a48 48 0 1 0 67.9 67.9zM369.1 437A48 48 0 1 0 437 369.1 48 48 0 1 0 369.1 437z" />
+                    </svg>
+                    <!-- <span class="sr-only">Loading...</span> -->
+                </div>
+            </div>
+            <!-- Table Container -->
+            <div id="tableContainer" class="table-container hidden">
+                <table id="tablejs" class="w-full text-sm text-left rtl:text-right text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">
+                                BILL ID
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                RFP GROUP
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                RFP NO
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                BILL PERIOD FROM
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                BILL PERIOD TO
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                EXCESS CHARGES
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                OTHER CHARGES
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                ACTIONS
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr>
+                            <td scope="col" class="px-6 py-3">No data</td>
+                            <td scope="col" class="px-6 py-3">No data</td>
+                            <td scope="col" class="px-6 py-3">No data</td>
+                            <td scope="col" class="px-6 py-3">No data</td>
+                            <td scope="col" class="px-6 py-3">No data</td>
+                            <td scope="col" class="px-6 py-3">No data</td>
+                            <td scope="col" class="px-6 py-3">No data</td>
+                            <td scope="col" class="px-6 py-3">Actions</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Table Footer -->
+        <div class="flex items-center justify-between border-t border-neutral-200 px-4 h-12">
+            <!-- <div class="info flex items-center space-x-2">
+                <div class="font-bold text-xl me-8 w-24">
+                    TOTAL
+                </div>
+                <div class="font-medium text-xl me-2" id="reports-total">
+                    0.00
+                </div>
+            </div> -->
+            <div class="text-sm">
+                <span class="text-sm" id="pagination-records">Shows 1 of 1 of 1 entries</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <div class="text-sm">
+                    Rows per page
+                </div>
+                <div class="text-sm">
+                    <select id="pagination-limit"
+                        class="block w-full items-center justify-center px-2 h-8 text-xs font-medium text-neutral-500 bg-white border rounded-lg hover:bg-neutral-100 hover:text-neutral-700  border-neutral-300 focus-within:ring-0 focus:ring-neutral-500 focus:outline-none focus:border-neutral-500">
+                        <option value="*" selected>All</option>
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="500">500</option>
+                        <option value="1000">1000</option>
+                    </select>
+                </div>
+                <span class="text-sm" id="pagination-label">Page 1 of 10</span>
+                <button id="pagination-previous"
+                    class="aspect-square flex items-center justify-center px-2 h-8 text-sm font-medium text-neutral-500 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-100 hover:text-neutral-700"
+                    name="previous">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                    </svg>
+                </button>
+                <button id="pagination-next"
+                    class="aspect-square flex items-center justify-center px-2 h-8 text-sm font-medium text-neutral-500 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-100 hover:text-neutral-700 "
+                    name="next">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+    <?!= include('JavaScript'); ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+
+            const ids = generateIds(document.querySelectorAll('[id]'));
+
+            const spinner = document.getElementById('spinner');
+            const tableContainer = document.getElementById('tableContainer');
+
+            const onClickEvents = {
+                viewData: function (data) {
+                    console.warn(data);
+                    console.warn(Object.keys(data));
+                    loadViewFields(data);
+                    showModal('view');
+                },
+                editData: function (data) {
+                    loadEditFields(data);
+                    calculateCurrentChargeAmount();
+                    showModal('edit');
+                },
+                deleteData: function (data) {
+                    Swal.fire({
+                        title: "Are you sure you want to delete this record?",
+                        showCancelButton: true,
+                        icon: 'info',
+                        confirmButtonText: `Yes, delete Bill ID ${data.BILL_ID}`,
+                        cancelButtonText: "No, cancel",
+                        customClass: {
+                            title: 'mb-5 text-lg font-normal text-gray-500',
+                            cancelButton: 'cursor-pointer text-white bg-gray-600 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center',
+                            confirmButton: 'cursor-pointer text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center',
+
+                        }
+                    }).then((result) => {
+                        /* Read more about isConfirmed, isDenied below */
+                        if (result.isConfirmed) {
+                            // Swal.fire("Deleted!", "", "success");
+                            handleDelete(data.billId);
+                        } else if (result.isDenied) {
+                            // Swal.fire("Changes are not saved", "", "info");
+                        }
+                    });
+                }
+            }
+
+            // Disables all buttons while the table content is loading
+            // document.querySelectorAll('button').forEach(button => {
+            //     button.classList.add('cursor-not-allowed');
+            //     button.disabled = true;
+            // });
+
+            // Targeting a specific class instead of all the buttons
+            document.querySelectorAll('.disable-on-load').forEach(button => {
+                button.classList.add('cursor-not-allowed');
+                button.disabled = true;
+            });
+
+            // const totalElement = document.querySelector('div#reports-total');
+            const recordElement = document.querySelector('span#pagination-records');
+            const pagingElement = document.querySelector('span#pagination-label');
+
+            const output = {
+                pagination: ({
+                    current_page,
+                    total_page,
+                    start_item,
+                    end_item,
+                    total_rows,
+                }) => {
+                    if (recordElement)
+                        recordElement.innerHTML = `Shows ${start_item} to ${end_item} of ${total_rows} entries`;
+                    if (pagingElement)
+                        pagingElement.innerHTML = `Page ${current_page} of ${total_page}`;
+                },
+            };
+
+            // Table Headers
+            const headers = [
+                'BILL_ID',
+                'RFP_NO',
+                'RFP_GROUP_NAME',
+                'ISSUANCE_NO',
+                'SIM_CARD_ID',
+                'MOBILE_NO',
+                'ACCOUNT_NO',
+                'GROUP_ID',
+                'EMPLOYEE_NAME',
+                'BILL_PERIOD_FROM',
+                'BILL_PERIOD_TO',
+                'MONTHLY_RECURRING_FEE',
+                'EXCESS_CHARGES',
+                'OTHER_CHARGES',
+                'PREVIOUS_BILL_AMOUNT',
+                'PREVIOUS_BILL_PAYMENT',
+                'CURRENT_CHARGE_AMOUNT',
+                'ADJ_AMOUNT',
+                'AMOUNT_DUE',
+                'RFP_AMOUNT',
+                'WITHHOLDING_TAX',
+                'AMOUNT_AFTER_TAX',
+                'CHARGE_TO_BDC',
+                'WITH_SOA',
+            ];
+
+            // Fetching of datasets
+            const [rfpGroupData, simInventoryData, planDetails, simRequestAndIssuanceData, rfpSummaryNumbers] = await Promise.all([
+                $.getDataFromSheet(RFP_GROUP, SHEETS.RFP_GROUP.DATE_FIELDS),
+                $.getDataFromSheet(SIM_INVENTORY, SHEETS.SIM_INVENTORY.DATE_FIELDS),
+                $.getDataFromSheet(SIM_PLANS, SHEETS.SIM_PLANS.DATE_FIELDS),
+                $.getDataFromSheet(SIM_REQUEST_AND_ISSUANCE, SHEETS.SIM_REQUEST_AND_ISSUANCE.DATE_FIELDS),
+                $.getRfpSummaryNumbers()
+            ]);
+
+            const simInventoryDataMap = new Map(simInventoryData.map(obj => [obj.SIM_CARD_ID.toString(), obj]));
+            const rfpGroupDataMap = new Map(rfpGroupData.map(obj => [obj.RFP_GROUP_ID.toString(), obj]));
+            const planDetailsDataMap = new Map(planDetails.map(obj => [obj.PLAN_ID, obj]));
+            const simRequestAndIssuanceDataMap = new Map(simRequestAndIssuanceData.map(obj => [obj.ISSUANCE_NO.toString(), obj]));
+            const existingRfpNos = new Map(rfpSummaryNumbers.map(id => [id.toString(), id]));
+
+            let isRfpNumValid = null;
+
+            console.log(simRequestAndIssuanceData);
+
+            let lastSelectedRfpGroupId = null;
+            let checkedStates = {};
+
+            // let existingRfpNos = new Map();
+
+            // (function initializeExistingRfpNos() {
+            //     if (!existingRfpNos.size) {
+            //         // const rfpSummaryNumbers = await $.getRfpSummaryNumbers();
+            //         rfpSummaryNumbers.forEach(id => existingRfpNos.set(id, id));
+            //     }
+            // })();
+
+
+            // console.log(employeeData);
+            console.log(rfpGroupData);
+            console.log(simInventoryData);
+            console.log(planDetails);
+            console.log(simRequestAndIssuanceData);
+
+            console.log(rfpGroupDataMap);
+            console.log(simInventoryDataMap);
+            console.log(planDetailsDataMap);
+            console.log(simRequestAndIssuanceDataMap);
+
+            // Render Table function
+            async function renderTable({ data, table }) {
+
+                // const indexOfRequestNo = headers.indexOf("REQUEST_NO");
+                // const requestNo = row[indexOfRequestNo];
+
+                // const employeeInfoString = rowData["EMPLOYEE_INFO"];
+                // const hasEmployeeInfo = !!employeeInfoString;
+                // const employeeInfo = hasEmployeeInfo
+                //   ? JSON.parse(employeeInfoString)
+                //   : ``; // Parse the JSON string into an object
+
+                // const simInfoString = rowData["SIM_INFO"];
+                // const hasSimInfo = !!simInfoString;
+                // const simInfo = hasSimInfo ? JSON.parse(simInfoString) : ``;
+                // const companyName = employeeInfo.COMPANY_NAME;
+                // const companyFullName = companyName == 'BDC' 
+                // ? 'Borland Development Corporation' 
+                // : companyName == 'WFC' 
+                // ? 'Westbrook Finance Corporation' 
+                // : companyName == 'GMDC' 
+                // ? 'Golden Mahogany Development Corporation' 
+                // : companyName == 'GWDC' 
+                // ? 'Greenwealth Development Corporation' : ``;
+
+
+
+                const thead = table.querySelector('thead');
+                const tbody = table.querySelector('tbody');
+
+                // Clear existing content
+                thead.innerHTML = '';
+                tbody.innerHTML = '';
+
+                // Create Header
+                const headerRow = document.createElement('tr');
+                headers.forEach((header) => {
+                    const th = document.createElement('th');
+                    th.scope = 'col';
+                    th.classList.add('px-6', 'py-3');
+                    th.textContent = header.replace(/[_\s]{1,}/g, ' ');
+                    headerRow.appendChild(th);
+                });
+                // Add Action Header
+                const actionHeader = document.createElement('th');
+                actionHeader.scope = 'col';
+                actionHeader.classList.add('px-6', 'py-3', 'actions-column');
+                actionHeader.textContent = 'Actions';
+                headerRow.appendChild(actionHeader);
+                thead.appendChild(headerRow);
+
+                // console.log(data.length);
+                console.log(data[0].BILL_ID);
+                console.log(data[0]);
+
+                // if (data.length === 1 && data[0].BILL_ID === "") {
+                //    // Create a row indicating no unposted records
+                //     const noDataRow = document.createElement('tr');
+                //     const noDataTd = document.createElement('td');
+                //     noDataTd.colSpan = headers.length + 1; // Adjust colspan for headers + actions column
+                //     noDataTd.classList.add('px-6', 'py-3', 'text-center');
+                //     noDataTd.textContent = 'No records found';
+                //     noDataRow.appendChild(noDataTd);
+                //     tbody.appendChild(noDataRow);
+                //     return;
+                // }
+
+                // 'ISSUANCE_NO',
+                // 'RFP_NO',
+
+                // 'RFP_GROUP_NAME',
+                // 'SIM_CARD_ID',
+                // 'MOBILE_NO',
+                // 'MONTHLY_RECURRING_FEE',
+
+                // 'GROUP_ID',
+                // 'EMPLOYEE_NAME',
+
+                // Create Body
+                data.forEach((row, index) => {
+
+                    if (row.EMPLOYEE_INFO) {
+                        const employeeInfoString = row.EMPLOYEE_INFO;
+                        const hasEmployeeInfo = !!employeeInfoString;
+                        const employeeInfo = hasEmployeeInfo ? JSON.parse(employeeInfoString) : '';
+
+                        row.EMPLOYEE_NAME = employeeInfo.FULL_NAME;
+                        row.GROUP_ID = employeeInfo.GROUP_ID;
+                        row.EMPLOYEE_NO = employeeInfo.EMPLOYEE_NO;
+                    }
+
+                    if (row.SIM_INFO) {
+                        const simInfoString = row.SIM_INFO;
+                        const hasSimInfo = !!simInfoString;
+                        const simInfo = hasSimInfo ? JSON.parse(simInfoString) : '';
+
+                        row.MOBILE_NO = simInfo.MOBILE_NO;
+                        row.ACCOUNT_NO = simInfo.ACCOUNT_NO;
+                        row.NETWORK_PROVIDER = simInfo.NETWORK_PROVIDER;
+                        row.PLAN_DETAILS = simInfo.PLAN_DETAILS;
+                        // Must be added on SIM_INFO
+                        row.RFP_GROUP_NAME = simInfo.RFP_GROUP_NAME;
+                        row.CATEGORY = simInfo.CATEGORY;
+                    }
+
+                    // console.log("employeeInfo", row.EMPLOYEE_NAME);
+                    // console.log("simInfo", simInfo);
+
+                    const tr = document.createElement('tr');
+                    tr.classList.add('bg-white', 'border-b');
+                    if (tr.index === undefined || tr.index === null) {
+                        tr.index = index;
+                        tr.dataset.index = index;
+                    }
+
+                    // Add Action Buttons
+                    const actionTd = document.createElement('td');
+                    actionTd.classList.add('px-6', 'py-3');
+                    const actionDiv = document.createElement('div');
+                    actionDiv.classList.add('action-buttons', 'flex', 'space-x-2');
+
+                    if (Object.entries(row).every(([key, value]) => value === "")) {
+                        const NoData = "No data";
+                        headers.forEach((header) => {
+                            const td = document.createElement('td');
+                            td.classList.add('px-6', 'py-3');
+                            td.textContent = NoData;
+                            tr.appendChild(td);
+                        });
+                        actionTd.textContent = "Actions";
+                    } else {
+                        headers.forEach((header) => {
+                            const td = document.createElement('td');
+
+                            let value = row[header];
+
+                            td.classList.add('px-6', 'py-3');
+                            switch (header) {
+                                case 'MONTHLY_RECURRING_FEE':
+                                case 'EXCESS_CHARGES':
+                                case 'OTHER_CHARGES':
+                                case 'PREVIOUS_BILL_AMOUNT':
+                                case 'PREVIOUS_BILL_PAYMENT':
+                                case 'CURRENT_CHARGE_AMOUNT':
+                                case 'ADJ_AMOUNT':
+                                case 'AMOUNT_DUE':
+                                case 'RFP_AMOUNT':
+                                case 'WITHHOLDING_TAX':
+                                case 'AMOUNT_AFTER_TAX':
+                                case 'CHARGE_TO_BDC':
+                                    td.textContent = formatNumber(value);
+                                    td.classList.add('text-right');
+                                    break;
+                                case 'BILL_PERIOD_FROM':
+                                case 'BILL_PERIOD_TO':
+                                    td.textContent = DateTime(value, { format: "MM/DD/YYYY" });
+                                    break;
+                                default:
+                                    td.textContent = value;
+                                    break;
+                            }
+
+                            tr.appendChild(td);
+
+                        });
+
+                        const viewButton = generateActionButton(vectors.view, {
+                            class: 'px-2 py-2 bg-teal-500 text-white rounded',
+                            onClick: () => {
+                                const skips = ["BILL_PERIOD_FROM", "BILL_PERIOD_TO"];
+                                const object = Object.fromEntries(
+                                    Object.entries(row).filter(([k, v]) => !skips.includes(k))
+                                );
+                                onClickEvents.viewData({
+                                    ...object,
+                                    BILL_PERIOD_FROM_TO: `${DateTime(row.BILL_PERIOD_FROM, { format: "MM/DD/YYYY" })} - ${DateTime(row.BILL_PERIOD_TO, { format: "MM/DD/YYYY" })}`,
+                                    ISSUANCE_NO: row.ISSUANCE_NO,
+                                    GROUP_ID: row.GROUP_ID,
+                                    EMPLOYEE_NO: row.EMPLOYEE_NO,
+                                    EMPLOYEE_NAME: row.EMPLOYEE_NAME,
+                                })
+                            }
+                        }, row);
+                        const editButton = generateActionButton(vectors.edit, {
+                            class: 'px-2 py-2 bg-blue-500 text-white rounded',
+                            onClick: () => onClickEvents.editData({
+                                ...row,
+                            })
+                        }, row);
+                        const deleteButton = generateActionButton(vectors.delete, {
+                            class: 'px-2 py-2 bg-red-500 text-white rounded',
+                            onClick: () => onClickEvents.deleteData({
+                                ...row,
+                                billId: row.BILL_ID,
+                            })
+                        }, row);
+                        actionDiv.appendChild(viewButton);
+                        actionDiv.appendChild(editButton);
+                        actionDiv.appendChild(deleteButton);
+                        actionTd.appendChild(actionDiv);
+                    }
+
+                    tr.appendChild(actionTd);
+                    tbody.appendChild(tr);
+                });
+            }
+
+            console.log(TableJS);
+            const table = ids.tablejs;
+            const instance = new TableJS(table, {
+                dataset: {
+                    init: false,
+                    collection: [],
+                    rendering: renderTable
+                },
+                colvis: {
+                    element: 'div#table-colvis',
+                    exclude: ['.checkbox-column', '.actions-column'],
+                    hide: [3],
+                },
+                exportAs: [
+                    {
+                        as: 'csv',
+                        element: 'button#export-csv',
+                        filename: 'billing',
+                        exclude: ['.checkbox-column', '.actions-column'],
+                    },
+                ],
+                paginate: [
+                    {
+                        to: 'api',
+                        as: 'limit',
+                        element: 'select#pagination-limit',
+                        output: output.pagination,
+                    },
+                    {
+                        to: 'api',
+                        as: 'next',
+                        element: 'button#pagination-next',
+                        output: output.pagination,
+                    },
+                    {
+                        to: 'api',
+                        as: 'previous',
+                        element: 'button#pagination-previous',
+                        output: output.pagination,
+                    },
+                    {
+                        to: 'local',
+                        as: 'search',
+                        element: 'input#pagination-search',
+                        exclude: ['.checkbox-column', '.actions-column'],
+                        output: output.pagination,
+                    },
+                ],
+            });
+
+            async function refreshTable() {
+                try {
+                    const dataset = await $.getBillingTableData();
+                    // const dataset = await $.sampleQuery();
+                    console.warn({
+                        dataset
+                    });
+                    const parsed = JSON.parse(dataset);
+                    const array = Array.from(parsed);
+                    console.warn({
+                        array
+                    });
+                    instance.setDataset(array).render();
+
+                    // Hiding the spinner / loading animation 
+                    spinner.classList.add('hidden');
+                    tableContainer.classList.remove('hidden');
+
+                    // Remove the disable attribute from the buttons when the  
+                    document.querySelectorAll('.disable-on-load').forEach(button => {
+                        button.disabled = false;
+                        button.classList.remove('cursor-not-allowed');
+                    });
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+
+            // Function to load data into edit fields
+            function loadEditFields(item) {
+                console.warn("Check:", item);
+                ids.billId.value = item.BILL_ID;
+                ids.editRfpNoId.value = item.RFP_NO;
+                ids.editBillPeriodFromId.value = DateTime(item.BILL_PERIOD_FROM, { format: "MM/DD/YYYY" });
+                ids.editBillPeriodToId.value = DateTime(item.BILL_PERIOD_TO, { format: "MM/DD/YYYY" });
+                ids.editMrfId.value = item.MONTHLY_RECURRING_FEE == '' ? '' : formatNumber(item.MONTHLY_RECURRING_FEE);
+                ids.editExcessChargesId.value = item.EXCESS_CHARGES == '' ? '' : formatNumber(item.EXCESS_CHARGES);
+                ids.editOtherChargesId.value = item.OTHER_CHARGES == '' ? '' : formatNumber(item.OTHER_CHARGES);
+                ids.editPreviousBillAmountId.value = item.PREVIOUS_BILL_AMOUNT == '' ? '' : formatNumber(item.PREVIOUS_BILL_AMOUNT);
+                ids.editPreviousBillPaymentId.value = item.PREVIOUS_BILL_PAYMENT == '' ? '' : formatNumber(item.PREVIOUS_BILL_PAYMENT);
+                ids.editCurrentChargeAmountId.value = item.CURRENT_CHARGE_AMOUNT == '' ? '' : formatNumber(item.CURRENT_CHARGE_AMOUNT);
+                ids.editAdjAmountId.value = item.ADJ_AMOUNT == '' ? '' : formatNumber(item.ADJ_AMOUNT);
+                ids.editAmountDueId.value = item.AMOUNT_DUE == '' ? '' : formatNumber(item.AMOUNT_DUE);
+                ids.editRfpAmountId.value = item.RFP_AMOUNT == '' ? formatNumber(ids.editCurrentChargeAmountId.value) : formatNumber(item.RFP_AMOUNT);
+                ids.editExcessChargesEmployeeId.value = ids.editExcessChargesId.value == '' ? '' : formatNumber(ids.editExcessChargesId.value);
+                ids.editChargeToBdcId.value = item.CHARGE_TO_BDC == '' ? '' : formatNumber(item.CHARGE_TO_BDC);
+                ids.simCardId.value = item.SIM_CARD_ID == '' ? '' : item.SIM_CARD_ID;
+                ids.accountNoId.value = item.ACCOUNT_NO == '' ? '' : item.ACCOUNT_NO;
+                ids.mobileNoId.value = item.MOBILE_NO == '' ? '' : item.MOBILE_NO;
+                ids.employeeGroupId.value = item.GROUP_ID?.toString() || '';
+                ids.employeeNoId.value = item.EMPLOYEE_NO?.toString() || '';
+                ids.employeeNameId.value = item.EMPLOYEE_NAME || '';
+
+                console.log(item.GROUP_ID);
+                console.log(item.EMPLOYEE_NO);
+
+                ids.networkProviderId.value = item.NETWORK_PROVIDER == '' ? '' : item.NETWORK_PROVIDER;
+                ids.categoryId.value = item.CATEGORY == '' ? '' : item.CATEGORY;
+                ids.planDetailsId.value = item.PLAN_DETAILS == '' ? '' : item.PLAN_DETAILS;
+                ids.editWithSoaId.checked = item.WITH_SOA;
+
+                const hasNoActiveUser = !item.GROUP_ID || !item.EMPLOYEE_NO;
+                ids.editExcessChargesId.disabled = hasNoActiveUser;
+            }
+
+            function loadViewFields(data = {}) {
+
+                const matching = [
+                    { element: ids.viewBillId, data: 'BILL_ID', type: 'string' },
+                    { element: ids.viewIssuanceNoId, data: 'ISSUANCE_NO', type: 'string' },
+                    { element: ids.viewSimCardId, data: 'SIM_CARD_ID', type: 'string' },
+                    { element: ids.viewEmpGroupId, data: 'GROUP_ID', type: 'string' },
+                    { element: ids.viewEmployeeNameId, data: 'EMPLOYEE_NAME', type: 'string' },
+                    { element: ids.viewRfpGroupNameId, data: 'RFP_GROUP_NAME', type: 'string' },
+                    { element: ids.viewMobileNoId, data: 'MOBILE_NO', type: 'string' },
+                    { element: ids.viewAccountNoId, data: 'ACCOUNT_NO', type: 'string' },
+                    { element: ids.viewRfpNoId, data: 'RFP_NO', type: 'string' },
+                    { element: ids.viewMrfId, data: 'MONTHLY_RECURRING_FEE', type: 'number' },
+                    { element: ids.viewBillPeriodFromToId, data: 'BILL_PERIOD_FROM_TO', type: 'string' },
+                    // { element: ids.viewBillPeriodToId, data: 'BILL_PERIOD_TO', type: 'date' },
+                    { element: ids.viewPreviousBillAmountId, data: 'PREVIOUS_BILL_AMOUNT', type: 'number' },
+                    { element: ids.viewPreviousBillPaymentId, data: 'PREVIOUS_BILL_PAYMENT', type: 'number' },
+                    { element: ids.viewExcessChargesId, data: 'EXCESS_CHARGES', type: 'number' },
+                    { element: ids.viewOtherChargesId, data: 'OTHER_CHARGES', type: 'number' },
+                    { element: ids.viewRfpAmountId, data: 'RFP_AMOUNT', type: 'number' },
+                    { element: ids.viewAdjAmountId, data: 'ADJ_AMOUNT', type: 'number' },
+                    { element: ids.viewAmountDueId, data: 'AMOUNT_DUE', type: 'number' },
+                    { element: ids.viewCurrentChargeAmountId, data: 'CURRENT_CHARGE_AMOUNT', type: 'number' },
+                ];
+
+                matching.forEach(({ element, data: keyValue, type, default: defaultValue }) => {
+                    const value = data[keyValue] !== '' ? data[keyValue] : defaultValue;
+                    if (type === 'number') {
+                        element.textContent = formatNumber(value);
+                    } else {
+                        element.textContent = value;
+                    }
+                });
+
+            }
+
+            function populateDropdown() {
+                // Get the dropdown element
+                const dropdown = ids.rfpGroupId;
+
+                // Clear existing options
+                dropdown.innerHTML = '';
+
+                // Create a DocumentFragment to minimize reflows
+                const fragment = document.createDocumentFragment();
+
+                const defaultOption = document.createElement('option');
+                defaultOption.text = "Select RFP Group";
+                defaultOption.value = "";
+                defaultOption.disabled = true;
+                defaultOption.selected = true;
+                fragment.appendChild(defaultOption);
+
+                rfpGroupDataMap.forEach((value, key) => {
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = value.RFP_GROUP_NAME;
+                    fragment.appendChild(option);
+                });
+
+                // Append the fragment to the dropdown
+                dropdown.appendChild(fragment);
+
+                console.warn("DROPDOWN SUCCESS")
+            }
+
+            // Function to populate SIM Cards in the div
+            function populateSimCards() {
+                const selectedRfpGroupId = ids.rfpGroupId.value;
+                const searchTerm = ids.simSearchInput.value.toLowerCase();
+                const simCardsDiv = ids.simCardsId;
+
+                simCardsDiv.innerHTML = ''; // Clear existing content
+                // populateBillingPeriod();
+
+                let hasSimCards = false;
+
+                simInventoryDataMap.forEach((data, key) => {
+                    if (data.RFP_GROUP_ID === selectedRfpGroupId && JSON.stringify(data).toLowerCase().includes(searchTerm)) {
+                        hasSimCards = true;
+
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'col-span-1 group items-center border rounded-lg cursor-pointer';
+                        itemDiv.dataset.simCardId = data.SIM_CARD_ID;
+
+                        // Create the grid structure
+                        const gridDiv = document.createElement('div');
+                        // gridDiv.classList.add('group', 'grid', 'grid-cols-12', 'items-center');
+                        gridDiv.classList.add(...clsx('group grid grid-cols-12 items-center'));
+                        itemDiv.appendChild(gridDiv);
+
+                        const relativeDiv = document.createElement('div');
+                        relativeDiv.classList.add(...clsx('relative col-span-12 h-14 items-center rounded-lg bg-neutral-100 p-2 text-xs text-neutral-800 hover:bg-neutral-200 transition-colors'));
+                        gridDiv.appendChild(relativeDiv);
+
+                        // const hoverDiv = document.createElement('div');
+                        // hoverDiv.classList.add(...clsx('absolute inset-0 z-20 flex cursor-pointer flex-col items-center justify-center rounded-s text-center opacity-0 transition-colors group-hover:bg-neutral-100 group-hover:text-neutral-800 group-hover:opacity-100'));
+                        // relativeDiv.appendChild(hoverDiv);
+
+                        const innerGridDiv = document.createElement('div');
+                        innerGridDiv.classList.add('grid', 'grid-cols-12');
+                        relativeDiv.appendChild(innerGridDiv);
+
+                        const simIdDiv = document.createElement('div');
+                        simIdDiv.classList.add('col-span-2', 'flex', 'w-full', 'items-center');
+                        simIdDiv.innerHTML = `<div class="text-3xl font-bold">${data.SIM_CARD_ID}</div>`;
+                        innerGridDiv.appendChild(simIdDiv);
+
+                        const accountInfoDiv = document.createElement('div');
+                        accountInfoDiv.classList.add('col-span-10', 'w-full', 'items-center');
+                        accountInfoDiv.innerHTML = `
+                          <div class="text-right text-sm">${data.ACCOUNT_NO}</div>
+                          <div class="text-right text-md font-medium">${data.MOBILE_NO}</div>
+                        `;
+                        innerGridDiv.appendChild(accountInfoDiv);
+
+                        // Checkbox and label
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.className = 'hidden';
+                        checkbox.checked = checkedStates[key] || false;
+                        checkbox.addEventListener('change', () => {
+                            toggleSelection(itemDiv, checkbox);
+                            checkedStates[key] = checkbox.checked;
+                            updateToggleButton();
+                        });
+
+                        itemDiv.appendChild(checkbox);
+
+                        // Add click event for selection toggle
+                        itemDiv.addEventListener('click', () => {
+                            checkbox.checked = !checkbox.checked;
+                            toggleSelection(itemDiv, checkbox);
+                            checkedStates[key] = checkbox.checked;
+                            updateToggleButton();
+                        });
+
+                        // Highlight item if already selected
+                        if (checkedStates[key]) {
+                            itemDiv.classList.add(...clsx('border border-gray-700'));
+                        }
+
+                        simCardsDiv.appendChild(itemDiv);
+                    }
+                });
+
+                // Toggle blank state visibility based on whether any SIM cards were found
+                const simCardInitialStateId = ids.simCardInitialStateId;
+                if (hasSimCards) {
+                    simCardInitialStateId.classList.add('hidden');
+                    simCardInitialStateId.classList.remove('flex');
+                } else {
+                    simCardInitialStateId.classList.remove('hidden');
+                    simCardInitialStateId.classList.add('flex');
+                }
+
+                updateToggleButton();
+            }
+
+
+            function toggleSelection(itemDiv, checkbox) {
+                if (checkbox.checked) {
+                    itemDiv.classList.add(...clsx('border-gray-700'));
+                } else {
+                    itemDiv.classList.remove(...clsx('border-gray-700'));
+                }
+            }
+
+            function toggleAllItems() {
+                const selectedRfpGroupId = ids.rfpGroupId.value;
+                const allChecked = Array.from(simInventoryDataMap.values()).every(data => data.RFP_GROUP_ID !== selectedRfpGroupId || checkedStates[data.SIM_CARD_ID]);
+                const anyChecked = Array.from(simInventoryDataMap.values()).some(data => data.RFP_GROUP_ID === selectedRfpGroupId && checkedStates[data.SIM_CARD_ID]);
+
+                simInventoryDataMap.forEach((data, key) => {
+                    if (data.RFP_GROUP_ID == selectedRfpGroupId) {
+                        checkedStates[key] = !anyChecked;
+                    }
+                });
+
+                populateSimCards();
+            }
+
+            function updateToggleButton() {
+                const selectedRfpGroupId = ids.rfpGroupId.value;
+
+                // Check if the selected RFP group has any SIM cards
+                const simCardsInGroup = Array.from(simInventoryDataMap.values()).filter(data => data.RFP_GROUP_ID === selectedRfpGroupId);
+
+                if (simCardsInGroup.length === 0) {
+                    // No SIM cards in the selected RFP group, so uncheck and disable toggleSelectButton
+                    console.warn("No SIM cards in selected RFP group");
+                    ids.toggleSelectButton.checked = false;
+                    ids.toggleSelectButton.indeterminate = false;
+                    ids.toggleSelectButton.classList.remove("indeterminate");
+                    return; // Exit early since there's nothing to check
+                }
+
+                // Check if all or some items are checked
+                const allChecked = simCardsInGroup.every(data => checkedStates[data.SIM_CARD_ID]);
+                const anyChecked = simCardsInGroup.some(data => checkedStates[data.SIM_CARD_ID]);
+
+                if (allChecked) {
+                    console.warn("All items are checked");
+                    ids.toggleSelectButton.checked = true;
+                    ids.toggleSelectButton.indeterminate = false;
+                    ids.toggleSelectButton.classList.remove("indeterminate"); // Checkbox is fully selected
+                } else if (anyChecked) {
+                    console.warn("Some items are checked");
+                    ids.toggleSelectButton.checked = false;
+                    ids.toggleSelectButton.indeterminate = true;  // Checkbox is partially selected
+                    ids.toggleSelectButton.classList.add("indeterminate");
+                } else {
+                    console.warn("No items selected");
+                    ids.toggleSelectButton.checked = false;
+                    ids.toggleSelectButton.indeterminate = false; // Checkbox is fully unselected
+                    ids.toggleSelectButton.classList.remove("indeterminate");
+                }
+
+                updateTotalSelectedItems();
+            }
+
+
+            function updateTotalSelectedItems() {
+
+                // Span element
+                const totalSelectedItems = ids.selectedItems;
+
+                // Get an array of SIM card IDs that are checked
+                const selectedSimCardIds = Object.keys(checkedStates).filter(id => checkedStates[id]);
+
+                // Update the count display
+                totalSelectedItems.textContent = `Total Selected Items (${selectedSimCardIds.length})`;
+
+                console.log(selectedSimCardIds);
+
+                // Return the array of selected SIM card IDs
+                return selectedSimCardIds;
+            }
+
+
+            // Function to console log the updated list of SIM card IDs
+            function consoleUpdatedItems() {
+                const simCardsDiv = ids.simCardsId;
+                const items = simCardsDiv.querySelectorAll('[data-sim-card-id]');
+                const updatedItems = Array.from(items).map(item => item.dataset.simCardId);
+                const simCardInitialStateId = ids.simCardInitialStateId;
+                if (updatedItems.length > 0) {
+                    simCardInitialStateId.classList.add('hidden');
+                    simCardInitialStateId.classList.remove('flex');
+                } else {
+                    simCardInitialStateId.classList.remove('hidden');
+                    simCardInitialStateId.classList.add('flex');
+                }
+                // console.log('Updated SIM card IDs:', updatedItems);
+
+                return updatedItems;
+            }
+
+
+            // Function to generate billing sheet
+            async function generateBillingSheet(simCardIds) {
+                const rfpGroupId = ids.rfpGroupId.value;
+                const rfpNo = ids.rfpNoId.value.toUpperCase().trim();
+                const billPeriodFrom = ids.billPeriodFromId.value;
+                const billPeriodTo = ids.billPeriodToId.value;
+                const hasSoa = "true";
+
+                const simCardIdSet = new Set(simCardIds.map(id => id.toString()));
+                const latestSimRequestAndIssuance = {};
+
+                // Fetch the last ID for billing entries
+                let lastId = await $.getLastId("BILLING", "A");
+
+                // Find the latest issuance details for each SIM card using Map
+                simRequestAndIssuanceDataMap.forEach((record) => {
+                    if (simCardIdSet.has(record.SIM_CARD_ID.toString())) {
+                        latestSimRequestAndIssuance[record.SIM_CARD_ID] = record;
+                    }
+                });
+
+                // Sample previous bill dataset (this would be fetched from your actual billing sheet)
+                const previousBills = await $.getDataFromSheet(BILLING, SHEETS.BILLING.DATE_FIELDS);
+                const previousBillMap = new Map(previousBills.map(record => [
+                    record.SIM_CARD_ID.toString(),
+                    { previousBillAmount: record.AMOUNT_DUE || 0, previousBillPayment: record.RFP_AMOUNT || 0 }
+                ]));
+
+                const billingSheet = [];
+
+                // Helper function to process sim info
+                const getSimInfo = (sim, inventoryRecord) => {
+                    const rfpGroupId = inventoryRecord ? inventoryRecord.RFP_GROUP_ID : null;
+                    const rfpGroup = rfpGroupDataMap.get(rfpGroupId);
+
+                    return {
+                        ...sim,
+                        RFP_GROUP_ID: rfpGroupId,
+                        RFP_GROUP_NAME: rfpGroup ? rfpGroup.RFP_GROUP_NAME : null
+                    };
+                };
+
+                // Process each SIM card ID
+                simCardIds.forEach(simCardId => {
+                    simCardId = simCardId.toString();
+                    const sim = latestSimRequestAndIssuance[simCardId];
+                    let simInfo = null;
+                    let employeeInfo = null;
+
+                    const inventoryRecord = simInventoryDataMap.get(simCardId);
+
+                    if (sim && sim.REQUEST_STATUS === "Issued") {
+                        const simInfoString = sim.SIM_INFO;
+                        simInfo = simInfoString ? JSON.parse(simInfoString) : {};
+                        simInfo = getSimInfo(simInfo, inventoryRecord);
+
+                        const employeeInfoString = sim.EMPLOYEE_INFO;
+                        employeeInfo = employeeInfoString ? JSON.parse(sim.EMPLOYEE_INFO) : {};
+                        employeeInfo.GROUP_ID = sim.GROUP_ID.toString();
+                    } else {
+                        if (inventoryRecord && inventoryRecord.RFP_GROUP_ID === rfpGroupId) {
+                            const plan = planDetailsDataMap.get(inventoryRecord.PLAN_ID);
+                            const rfpGroup = rfpGroupDataMap.get(inventoryRecord.RFP_GROUP_ID);
+
+                            simInfo = {
+                                PLAN_ID: plan.PLAN_ID,
+                                NETWORK_PROVIDER: plan.NETWORK_PROVIDER,
+                                MOBILE_NO: inventoryRecord.MOBILE_NO,
+                                ACCOUNT_NO: inventoryRecord.ACCOUNT_NO,
+                                MONTHLY_RECURRING_FEE: plan.MONTHLY_RECURRING_FEE,
+                                PLAN_DETAILS: plan.PLAN_DETAILS,
+                                RFP_GROUP_ID: inventoryRecord.RFP_GROUP_ID,
+                                RFP_GROUP_NAME: rfpGroup ? rfpGroup.RFP_GROUP_NAME : null,
+                                CATEGORY: plan.CATEGORY
+                            };
+                        }
+                    }
+
+                    // Get previous billing information if available
+                    const previousBill = previousBillMap.get(simCardId) || { previousBillAmount: 0, previousBillPayment: 0 };
+                    const currentChargeAmount = simInfo ? simInfo.MONTHLY_RECURRING_FEE || 0 : 0;
+                    const amountDue = (previousBill.previousBillAmount - previousBill.previousBillPayment) + currentChargeAmount;
+                    const rfpAmount = currentChargeAmount;
+                    const chargeToBdc = rfpAmount;
+                    const withholdingTax = parseFloat((rfpAmount / 1.12 * 0.02).toFixed(2));
+                    const amountAfterTax = rfpAmount - withholdingTax;
+
+                    const issuanceNo = sim && sim.REQUEST_STATUS === "Issued" ? sim.ISSUANCE_NO : null;
+
+                    // Construct billing data for the SIM card
+                    const billingData = [
+                        lastId++,
+                        simCardId,
+                        issuanceNo,
+                        rfpNo,
+                        billPeriodFrom,
+                        billPeriodTo,
+                        hasSoa,
+                        currentChargeAmount,
+                        previousBill.previousBillAmount,
+                        previousBill.previousBillPayment,
+                        null,
+                        null,
+                        currentChargeAmount,
+                        null,
+                        amountDue,
+                        rfpAmount,
+                        withholdingTax,
+                        amountAfterTax,
+                        chargeToBdc,
+                        simInfo ? JSON.stringify(simInfo) : "",
+                        employeeInfo ? JSON.stringify(employeeInfo) : "",
+                    ];
+
+                    billingSheet.push(billingData);
+                });
+
+                console.log(billingSheet);
+                return billingSheet;
+            }
+
+            // Function to populate billing period on bill generation
+            function populateBillingPeriod() {
+                // Function to get the last day of the given month
+                function getLastDayOfMonth(year, month) {
+                    return new Date(year, month + 1, 0).getDate();
+                }
+
+                // Function to format date as MM/DD/YYYY
+                function formatDate(date) {
+                    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const year = date.getFullYear();
+                    return `${month}/${day}/${year}`;
+                }
+
+                // Get the current date
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = now.getMonth(); // Note: month is zero-indexed (0 for January, 1 for February, etc.)
+
+                // Set the start date to the 1st of the current month
+                const startDate = new Date(year, month, 1);
+                const endDate = new Date(year, month, getLastDayOfMonth(year, month));
+
+                // Set the values to the input elements
+                ids.billPeriodFromId.value = formatDate(startDate);
+                ids.billPeriodToId.value = formatDate(endDate);
+            }
+
+            // function validateOnSubmit() {
+            // check rfp no validation
+            // check if account selected is greater than 0
+            // before proceeding to submission
+            // }
+
+            async function getFormConfig(action) {
+                switch (action) {
+                    case 'appendBillingSheetData':
+                        return {
+                            submitCallback: async formData => {
+                                formData.rfpNo = formData.rfpNo.toUpperCase();
+                                console.log("FormData RFP No:", formData.rfpNo);
+
+                                isRfpNoValid(formData.rfpNo);
+
+                                // If RFP No is invalid, show error and exit
+                                if (!isRfpNumValid) {
+                                    // toast.error({
+                                    //     title: "The RFP No is Invalid",
+                                    //     description: "Please enter a valid RFP No",
+                                    //     timeout: 4000,
+                                    //     closeButton: false,
+                                    // });
+                                    return Promise.reject("The RFP No is Invalid");
+                                }
+
+                                const simCardIds = updateTotalSelectedItems();
+
+                                if (simCardIds.length > 0) {
+                                    const billingSheetData = await generateBillingSheet(simCardIds);
+
+                                    return new Promise((resolve, reject) => {
+                                        google.script.run
+                                            .withSuccessHandler(async () => {
+                                                // Perform additional operations after successful submission
+                                                console.log("Performing additional operations for addForm");
+
+                                                ids.simCardsId.innerHTML = '';
+                                                ids.simCardInitialStateId.classList.remove('hidden');
+                                                ids.simCardInitialStateId.classList.add('flex');
+                                                existingRfpNos.set(formData.rfpNo, formData.rfpNo);
+
+                                                ids.selectedItems.textContent = 'Total Selected Items (0)';
+
+
+                                                resolve();
+                                            })
+                                            .withFailureHandler(reject)
+                                            .appendBillingSheetData(billingSheetData);
+                                    });
+                                } else {
+                                    toast.error({
+                                        title: "No Items Selected",
+                                        description: "Please select an items to proceed",
+                                        timeout: 4000,
+                                        closeButton: false,
+                                    });
+
+                                    return Promise.reject("No Items Selected");
+
+                                }
+
+                            },
+                            additionalOperations: null // No additional operations before submission
+                        };
+                    case 'editBillingRecord':
+                        return {
+                            submitCallback: formData => new Promise((resolve, reject) => {
+                                google.script.run
+                                    .withSuccessHandler(resolve)
+                                    .withFailureHandler(reject)
+                                    .editBillingRecord(formData); // Correct server-side function
+                            }),
+                            additionalOperations: async formData => {
+                                // Additional operations specific to editBillingRecord
+                                formData.editWithholdingTax = (formData.editRfpAmount / 1.12 * 0.02).toFixed(2);
+                                formData.editAmountAfterTax = formData.editRfpAmount - formData.editWithholdingTax;
+                                formData.editWithSoa = ids.editWithSoaId.checked;
+                                console.log(formData);
+                                return Promise.resolve();
+                            }
+                        };
+                    // Add more cases for other actions as needed
+                    default:
+                        throw new Error('Unknown action: ' + action);
+                }
+            }
+
+            // Function to handle form submission
+            async function handleFormSubmission(form, modalId) {
+                form.addEventListener('submit', async function (event) {
+                    event.preventDefault();
+                    const formData = new FormData(form);
+                    const dataObject = Object.fromEntries(formData.entries());
+                    const buttons = form.querySelectorAll('button.to-disable');
+                    toggleButtonState(buttons, true);
+
+                    const action = form.dataset.action;
+                    const { submitCallback, additionalOperations } = await getFormConfig(action);
+
+                    try {
+                        // Perform additional operations before submission
+                        if (additionalOperations) {
+                            await additionalOperations(dataObject);
+                        }
+                        // Submit form data after additional operations
+                        await submitCallback(dataObject);
+                        refreshTable();
+                        // showToast("Record successfully processed", "success");
+                        toast.success({
+                            title: "Record successfully processed",
+                            description: "Record successfully processed",
+                            timeout: 4000,
+                            closeButton: false,
+                        })
+                        clearForm(form);
+                        updateToggleButton();
+                        if (modalId) toggleModal(modalId); // Use the dynamic modal ID if present
+                    } catch (error) {
+                        console.error("Error:", error);
+                        // showToast("An error occurred. Please try again.", "error");
+                        // toast.error({
+                        //     title: "An error occurred. Please try again.",
+                        //     description: "An error occurred. Please try again.",
+                        //     timeout: 4000,
+                        //     closeButton: false,
+                        // })
+                    } finally {
+                        setTimeout(() => toggleButtonState(buttons, false), 2000);
+                    }
+                });
+            }
+
+            // Function to handle the deletion logic
+            async function handleDelete(dataId, options = {}) {
+                if (dataId != null) {
+
+                    const result = await $.deleteBillingRecord(dataId);
+
+                    if (result.status === 'Success') {
+                        console.info(result);
+                        await refreshTable();
+                        // showToast("Item deleted successfully!", "success");
+                        toast.success({
+                            title: "Item deleted successfully",
+                            description: "Item deleted successfully",
+                            timeout: 4000,
+                            closeButton: false,
+                        })
+                        return true;
+                    } else {
+                        console.error(result);
+                        // showToast("Item deletion unsuccessfully!", "error");
+                        toast.error({
+                            title: "Item deletion unsuccessful",
+                            description: "Item deletion unsuccessful",
+                            timeout: 4000,
+                            closeButton: false,
+                        })
+                        return false;
+                    }
+                }
+            }
+
+            function toggleModal(modalId) {
+                const modalToggle = document.querySelector(`[data-modal-toggle="${modalId}"]`);
+                if (modalToggle) {
+                    modalToggle.click();
+                } else {
+                    console.error(`Modal with identifier "${modalId}" not found.`);
+                }
+            }
+
+            // Function to disable and enable buttons
+            function toggleButtonState(buttons, state) {
+                buttons.forEach(function (button) {
+                    button.disabled = state;
+                    button.classList.toggle('cursor-not-allowed', state);
+                });
+            }
+
+
+            // Event listener for dropdown change
+            ids.rfpGroupId.addEventListener('change', function () {
+                checkedStates = {};
+                ids.simSearchInput.value = '';
+                populateSimCards();
+                updateTotalSelectedItems();
+                populateBillingPeriod();
+                // consoleUpdatedItems();
+            });
+
+            // check Rfp No locally after intial fetch
+            ids.checkRfpNoId.addEventListener('click', function (e) {
+                e.preventDefault();
+                // Disable the button to prevent spamming
+                ids.checkRfpNoId.disabled = true;
+
+                const rfpNo = ids.rfpNoId.value.trim().toUpperCase();
+                if (!rfpNo) {
+                    toast.error({
+                        title: "Invalid RFP No",
+                        description: "Please enter a valid RFP No",
+                        timeout: 4000,
+                        closeButton: false,
+                    });
+                    // Re-enable the button after 2 seconds if no RFP No entered
+                    setTimeout(() => ids.checkRfpNoId.disabled = false, 2000);
+                    return; // Exit the function after showing the error
+                }
+
+                isRfpNoValid(rfpNo);
+                // Re-enable the button after 2 seconds to prevent spamming
+                setTimeout(() => ids.checkRfpNoId.disabled = false, 2000);
+            });
+
+            function isRfpNoValid(rfpNo) {
+
+                console.warn("Checking RFP No:", rfpNo);
+                console.warn("existingRfpNos:", existingRfpNos);
+                if (existingRfpNos.has(rfpNo.trim().toUpperCase())) {
+                    isRfpNumValid = false;
+                    toast.error({
+                        title: "The RFP No is Invalid",
+                        description: "Please enter another RFP No",
+                        timeout: 4000,
+                        closeButton: false,
+                    });
+                } else {
+                    isRfpNumValid = true;
+                    toast.success({
+                        title: "The RFP No is Valid",
+                        description: "The RFP No is Valid",
+                        timeout: 4000,
+                        closeButton: false,
+                    });
+                }
+
+            }
+
+            // Helper function to convert field value to a number
+            function getFieldValue(element) {
+                return element && element.value ? parseFloat(element.value) : 0;
+            }
+
+            function calculateCurrentChargeAmount() {
+                // Get the elements
+                const currentChargeAmount = ids.editCurrentChargeAmountId;
+                const excessCharges = ids.editExcessChargesId;
+                const monthlyRecurringFee = ids.editMrfId;
+                const otherCharges = ids.editOtherChargesId;
+                const rfpAmount = ids.editRfpAmountId;
+
+                const previousBillAmount = ids.editPreviousBillAmountId;
+                const previousBillPayment = ids.editPreviousBillPaymentId;
+                const adjAmount = ids.editAdjAmountId;
+                const amountDue = ids.editAmountDueId;
+
+                // Calculate the total
+                const totalCurrentChargeAmount = getFieldValue(excessCharges) + getFieldValue(monthlyRecurringFee) + getFieldValue(otherCharges);
+
+                // Populate the currentChargeAmount element
+                currentChargeAmount.value = totalCurrentChargeAmount.toFixed(2);
+
+                // Calculate the total amount due
+                const totalAmountDue = (getFieldValue(previousBillAmount) - getFieldValue(previousBillPayment))
+                    + getFieldValue(currentChargeAmount)
+                    - getFieldValue(adjAmount);
+
+                amountDue.value = totalAmountDue.toFixed(2);
+                rfpAmount.value = (totalAmountDue < totalCurrentChargeAmount) ? totalAmountDue.toFixed(2) : totalCurrentChargeAmount.toFixed(2);
+
+
+                // Update other fields
+                ids.editExcessChargesEmployeeId.value = getFieldValue(excessCharges).toFixed(2);
+                ids.editChargeToBdcId.value = (getFieldValue(rfpAmount) - getFieldValue(excessCharges)).toFixed(2);
+            }
+
+            // Attach event listeners to the input fields
+            const inputFields = [
+                ids.editExcessChargesId,
+                ids.editMrfId,
+                ids.editOtherChargesId,
+                ids.editPreviousBillAmountId,
+                ids.editPreviousBillPaymentId,
+                ids.editAdjAmountId,
+                ids.editExcessChargesEmployeeId,
+                ids.editChargeToBdcId,
+                // ids.editRfpAmountId
+            ];
+
+            inputFields.forEach(field => field.addEventListener('input', calculateCurrentChargeAmount));
+
+            ids.editRfpAmountId.addEventListener('input', function () {
+                const rfpAmount = ids.editRfpAmountId;
+                ids.editChargeToBdcId.value = getFieldValue(rfpAmount).toFixed(2);
+            });
+
+            // Ensure RfpAmountId is updated when CurrentChargeAmountId changes, but keep RfpAmountId editable
+            // ids.editCurrentChargeAmountId.addEventListener('input', function () {
+            //     calculateCurrentChargeAmount();
+            //   console.log("EDIT CURRENT CHARGE AMOUNT ID");
+            // });
+
+            // Initialize all forms
+            document.querySelectorAll('.form-to-submit').forEach(form => {
+                // Get modal ID from data attribute if present
+                const modalId = form.dataset.modalId;
+                handleFormSubmission(form, modalId);
+            });
+
+            const datepickerInputs = document.querySelectorAll('input[datepicker]');
+
+            datepickerInputs.forEach(function (inputField) {
+                inputField.addEventListener('keydown', function (event) {
+                    const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', '/'];
+                    if (!event.key.match(/[0-9/]/) && !allowedKeys.includes(event.key)) {
+                        event.preventDefault();
+                    }
+                });
+            });
+
+            const dateFrom = ids.billPeriodFromId;
+            const dateTo = ids.billPeriodToId;
+
+            function validateDates() {
+                const fromDate = new Date(dateFrom.value);
+                const toDate = new Date(dateTo.value);
+
+                if (fromDate && toDate < fromDate) {
+                    dateTo.value = '';
+                    toast.error({
+                        title: "Invalid Bill Period",
+                        description: "Bill Period From cannot be later than Bill Period To.",
+                        timeout: 4000,
+                        closeButton: false,
+                    });
+                }
+            }
+
+            // Apply both `input` and `blur` events for robust detection
+            dateFrom.addEventListener('input', validateDates);
+            dateFrom.addEventListener('blur', validateDates);
+            dateTo.addEventListener('input', validateDates);
+            dateTo.addEventListener('blur', validateDates);
+
+
+
+            // Log selected items
+            // function logSelectedItems() {
+            //     console.warn(checkedStates.length);
+            //     const selectedItems = [];
+            //     Object.keys(checkedStates).forEach(item => {
+            //         if (checkedStates[item]) {
+            //             selectedItems.push(item);
+            //         }
+            //     });
+            //     console.log("Selected Items:", selectedItems);
+            // }
+
+
+            refreshTable();
+            populateDropdown();
+            populateSimCards();
+
+            ids.simSearchInput.addEventListener('input', populateSimCards);
+            toggleSelectButton.addEventListener('click', toggleAllItems);
+            // Log selected items when button is clicked
+            // logButton.addEventListener('click', logSelectedItems);
+
+        });
+
+        document.getElementById('billsAndPayment').classList.remove('hidden');
+
+    </script>
+</body>
+
+</html>
