@@ -148,6 +148,16 @@ function getSidebar(activePage) {
                 { view: "deduction", label: "Deduction" },
             ],
         },
+        {
+            section: "Reports",
+            key: "reports",
+            items: [
+                {
+                    view: "monthly-payment-checking",
+                    label: "Monthly Payment Checking",
+                },
+            ],
+        },
         { view: "_ticket-management", label: "Ticket Management" },
         { view: "_audit-trail", label: "Audit Trail" },
     ];
