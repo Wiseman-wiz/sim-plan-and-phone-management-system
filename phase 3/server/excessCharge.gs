@@ -438,23 +438,22 @@ function calculateSummaryData() {
     const excessChargesData = getExcessChargesData();
     const deductionData = getDeductionData();
 
-    console.log(excessChargesData);
-    console.log(deductionData);
-
     // Fetch the summary data
     const excessChargesSummary = getExcessChargesSummary(
         excessChargesData,
         deductionData
     );
 
+    console.log(excessChargesData);
+    console.log(deductionData);
     console.log(excessChargesSummary);
 
     console.log(typeof excessChargesData);
+    console.log(typeof deductionData);
     console.log(typeof excessChargesSummary);
 
     // Return both datasets as an array
     return [excessChargesData, excessChargesSummary, deductionData];
-    // return excessChargesData;
 }
 
 function getDeductionData() {
@@ -480,7 +479,8 @@ function getDeductionData() {
           d.EMPLOYEE_NO,
           d.EMPLOYEE_NAME,
           d.AMOUNT,
-          d.DATE_UPLOADED
+          d.DATE_UPLOADED,
+          d.FILE_NAME
         FROM ? AS d
       `;
 
@@ -495,6 +495,7 @@ function getDeductionData() {
                     EMPLOYEE_NAME: "",
                     AMOUNT: "",
                     DATE_UPLOADED: "",
+                    FILE_NAME: "",
                 },
             ]);
         }
@@ -509,7 +510,6 @@ function getDeductionData() {
             }
         });
 
-        console.log(execution);
         return JSON.stringify(execution);
     } catch (error) {
         return Utils.ErrorHandler(error, {
@@ -543,10 +543,6 @@ function getExcessChargesData() {
         const billingDataSet = billingSheet.toObject();
         const excessChargesDataSet = excessChargesSheet.toObject();
         const rfpSummaryDataSet = rfpSummarySheet.toObject();
-
-        // console.log(billingDataSet);
-        // console.log(excessChargesDataSet);
-        // console.log(rfpSummaryDataSet);
 
         const query = `
         SELECT
@@ -594,38 +590,6 @@ function getExcessChargesData() {
             ]);
         }
 
-        // // Make this part dynamic
-        //       const excessChargesHeaders = [
-        //           'EC_ID',
-        //           'BILL_ID',
-        //           'RFP_NO',
-        //           'GROUP_ID',
-        //           'EMPLOYEE_NO',
-        //           'EMPLOYEE_NAME',
-        //           'DEPARTMENT',
-        //           'COMPANY',
-        //           'MOBILE_NO',
-        //           'ACCOUNT_NO',
-        //           'NETWORK_PROVIDER',
-        //           'EXCESS_CHARGE_DATE',
-        //           'EXCESS_CHARGE',
-        //           'REMAINING_EXCESS_CHARGE',
-        //           // 'LAST_UPDATE_TYPE',
-        //           // 'LAST_UPDATE_DATE',
-        //       ];
-
-        //       const summaryHeaders = [
-        //           'GROUP_ID',
-        //           'EMPLOYEE_NO',
-        //           'EMPLOYEE_NAME',
-        //           'DEPARTMENT',
-        //           'COMPANY',
-        //           'TOTAL_EXCESS_CHARGE',
-        //           'TOTAL_REMAINING_EXCESS_CHARGE',
-        //           'TOTAL_AMOUNT_DEDUCTED',
-        //           'AS_OF_DATE'
-        //       ];
-        // Format date fields (assuming EXCESS_CHARGE_DATE)
         execution.forEach((row) => {
             if (row.EXCESS_CHARGE_DATE) {
                 row.EXCESS_CHARGE_DATE = Utilities.formatDate(
@@ -641,9 +605,22 @@ function getExcessChargesData() {
                     "MM/dd/yyyy"
                 );
             }
+            if (row.BILL_PERIOD_FROM) {
+                row.BILL_PERIOD_FROM = Utilities.formatDate(
+                    new Date(row.BILL_PERIOD_FROM),
+                    Session.getScriptTimeZone(),
+                    "MM/dd/yyyy"
+                );
+            }
+            if (row.BILL_PERIOD_TO) {
+                row.BILL_PERIOD_TO = Utilities.formatDate(
+                    new Date(row.BILL_PERIOD_TO),
+                    Session.getScriptTimeZone(),
+                    "MM/dd/yyyy"
+                );
+            }
         });
 
-        console.log(execution);
         return JSON.stringify(execution);
     } catch (error) {
         return Utils.ErrorHandler(error, {
@@ -654,56 +631,7 @@ function getExcessChargesData() {
     // return excessChargesData;  // Example return
 }
 
-// Function to calculate totals based on the data
-// function getExcessChargesSummary(excessChargesData) {
-//     let summary = {};
-
-//     const parsedExcessChargesData = JSON.parse(excessChargesData);
-
-//     if(parsedExcessChargesData[0].EC_ID == ""){
-
-//       summary = [{
-//         GROUP_ID: "",
-//         EMPLOYEE_NAME: "",
-//         EMPLOYEE_NO: "",
-//         COMPANY: "",
-//         DEPARTMENT: "",
-//         TOTAL_EXCESS_CHARGE: 0,
-//         TOTAL_REMAINING_EXCESS_CHARGE: 0,
-//         TOTAL_AMOUNT_DEDUCTED: 0
-//       }]
-
-//       return Object.values(summary);
-//     }
-
-//     // Iterate through each entry in the data
-//     parsedExcessChargesData.forEach(item => {
-//         const employeeInfo = JSON.parse(item.EMPLOYEE_INFO);
-//         const employeeNo = employeeInfo.EMPLOYEE_NO;
-
-//         // If employee summary doesn't exist, initialize it
-//         if (!summary[employeeNo]) {
-//             summary[employeeNo] = {
-//                 GROUP_ID: employeeInfo.GROUP_ID,
-//                 EMPLOYEE_NAME: employeeInfo.FULL_NAME,
-//                 EMPLOYEE_NO: employeeInfo.EMPLOYEE_NO,
-//                 COMPANY: employeeInfo.COMPANY_NAME,
-//                 DEPARTMENT: employeeInfo.DEPARTMENT,
-//                 TOTAL_EXCESS_CHARGE: 0,
-//                 TOTAL_REMAINING_EXCESS_CHARGE: 0,
-//                 TOTAL_AMOUNT_DEDUCTED: 0  // Can be updated if needed
-//             };
-//         }
-
-//         // Add the current item's excess charge and remaining excess charge to the total
-//         summary[employeeNo].TOTAL_EXCESS_CHARGE += item.EXCESS_CHARGE;
-//         summary[employeeNo].TOTAL_REMAINING_EXCESS_CHARGE += item.REMAINING_EXCESS_CHARGE;
-//     });
-
-//     // Convert the summary object into an array for front-end consumption
-//     return Object.values(summary);
-// }
-
+// function to get the excess charge summary
 function getExcessChargesSummary(excessChargesData, deductionsData) {
     let summary = {};
 
@@ -724,6 +652,7 @@ function getExcessChargesSummary(excessChargesData, deductionsData) {
                 TOTAL_EXCESS_CHARGE: 0,
                 TOTAL_REMAINING_EXCESS_CHARGE: 0,
                 TOTAL_AMOUNT_DEDUCTED: 0,
+                AS_OF_DATE: "",
             },
         ];
     }
@@ -744,11 +673,21 @@ function getExcessChargesSummary(excessChargesData, deductionsData) {
                 TOTAL_EXCESS_CHARGE: 0,
                 TOTAL_REMAINING_EXCESS_CHARGE: 0,
                 TOTAL_AMOUNT_DEDUCTED: 0,
+                AS_OF_DATE: item.EXCESS_CHARGE_DATE, // Set initial date as excess charge date
             };
         }
 
         // Accumulate the total excess charge
         summary[employeeNo].TOTAL_EXCESS_CHARGE += item.EXCESS_CHARGE;
+
+        // Update the AS_OF_DATE only if no deductions exist later
+        if (
+            !summary[employeeNo].AS_OF_DATE ||
+            new Date(item.EXCESS_CHARGE_DATE) >
+                new Date(summary[employeeNo].AS_OF_DATE)
+        ) {
+            summary[employeeNo].AS_OF_DATE = item.EXCESS_CHARGE_DATE;
+        }
     });
 
     // Process the deductions data
@@ -772,6 +711,7 @@ function getExcessChargesSummary(excessChargesData, deductionsData) {
                 TOTAL_EXCESS_CHARGE: 0,
                 TOTAL_REMAINING_EXCESS_CHARGE: 0,
                 TOTAL_AMOUNT_DEDUCTED: 0,
+                AS_OF_DATE: deduction.DATE_UPLOADED, // Set initial date as deduction file uploaded
             };
         }
 
@@ -779,6 +719,15 @@ function getExcessChargesSummary(excessChargesData, deductionsData) {
         summary[employeeNo].TOTAL_AMOUNT_DEDUCTED += Number(
             deduction.AMOUNT || 0
         );
+
+        // Compare and update the AS_OF_DATE if the deduction date is later
+        if (
+            !summary[employeeNo].AS_OF_DATE ||
+            new Date(deduction.DATE_UPLOADED) >
+                new Date(summary[employeeNo].AS_OF_DATE)
+        ) {
+            summary[employeeNo].AS_OF_DATE = deduction.DATE_UPLOADED;
+        }
     });
 
     // Calculate TOTAL_REMAINING_EXCESS_CHARGE for each employee
@@ -798,128 +747,9 @@ function getExcessChargesTemplateData(data) {
     getExcessChargePdfUrl(data);
 }
 
-// function populateExcessChargeReportTemplate(data) {
-//   const sheetName = 'EXCESS_CHARGES_TEMPLATE'; // Target sheet name
-//   const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-//   const sheet = spreadsheet.getSheetByName(sheetName);
-
-//   // Check if the sheet exists
-//   if (!sheet) {
-//     Logger.log(`Sheet with name "${sheetName}" does not exist.`);
-//     return;
-//   }
-
-//   // Clear the sheet before writing
-//   sheet.clear();
-
-//   // Insert the sheet name and today's date
-//   sheet.getRange('A1').setValue("HR COPY").setFontSize(14).setFontFamily('Poppins').setFontWeight('bold').setHorizontalAlignment('LEFT');
-//   const today = new Date();
-//   const formattedDate = Utilities.formatDate(today, Session.getScriptTimeZone(), 'MM/dd/yyyy');
-//   sheet.getRange('J1').setValue(`Date: ${formattedDate}`).setFontSize(14).setFontFamily('Poppins').setHorizontalAlignment('LEFT');
-
-//   // Insert report details
-//   sheet.getRange('A3').setValue("RFP NO").setFontSize(10).setFontFamily('Poppins').setHorizontalAlignment('LEFT');
-//   sheet.getRange('B3').setValue(data[0].RFP_NO).setFontSize(10).setFontFamily('Poppins').setHorizontalAlignment('LEFT');
-//   sheet.getRange('A4').setValue("RFP DATE").setFontSize(10).setFontFamily('Poppins').setHorizontalAlignment('LEFT');
-//   sheet.getRange('B4').setValue(data[0].RFP_DATE).setFontSize(10).setFontFamily('Poppins').setHorizontalAlignment('LEFT');
-//   sheet.getRange('A5').setValue("NETWORK PROVIDER").setFontSize(10).setFontFamily('Poppins').setHorizontalAlignment('LEFT');
-//   sheet.getRange('B5').setValue(data[0].NETWORK_PROVIDER).setFontSize(10).setFontFamily('Poppins').setHorizontalAlignment('LEFT');
-//   sheet.getRange('A3:B5').setBorder(true, true, true, true, true, true);
-
-//   // Define headers
-//   const headers = [
-//     'EMPLOYEE NO',
-//     'EMPLOYEE NAME',
-//     'DEPARTMENT',
-//     'COMPANY',
-//     'BILL PERIOD FROM',
-//     'BILL PERIOD TO',
-//     'SIM CARD ID',
-//     'MOBILE NO',
-//     'ACCOUNT NO',
-//     'EXCESS CHARGE',
-//   ];
-
-//   // Map data to match headers
-//   const rows = data.map((item) => [
-//     `'${String(item.EMPLOYEE_NO).padStart(6, '0')}`,
-//     item.EMPLOYEE_NAME,
-//     item.DEPARTMENT,
-//     item.COMPANY,
-//     Utilities.formatDate(new Date(item.BILL_PERIOD_FROM), Session.getScriptTimeZone(), 'MM/dd/yyyy'),
-//     Utilities.formatDate(new Date(item.BILL_PERIOD_TO), Session.getScriptTimeZone(), 'MM/dd/yyyy'),
-//     JSON.parse(item.SIM_INFO).PLAN_ID,
-//     item.MOBILE_NO,
-//     item.ACCOUNT_NO,
-//     item.EXCESS_CHARGE,
-//   ]);
-
-//   // Insert headers and data
-//   const startRow = 10;
-//   const headerRange = sheet.getRange(startRow, 1, 1, headers.length); // Header row
-//   const dataRange = sheet.getRange(startRow + 1, 1, rows.length, headers.length); // Data rows
-
-//   headerRange.setValues([headers]); // Insert headers
-//   dataRange.setValues(rows); // Insert data
-
-//   // Format headers
-//   headerRange.setFontWeight('bold').setFontSize(12).setHorizontalAlignment('CENTER').setFontFamily('Poppins');
-//   headerRange.setBorder(true, true, true, true, true, true); // Add borders to header row
-
-//   // Format data
-//   dataRange.setFontSize(11).setFontFamily('Poppins').setHorizontalAlignment('CENTER');
-//   dataRange.setBorder(true, true, true, true, true, true); // Add borders to data rows
-
-//   const excessChargeColumn = sheet.getRange(startRow + 1, 10, rows.length, 1); // EXCESS CHARGE column
-//   excessChargeColumn.setNumberFormat('#,##0.00').setHorizontalAlignment('RIGHT');
-
-//   // Add grand total row
-//   const totalRowIndex = startRow + rows.length + 1;
-//   sheet.getRange(totalRowIndex, 1).setValue('GRAND TOTAL').setFontWeight('bold').setFontSize(12).setHorizontalAlignment('CENTER');
-//   sheet.getRange(totalRowIndex, 10)
-//     .setFormula(`=SUM(J${startRow + 1}:J${startRow + rows.length})`)
-//     .setNumberFormat('#,##0.00')
-//     .setFontWeight('bold')
-//     .setFontSize(12)
-//     .setHorizontalAlignment('RIGHT');
-
-//   // Apply borders to the entire row (from column A to column J)
-//   sheet.getRange(totalRowIndex, 1, 1, 10) // Entire row range (from column A to J)
-//     .setBorder(true, true, true, true, true, true); // Adds borders on all sides
-
-//   // **Signatories Section**
-//   const pageHeight = 50; // Rows per page
-//   const totalUsedRows = totalRowIndex + 3; // Rows used by headers, data, and totals
-//   const totalPages = Math.ceil(totalUsedRows / pageHeight); // Calculate total pages
-//   const lastPageStartRow = (totalPages - 1) * pageHeight + 1; // Start row of the last page
-
-//   // Add blank rows to push signatories to the last page
-//   const blankRowsNeeded = Math.max(0, lastPageStartRow - totalUsedRows);
-//   if (blankRowsNeeded > 0) {
-//     sheet.insertRowsAfter(totalRowIndex, blankRowsNeeded);
-//   }
-
-//   // Add signatories at the bottom of the last page
-//   const signatoryStartRow = totalRowIndex + blankRowsNeeded + 5;
-//   sheet.getRange(signatoryStartRow, 1).setValue('Prepared by:').setFontWeight('bold').setFontSize(12);
-//   sheet.getRange(signatoryStartRow, 2).setValue('Checked By:').setFontWeight('bold').setFontSize(12);
-//   sheet.getRange(signatoryStartRow, 3).setValue('Received By:').setFontWeight('bold').setFontSize(12);
-
-//   sheet.getRange(signatoryStartRow + 2, 1).setValue('Cottish Star Papa').setFontWeight('bold').setFontSize(12);
-//   sheet.getRange(signatoryStartRow + 2, 2).setValue('Rienalyn Villanueva').setFontWeight('bold').setFontSize(12);
-//   sheet.getRange(signatoryStartRow + 2, 3).setValue('Nida Fajiculay').setFontWeight('bold').setFontSize(12);
-
-//   sheet.getRange(signatoryStartRow + 3, 1).setValue('Admin and Benefits Specialist').setFontSize(12);
-//   sheet.getRange(signatoryStartRow + 3, 2).setValue('Human Resources Supervisor').setFontSize(12);
-//   sheet.getRange(signatoryStartRow + 3, 3).setValue('Payroll Specialist').setFontSize(12);
-
-//   Logger.log(`Report successfully populated in sheet: "${sheetName}"`);
-// }
-
 function getExcessChargeHrPdfUrl(staticValue, data) {
     const sheetName = "EXCESS_CHARGE_HR";
-    const titleText = "HR COPY";
+    const titleText = "";
 
     // // console.log(data)
     console.log(data.length);
