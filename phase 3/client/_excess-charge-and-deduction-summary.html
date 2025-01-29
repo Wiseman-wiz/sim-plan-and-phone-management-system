@@ -61,7 +61,7 @@
                 <!-- Modal header -->
                 <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
                     <h3 class="text-lg font-semibold text-gray-900">
-                        Upload Payroll Report
+                        Upload Payroll Deduction Summary Report
                     </h3>
                     <button type="button"
                         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
@@ -167,7 +167,7 @@
                 <!-- Modal header -->
                 <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
                     <h3 class="text-lg font-semibold text-gray-900">
-                        Print Excess Charges
+                        Print and Generate Excess Charges Summary
                     </h3>
                     <button type="button"
                         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
@@ -217,11 +217,9 @@
                     </div>
                     <div class="sticky flex justify-end p-4">
                         <button type="button" id="printExcessChargeHrTemplate"
-                            class="to-disable inline-flex items-center rounded-lg bg-gray-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300">HR
-                            COPY</button>
-                        <button type="button" id="printExcessChargePayrollTemplate"
-                            class="to-disable inline-flex items-center rounded-lg bg-gray-700 px-5 py-2.5 ml-4 text-center text-sm font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300">PAYROLL
-                            COPY</button>
+                            class="to-disable inline-flex items-center rounded-lg bg-gray-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300">Print</button>
+                        <!-- <button type="button" id="printExcessChargePayrollTemplate"
+                            class="to-disable inline-flex items-center rounded-lg bg-gray-700 px-5 py-2.5 ml-4 text-center text-sm font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300">PAYROLL COPY</button> -->
                     </div>
                 </form>
             </div>
@@ -773,12 +771,12 @@
                         class="hidden flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 disable-on-load">
                         Excess Charge Records
                     </button>
-                    <!-- Print Excess Charges Modal toggle -->
+                    <!-- Print and Generate Excess Charge Modal toggle -->
                     <button data-modal-target="generate-excess-charge-modal"
                         data-modal-toggle="generate-excess-charge-modal" type="button"
                         id="generate-excess-charge-modal-toggle"
                         class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 disable-on-load">
-                        Print Excess Charges
+                        Print Excess Charge
                     </button>
                     <!-- Deduction Records Modal toggle -->
                     <button data-modal-target="deduction-modal" data-modal-toggle="deduction-modal" type="button"
@@ -910,6 +908,8 @@
             let fullExcessChargesData = [];
             let fullExcessChargesSummary = [];
             const rfpWithExcessCharge = new Map();
+
+            let cachedDeductionData = [];
 
 
             const rfpNoDropdown = document.getElementById("rfpNoDropdown");
@@ -1241,9 +1241,9 @@
                         summaryHeaders.forEach((header) => {
                             const td = document.createElement('td');
                             let value = row[header];
-                            if (header == 'AS_OF_DATE') {
-                                value = asOfDate;
-                            }
+                            // if (header == 'AS_OF_DATE') {
+                            //     value = asOfDate;
+                            // }
                             td.classList.add('px-6', 'py-3');
                             const numberValues = [
                                 'TOTAL_EXCESS_CHARGE',
@@ -1429,10 +1429,15 @@
                 const parsedDeductionData = JSON.parse(deductionData);
                 const deductionDataArray = Array.from(parsedDeductionData);
 
+                cachedDeductionData = deductionDataArray;
+
                 // Validate the data format received from the server
                 if (!Array.isArray(excessChargesDataArray) || !Array.isArray(excessChargesSummaryArray)) {
                     throw new Error('Invalid data format received');
                 }
+
+                // Create an algo here to merge the excess charge and deduction
+
 
                 // Store the datasets locally for filtering
                 fullExcessChargesData = excessChargesDataArray;
@@ -1821,7 +1826,7 @@
                             }
 
                             if (json) {
-                                processingFunction(json);
+                                processingFunction(json, text.primary.textContent);
                                 form.reset();
 
                             }
@@ -1833,8 +1838,27 @@
             }
 
 
-            async function processPayrollReport(uploadedData) {
+            async function processPayrollReport(uploadedData, fileName) {
                 console.warn(uploadedData);
+                console.warn(fileName);
+
+                // create a function to check if the file name of uploaded data was already exist on the deductionData
+                // Create a set of file names from the cached deduction data
+                const fileNameSet = new Set(cachedDeductionData.map(data => data.FILE_NAME));
+
+                // Check if the file name already exists in the set
+                if (fileNameSet.has(fileName)) {
+                    console.error(`File ${fileName} already exists. Upload invalid.`);
+                    toast.error({
+                        title: `Invalid File`,
+                        description: `The file "${fileName}" already exists. Please upload a different file.`,
+                        timeout: 4000,
+                        closeButton: false,
+                    });
+                    return; // Stop processing if file already exists
+                }
+
+
                 google.script.run.withSuccessHandler(async function (response) {
                     console.log(response);
                     if (response > 0) {
@@ -1858,7 +1882,7 @@
                             closeButton: false,
                         });
                     }
-                }).processAndWriteDeductionData(uploadedData);
+                }).processAndWriteDeductionData(uploadedData, fileName);
             }
 
             async function processWaiverLetter(uploadedData) {
@@ -2198,40 +2222,40 @@
                 }
             });
 
-            ids.printExcessChargePayrollTemplate.addEventListener('click', () => {
-                const button = ids.printExcessChargePayrollTemplate; // Reference to the button
-                const rfpValue = rfpNoDropdown.value.trim();
-                console.warn(rfpWithExcessCharge);
+            // ids.printExcessChargePayrollTemplate.addEventListener('click', () => {
+            //   const button = ids.printExcessChargePayrollTemplate; // Reference to the button
+            //   const rfpValue = rfpNoDropdown.value.trim();
+            //   console.warn(rfpWithExcessCharge);
 
-                if (!rfpValue) {
-                    toast.error({
-                        title: "Invalid RFP No",
-                        description: "Please select an RFP No",
-                        timeout: 4000,
-                        closeButton: false,
-                    });
-                } else if (!rfpWithExcessCharge.has(rfpValue)) {
-                    toast.error({
-                        title: "RFP No Not Found",
-                        description: "The selected RFP No is invalid",
-                        timeout: 4000,
-                        closeButton: false,
-                    });
-                } else {
-                    // Disable the button to prevent spamming
-                    button.disabled = true;
-                    button.classList.add('opacity-60', 'cursor-not-allowed');
+            //   if(!rfpValue){
+            //     toast.error({
+            //         title: "Invalid RFP No",
+            //         description: "Please select an RFP No",
+            //         timeout: 4000,
+            //         closeButton: false,
+            //     });
+            //   } else if(!rfpWithExcessCharge.has(rfpValue)){
+            //     toast.error({
+            //         title: "RFP No Not Found",
+            //         description: "The selected RFP No is invalid",
+            //         timeout: 4000,
+            //         closeButton: false,
+            //     });
+            //   } else{
+            //     // Disable the button to prevent spamming
+            //     button.disabled = true;
+            //     button.classList.add('opacity-60', 'cursor-not-allowed');
 
-                    downloadPayrollExcessChargeReport();
+            //     downloadPayrollExcessChargeReport();
 
-                    // Re-enable the button after 5 seconds
-                    setTimeout(() => {
-                        button.disabled = false;
-                        button.classList.remove('opacity-60', 'cursor-not-allowed');
-                    }, 10000);
+            //     // Re-enable the button after 5 seconds
+            //     setTimeout(() => {
+            //       button.disabled = false;
+            //       button.classList.remove('opacity-60', 'cursor-not-allowed');
+            //     }, 10000);
 
-                }
-            });
+            //   }
+            // });
 
             // END OF REVISIONS ON EXCESS CHARGES
 
