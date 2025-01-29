@@ -1400,102 +1400,90 @@
 
             // Function to fetch both datasets from the server
             async function refreshTables() {
-                // try {
-                // Fetch both datasets from the server in a single request
-                const [excessChargesData, excessChargesSummary, deductionData] = await new Promise((resolve, reject) => {
-                    // const excessChargesData = await new Promise((resolve, reject) => {
-                    google.script.run
-                        .withSuccessHandler(resolve)
-                        .withFailureHandler(reject)
-                        .calculateSummaryData();  // Backend function
-                });
+                try {
+                    // Fetch both datasets from the server in a single request
+                    const [excessChargesData, excessChargesSummary, deductionData] = await new Promise((resolve, reject) => {
+                        // const excessChargesData = await new Promise((resolve, reject) => {
+                        google.script.run
+                            .withSuccessHandler(resolve)
+                            .withFailureHandler(reject)
+                            .calculateSummaryData();  // Backend function
+                    });
 
-                console.warn(excessChargesData)
-                console.warn(excessChargesSummary)
-                console.warn(deductionData)
+                    console.warn(excessChargesData)
+                    console.warn(excessChargesSummary)
+                    console.warn(deductionData)
 
+                    const parsedExcessChargesData = JSON.parse(excessChargesData);
+                    const excessChargesDataArray = Array.from(parsedExcessChargesData);
 
-                const parsedExcessChargesData = JSON.parse(excessChargesData);
-                const excessChargesDataArray = Array.from(parsedExcessChargesData);
-                // console.warn({
-                //     array
-                // });
+                    // const parsedExcessChargesSummary = JSON.parse(excessChargesSummary);
+                    const excessChargesSummaryArray = Array.from(excessChargesSummary);
+                    const parsedDeductionData = JSON.parse(deductionData);
+                    const deductionDataArray = Array.from(parsedDeductionData);
 
-                // const parsedExcessChargesSummary = JSON.parse(excessChargesSummary);
-                const excessChargesSummaryArray = Array.from(excessChargesSummary);
+                    cachedDeductionData = deductionDataArray;
 
-                // console.warn(typeof excessChargesData);
+                    // Validate the data format received from the server
+                    if (!Array.isArray(excessChargesDataArray) || !Array.isArray(excessChargesSummaryArray)) {
+                        throw new Error('Invalid data format received');
+                    }
 
-                const parsedDeductionData = JSON.parse(deductionData);
-                const deductionDataArray = Array.from(parsedDeductionData);
-
-                cachedDeductionData = deductionDataArray;
-
-                // Validate the data format received from the server
-                if (!Array.isArray(excessChargesDataArray) || !Array.isArray(excessChargesSummaryArray)) {
-                    throw new Error('Invalid data format received');
-                }
-
-                // Create an algo here to merge the excess charge and deduction
+                    // Store the datasets locally for filtering
+                    fullExcessChargesData = excessChargesDataArray;
+                    fullExcessChargesSummary = excessChargesSummaryArray;
 
 
-                // Store the datasets locally for filtering
-                fullExcessChargesData = excessChargesDataArray;
-                fullExcessChargesSummary = excessChargesSummaryArray;
+                    fullExcessChargesData.forEach((item) => {
+                        if (item.SIM_INFO != "") {
+                            const simInfo = JSON.parse(item.SIM_INFO);
 
+                            // Use RFP_NO as the key and store relevant details as the value
+                            rfpWithExcessCharge.set(item.RFP_NO, {
+                                RFP_DATE: item.RFP_DATE,
+                                NETWORK_PROVIDER: simInfo.NETWORK_PROVIDER,
+                                BILL_PERIOD_FROM: item.BILL_PERIOD_FROM,
+                                BILL_PERIOD_TO: item.BILL_PERIOD_TO,
+                            });
+                        }
 
-                fullExcessChargesData.forEach((item) => {
-                    if (item.SIM_INFO != "") {
-                        const simInfo = JSON.parse(item.SIM_INFO);
+                    });
 
-                        // Use RFP_NO as the key and store relevant details as the value
-                        rfpWithExcessCharge.set(item.RFP_NO, {
-                            RFP_DATE: item.RFP_DATE,
-                            NETWORK_PROVIDER: simInfo.NETWORK_PROVIDER,
-                            BILL_PERIOD_FROM: item.BILL_PERIOD_FROM,
-                            BILL_PERIOD_TO: item.BILL_PERIOD_TO,
+                    const populateSelection = () => {
+                        const select = ids.rfpSelection;
+                        rfpWithExcessCharge.forEach((_, rfpNo) => {
+                            const option = document.createElement("option");
+                            option.value = rfpNo;
+                            option.textContent = rfpNo;
+                            select.appendChild(option);
                         });
                     }
 
-                });
+                    console.warn(rfpWithExcessCharge)
+                    console.warn(excessChargesDataArray)
+                    console.warn(excessChargesSummaryArray)
 
-                const populateSelection = () => {
-                    const select = ids.rfpSelection;
-                    rfpWithExcessCharge.forEach((_, rfpNo) => {
-                        const option = document.createElement("option");
-                        option.value = rfpNo;
-                        option.textContent = rfpNo;
-                        select.appendChild(option);
+                    populateRFPDropdown(rfpWithExcessCharge);
+
+                    // Render tables with the full datasets (no filters applied initially)
+                    refreshMainRecordTable(fullExcessChargesData);
+                    refreshSummaryTable(fullExcessChargesSummary);
+                    refreshDeductionTable(deductionDataArray);
+
+                    // Hide the spinner once the data was loaded
+                    spinner.classList.add("hidden");
+                    // Show the Table Container once the data was loaded
+                    tableContainer.classList.remove("hidden");
+
+                    // Remove the disable attribute from the buttons
+                    document.querySelectorAll(".disable-on-load").forEach((button) => {
+                        button.disabled = false;
+                        button.classList.remove("cursor-not-allowed");
                     });
+
+                } catch (error) {
+                    console.error('Error refreshing tables:', error);
                 }
-
-                // rfpWithExcessCharge = 
-
-                console.warn(rfpWithExcessCharge)
-                console.warn(excessChargesDataArray)
-                console.warn(excessChargesSummaryArray)
-
-                populateRFPDropdown(rfpWithExcessCharge);
-
-                // Render tables with the full datasets (no filters applied initially)
-                refreshMainRecordTable(fullExcessChargesData);
-                refreshSummaryTable(fullExcessChargesSummary);
-                refreshDeductionTable(deductionDataArray);
-
-                // Hide the spinner once the data was loaded
-                spinner.classList.add("hidden");
-                // Show the Table Container once the data was loaded
-                tableContainer.classList.remove("hidden");
-
-                // Remove the disable attribute from the buttons
-                document.querySelectorAll(".disable-on-load").forEach((button) => {
-                    button.disabled = false;
-                    button.classList.remove("cursor-not-allowed");
-                });
-
-                // } catch (error) {
-                //     console.error('Error refreshing tables:', error);
-                // }
             }
 
             // Function to refresh the Main Record Table
@@ -1613,130 +1601,6 @@
                 refreshMainRecordTable(fullExcessChargesData);
             }
 
-
-
-            async function initializeTables() {
-                try {
-                    const [excessChargesData, excessChargesSummary] = await new Promise((resolve, reject) => {
-                        google.script.run
-                            .withSuccessHandler(resolve)
-                            .withFailureHandler(reject)
-                            .calculateSummaryData();
-                    });
-
-                    if (!Array.isArray(excessChargesData) || !Array.isArray(excessChargesSummary)) {
-                        throw new Error('Invalid data format received');
-                    }
-
-                    // Initialize Record Table
-                    const excessChargesDataArray = Array.from(excessChargesData);
-                    console.log("excessChargesData", excessChargesData);
-                    excessChargesTableInstance.setDataset(excessChargesDataArray).render();
-
-                    // Initialize Summary Table
-                    const excessChargesSummaryArray = Array.from(excessChargesSummary);
-                    console.log("excessChargesSummary", excessChargesSummary);
-                    summaryTableInstance.setDataset(excessChargesSummaryArray).render();
-
-                    // Hide the spinner once the data was loaded
-                    spinner.classList.add("hidden");
-                    // Show the Table Container once the data was loaded
-                    tableContainer.classList.remove("hidden");
-
-                    // Remove the disable attribute from the buttons
-                    document.querySelectorAll(".disable-on-load").forEach((button) => {
-                        button.disabled = false;
-                        button.classList.remove("cursor-not-allowed");
-                    });
-
-                } catch (error) {
-                    console.error('Error initializing tables:', error);
-                }
-            }
-
-            async function refreshRecordsTable(dateFrom = null, dateTo = null) {
-                // try {
-                const excessChargesData = await new Promise((resolve, reject) => {
-                    google.script.run
-                        .withSuccessHandler(resolve)
-                        .withFailureHandler(reject)
-                        .getMergedData(dateFrom, dateTo);
-                });
-
-                if (!Array.isArray(excessChargesData)) {
-                    throw new Error('Invalid data format received');
-                }
-
-
-
-                // Refresh Record Table
-                const excessChargesDataArray = Array.from(excessChargesData);
-
-                if (excessChargesTableInstance && typeof excessChargesTableInstance.setDataset === 'function') {
-                    excessChargesTableInstance.setDataset(excessChargesDataArray).render();
-                } else {
-                    console.log("Shit happens");
-                }
-
-                // excessChargesTableInstance.setDataset(excessChargesDataArray).render();
-
-                // } catch (error) {
-                //     console.error('Error refreshing records table:', error);
-                // }
-            }
-
-
-            async function refreshBothTables(dateFrom = null, dateTo = null) {
-                try {
-                    const [excessChargesData, excessChargesSummary] = await new Promise((resolve, reject) => {
-                        google.script.run
-                            .withSuccessHandler(resolve)
-                            .withFailureHandler(reject)
-                            .calculateSummaryData();
-                    });
-
-                    if (!Array.isArray(excessChargesData) || !Array.isArray(excessChargesSummary)) {
-                        throw new Error('Invalid data format received');
-                    }
-
-                    // Refresh Record Table
-                    const excessChargesDataArray = Array.from(excessChargesData);
-                    excessChargesTableInstance.setDataset(excessChargesDataArray).render();
-
-                    // Refresh Summary Table
-                    const excessChargesSummaryArray = Array.from(excessChargesSummary);
-                    summaryTableInstance.setDataset(excessChargesSummaryArray).render();
-
-                } catch (error) {
-                    console.error('Error refreshing both tables:', error);
-                }
-            }
-
-
-
-
-            async function refreshExcessChargesTable(instance, dateFrom = null, dateTo = null) {
-                // Fetch the filtered data based on the date range
-                // const [excessChargesData, excessChargesSummary] = await $.getExcessChargesData(dateFrom, dateTo);
-                const [excessChargesData, excessChargesSummary] = [[], []];
-                console.log("excessChargesSummary", excessChargesSummary)
-                // Convert the excessChargesData to an array
-                const array = Array.from(excessChargesData);
-                console.warn("refreshExcessChargesTable", array);
-                // Update the instance's dataset and render the table
-                instance.setDataset(array).render();
-                // Refresh the summary table, but only if this function is intended to do so
-                refreshSummaryTable(summaryTableInstance, excessChargesSummary);
-            }
-
-            // async function refreshSummaryTable(instance, excessChargesSummary) {
-            //     // Convert the summary data to an array
-            //     const array = Array.from(excessChargesSummary);
-            //     console.warn("refreshSummaryTable", array);
-            //     // Update the instance's dataset and render the summary table
-            //     instance.setDataset(array).render();
-            // }
-
             function setupFileUpload(formId, fileInputId, processingFunction) {
                 const MaxFileSize = 10 * Math.pow(1024, 2); // 10 MB
 
@@ -1842,8 +1706,7 @@
                 console.warn(uploadedData);
                 console.warn(fileName);
 
-                // create a function to check if the file name of uploaded data was already exist on the deductionData
-                // Create a set of file names from the cached deduction data
+                // Creates a set of file names from the cached deduction data
                 const fileNameSet = new Set(cachedDeductionData.map(data => data.FILE_NAME));
 
                 // Check if the file name already exists in the set
@@ -1851,13 +1714,13 @@
                     console.error(`File ${fileName} already exists. Upload invalid.`);
                     toast.error({
                         title: `Invalid File`,
-                        description: `The file "${fileName}" already exists. Please upload a different file.`,
+                        // description: `The file "${fileName}" already exists. Please upload a different file.`,
+                        description: `The file already exists. Please upload a different file.`,
                         timeout: 4000,
                         closeButton: false,
                     });
                     return; // Stop processing if file already exists
                 }
-
 
                 google.script.run.withSuccessHandler(async function (response) {
                     console.log(response);
@@ -1897,74 +1760,8 @@
                 }).applyWaiverLetter(uploadedData);
             }
 
-            // async function applyDateFilter(e) {
-            //     e.preventDefault();
-            //     date.dateFrom = ids.reportsDatepickerFromId.value;
-            //     date.dateTo = ids.reportsDatepickerToId.value;
-
-            //     if (date.dateFrom && date.dateTo) {
-            //         console.log(date.dateFrom, date.dateTo);
-            //         if (date.dateFrom <= date.dateTo) {
-            //             await refreshRecordsTable(date.dateFrom, date.dateTo);
-            //             // showToast("Date filter applied", 'success');
-            //             toast.success({
-            //                 title: "Date filter applied",
-            //                 description: "Date filter applied",
-            //                 timeout: 4000,
-            //                 closeButton: false,
-            //             })
-            //         } else {
-            //             // showToast("Invalid Date Range", 'error');
-            //             toast.error({
-            //                 title: "Invalid Date Range",
-            //                 description: "Invalid Date Range",
-            //                 timeout: 4000,
-            //                 closeButton: false,
-            //             })
-            //         }
-            //     } else {
-            //         // showToast("Select a valid date range first", "warning");
-            //             toast.error({
-            //                 title: "Invalid Date Range",
-            //                 description: "Invalid Date Range",
-            //                 timeout: 4000,
-            //                 closeButton: false,
-            //             })
-            //     }
-            // }
-
-            // async function resetDateFilter(e) {
-            //     e.preventDefault();
-            //     if (ids.reportsDatepickerFromId.value && ids.reportsDatepickerToId) {
-            //         ids.reportsDatepickerFromId.value = "";
-            //         ids.reportsDatepickerToId.value = "";
-            //         await refreshRecordsTable();
-            //         // showToast("Date Filter has been cleared", 'success');
-            //         toast.success({
-            //                 title: "Date Filter has been cleared",
-            //                 description: "Date Filter has been cleared",
-            //                 timeout: 4000,
-            //                 closeButton: false,
-            //             })
-            //     } else {
-            //         // showToast("Nothing happened", 'error');
-            //         toast.error({
-            //                 title: "Invalid Action",
-            //                 description: "Invalid Action",
-            //                 timeout: 4000,
-            //                 closeButton: false,
-            //             })
-            //     }
-            // }
-
             ids.applyDateFilterId.addEventListener('click', () => applyDateFilter());
             ids.resetDateFilterId.addEventListener('click', resetDateFilter);
-
-            // Disables all buttons while the table content is loading
-            // document.querySelectorAll('button').forEach(button => {
-            //     button.classList.add('cursor-not-allowed');
-            //     button.disabled = true;
-            // });
 
             // Targeting a specific class instead of all the buttons
             document.querySelectorAll('.disable-on-load').forEach(button => {
@@ -1973,8 +1770,6 @@
             });
 
 
-
-            // REVISIONS ON EXCESS CHARGES
             // Define the event handler function
             function downloadHrExcessChargeReport() {
                 const rfpNo = ids.rfpNoDropdown.value;
@@ -1993,26 +1788,6 @@
                     var win = window.open("", "_blank");
                     win.document.write('<iframe width="100%" height="100%" src="' + pdfUrl + '"></iframe>');
                 }).getExcessChargeHrPdfUrl(staticValue, processedData);
-            }
-
-
-            function downloadPayrollExcessChargeReport() {
-                const rfpNo = ids.rfpNoDropdown.value;
-                const filteredExcessChargesDataByRfp = fullExcessChargesData.filter(record => record.RFP_NO === rfpNo);
-                const processedData = processReportData(filteredExcessChargesDataByRfp);
-                console.log(processedData)
-
-                const validRfpNo = filteredExcessChargesDataByRfp[0].RFP_NO;
-                const rfpDate = filteredExcessChargesDataByRfp[0].RFP_DATE;
-                const networkProvider = filteredExcessChargesDataByRfp[0].NETWORK_PROVIDER;
-
-                const staticValue = { "RFP_NO": validRfpNo, "RFP_DATE": rfpDate, "NETWORK_PROVIDER": networkProvider };
-
-                console.log("Action button has been clicked");
-                google.script.run.withSuccessHandler(function (pdfUrl) {
-                    var win = window.open("", "_blank");
-                    win.document.write('<iframe width="100%" height="100%" src="' + pdfUrl + '"></iframe>');
-                }).getExcessChargePayrollPdfUrl(staticValue, processedData);
             }
 
             function processReportData(data) {
@@ -2045,28 +1820,6 @@
                 return processedData;
             }
 
-
-
-
-            // Define the event handler function
-            function downloadPaymentBreakdown() {
-                console.log("Action button has been clicked");
-
-                // Use cached payment breakdown data for the given RFP No
-                // const cachedBreakdown = cache.paymentBreakdown[data.RFP_NO];
-
-                // console.log(cachedBreakdown);
-
-                if (cachedPaymentBreakdown) {
-                    google.script.run.withSuccessHandler(function (pdfUrl) {
-                        var win = window.open("", "_blank");
-                        win.document.write('<iframe width="100%" height="100%" src="' + pdfUrl + '"></iframe>');
-                    }).getPaymentBreakdownPdfUrl(cachedPaymentBreakdown);
-                } else {
-                    console.warn(`No cached payment breakdown found for RFP No: ${data.RFP_NO}`);
-                }
-            }
-
             // Populate dropdown for RFP_NO selection
             function populateRFPDropdown(rfpMap) {
                 console.warn("The rfp dropdown has been populated")
@@ -2096,7 +1849,7 @@
 
                 // Show the dropdown only if there are items
                 if (rfpMap.size > 0) {
-                    dropdownList.classList.remove("hidden");
+                    // dropdownList.classList.remove("hidden");
                 } else {
                     dropdownList.classList.add("hidden");
                     // clearRFPDetails(); // Clear info div if no items exist
@@ -2177,16 +1930,6 @@
             });
 
 
-            // Add the event listener
-            // if (!ids.downloadExcessChargesId.hasRfpDownloadEvent) {                    
-            //   ids.downloadExcessChargesId.addEventListener('click', downloadHrExcessChargeReport);
-            //   ids.downloadExcessChargesId.hasRfpDownloadEvent = true;
-            // }
-            // if (!ids.downloadPaymentBreakdownId.hasPaymentBreakdownEvent) {
-            //   ids.downloadPaymentBreakdownId.addEventListener('click', downloadPaymentBreakdown);
-            //   ids.downloadPaymentBreakdownId.hasPaymentBreakdownEvent = true;
-            // }
-
             ids.printExcessChargeHrTemplate.addEventListener('click', () => {
                 const button = ids.printExcessChargeHrTemplate; // Reference to the button
                 const rfpValue = rfpNoDropdown.value.trim();
@@ -2221,47 +1964,6 @@
 
                 }
             });
-
-            // ids.printExcessChargePayrollTemplate.addEventListener('click', () => {
-            //   const button = ids.printExcessChargePayrollTemplate; // Reference to the button
-            //   const rfpValue = rfpNoDropdown.value.trim();
-            //   console.warn(rfpWithExcessCharge);
-
-            //   if(!rfpValue){
-            //     toast.error({
-            //         title: "Invalid RFP No",
-            //         description: "Please select an RFP No",
-            //         timeout: 4000,
-            //         closeButton: false,
-            //     });
-            //   } else if(!rfpWithExcessCharge.has(rfpValue)){
-            //     toast.error({
-            //         title: "RFP No Not Found",
-            //         description: "The selected RFP No is invalid",
-            //         timeout: 4000,
-            //         closeButton: false,
-            //     });
-            //   } else{
-            //     // Disable the button to prevent spamming
-            //     button.disabled = true;
-            //     button.classList.add('opacity-60', 'cursor-not-allowed');
-
-            //     downloadPayrollExcessChargeReport();
-
-            //     // Re-enable the button after 5 seconds
-            //     setTimeout(() => {
-            //       button.disabled = false;
-            //       button.classList.remove('opacity-60', 'cursor-not-allowed');
-            //     }, 10000);
-
-            //   }
-            // });
-
-            // END OF REVISIONS ON EXCESS CHARGES
-
-
-            // Call the table initialization function
-            // await initializeTables();
 
             refreshTables();
 
