@@ -160,7 +160,7 @@ function getSidebar(activePage) {
                     view: "payment-summary-report",
                     label: "Payment Summary Report",
                 },
-                // { view: "deduction", label: "Deduction" }
+                { view: "_sim-reports", label: "SIM Card Reports" },
             ],
         },
         { view: "_ticket-management", label: "Ticket Management" },
