@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Modal & Table</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer type="module"
+        src="https://rawcdn.githack.com/shinxzxzxz/TableJS/55597d91c8f5165cdfaaf90798bc2e0e886a42e8/tablejs.js"></script>
+</head>
+
+<body class="bg-gray-100 p-10">
+
+    <!-- Buttons to Open Modal -->
+    <button class="modal-open-btn bg-blue-600 text-white px-4 py-2 rounded-md" data-table-key="totalSimCards"
+        data-modal-title="Total SIM Cards">
+        Open SIM Cards Modal
+    </button>
+
+    <button class="modal-open-btn bg-green-600 text-white px-4 py-2 rounded-md" data-table-key="activeUsers"
+        data-modal-title="Active Users">
+        Open Active Users Modal
+    </button>
+
+    <!-- Dynamic Modal -->
+    <div id="dynamic-modal" tabindex="-1" aria-hidden="true"
+        class="hidden fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+        <div class="relative p-4 w-full max-w-6xl mx-auto bg-white rounded-lg shadow-lg">
+            <div class="flex items-center justify-between p-4 border-b">
+                <h3 id="modal-title" class="text-lg font-semibold text-gray-900">Modal Title</h3>
+                <button id="modal-close-btn"
+                    class="text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8">
+                    ✖
+                </button>
+            </div>
+
+            <div class="p-4">
+                <!-- Table Controls -->
+                <div class="flex justify-between mb-4">
+                    <input type="text" id="pagination-search" placeholder="Search"
+                        class="border p-2 rounded w-60 focus:ring-black focus:border-black">
+                    <button id="export-csv" class="bg-green-600 text-white px-4 py-2 rounded-md">Export CSV</button>
+                </div>
+
+                <!-- Table -->
+                <div class="overflow-auto max-h-[400px]">
+                    <table id="dynamic-table" class="w-full border-collapse border border-gray-200">
+                        <thead class="bg-gray-200"></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="flex justify-between items-center mt-4">
+                    <span id="pagination-info"></span>
+                    <div>
+                        <button id="pagination-prev" class="bg-gray-300 px-3 py-1 rounded mr-2">Previous</button>
+                        <button id="pagination-next" class="bg-gray-300 px-3 py-1 rounded">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
