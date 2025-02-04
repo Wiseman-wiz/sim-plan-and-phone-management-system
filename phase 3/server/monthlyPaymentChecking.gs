@@ -43,22 +43,56 @@ function getMonthlyPaymentData() {
             ]);
         }
 
-        execution.forEach((row) => {
-            if (row.BILL_PERIOD_FROM) {
-                row.BILL_PERIOD_FROM = Utilities.formatDate(
-                    new Date(row.BILL_PERIOD_FROM),
-                    Session.getScriptTimeZone(),
-                    "MM/dd/yyyy"
-                );
-            }
-        });
+        const result = transformData(execution);
+        console.log(result);
 
-        console.log(execution);
-        return JSON.stringify(execution);
+        return result;
     } catch (error) {
         return Utils.ErrorHandler(error, {
             arguments,
             value: [],
         });
     }
+}
+
+function transformData(dataset) {
+    const result = {};
+
+    dataset.forEach(
+        ({ SIM_CARD_ID, SIM_INFO, BILL_PERIOD_FROM, RFP_AMOUNT }) => {
+            const { MOBILE_NO, ACCOUNT_NO } = JSON.parse(SIM_INFO);
+            const dateObj = new Date(BILL_PERIOD_FROM);
+            const billYear = dateObj.getFullYear(); // Extract Year (YYYY)
+            const billMonth = `${billYear}-${String(
+                dateObj.getMonth() + 1
+            ).padStart(2, "0")}`; // Format YYYY-MM
+
+            // Initialize SIM card entry if it doesn't exist
+            if (!result[SIM_CARD_ID]) {
+                result[SIM_CARD_ID] = {
+                    SIM_CARD_ID,
+                    MOBILE_NO,
+                    ACCOUNT_NO,
+                    YEARS: {}, // Store payments by year
+                };
+            }
+
+            // Initialize the year with all 12 months set to 0 if not exists
+            if (!result[SIM_CARD_ID].YEARS[billYear]) {
+                result[SIM_CARD_ID].YEARS[billYear] = {};
+                for (let month = 1; month <= 12; month++) {
+                    const monthKey = `${billYear}-${String(month).padStart(
+                        2,
+                        "0"
+                    )}`;
+                    result[SIM_CARD_ID].YEARS[billYear][monthKey] = 0;
+                }
+            }
+
+            // Store or update the monthly payment
+            result[SIM_CARD_ID].YEARS[billYear][billMonth] += RFP_AMOUNT || 0;
+        }
+    );
+
+    return Object.values(result);
 }

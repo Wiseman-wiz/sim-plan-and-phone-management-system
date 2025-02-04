@@ -111,7 +111,9 @@ function getSimReportsData() {
           si.ACCOUNT_NO,
           si.STATUS,
           sp.PLAN_ID,
-          sp.CATEGORY
+          sp.CATEGORY,
+          sp.NETWORK_PROVIDER,
+          sp.PLAN_DETAILS
         FROM ? AS si
         LEFT JOIN ? AS sp ON si.PLAN_ID = sp.PLAN_ID
       `;
@@ -131,19 +133,76 @@ function getSimReportsData() {
                     STATUS: "",
                     PLAN_ID: "",
                     CATEGORY: "",
+                    NETWORK_PROVIDER: "",
+                    PLAN_DETAILS: "",
                 },
             ]);
         }
 
-        // execution.forEach(row => {
-        //   if (row.BILL_PERIOD_FROM) {
-        //     row.BILL_PERIOD_FROM = Utilities.formatDate(new Date(row.BILL_PERIOD_FROM), Session.getScriptTimeZone(), "MM/dd/yyyy");
-        //   } else if (row.PAYMENT_REFERENCE_DATE) {
-        //     row.PAYMENT_REFERENCE_DATE = Utilities.formatDate(new Date(row.PAYMENT_REFERENCE_DATE), Session.getScriptTimeZone(), "MM/dd/yyyy");
-        //   }
-        // });
-
         console.log(execution);
+        return JSON.stringify(execution);
+    } catch (error) {
+        return Utils.ErrorHandler(error, {
+            arguments,
+            value: [],
+        });
+    }
+}
+
+function getOpenTickets() {
+    try {
+        const ticketManagementSheet = new Utils.Sheet("TICKET_MANAGEMENT", {
+            row: { start: 1 },
+        });
+
+        const ticketManagementDataSet = ticketManagementSheet.toObject();
+
+        const query = `
+        SELECT
+          t.TICKET_ID,
+          t.TICKET_NO,
+          t.STATUS,
+          t.DATE_RECEIVED,
+          t.CREATED_AT,
+          t.GROUP_ID,
+          t.DEVICE_TYPE,
+          t.SIM_CARD_ID,
+          t.MOBILE_ID,
+          t.DESCRIPTION,
+          t.PRIORITY,
+          t.ASSIGNED_PIC,
+          t.PLAN_OF_ACTION,
+          t.DATE_RESOLVED,
+          t.RESOLUTION_DETAILS
+        FROM ? AS t
+        WHERE t.STATUS = 'Pending'
+      `;
+
+        const execution = Utils.sql(query, [ticketManagementDataSet]);
+
+        if (!execution || execution.length === 0) {
+            return JSON.stringify([
+                {
+                    TICKET_ID: "",
+                    TICKET_NO: "",
+                    STATUS: "",
+                    DATE_RECEIVED: "",
+                    CREATED_AT: "",
+                    GROUP_ID: "",
+                    DEVICE_TYPE: "",
+                    SIM_CARD_ID: "",
+                    MOBILE_ID: "",
+                    DESCRIPTION: "",
+                    PRIORITY: "",
+                    ASSIGNED_PIC: "",
+                    PLAN_OF_ACTION: "",
+                    DATE_RESOLVED: "",
+                    RESOLUTION_DETAILS: "",
+                },
+            ]);
+        }
+
+        console.log(JSON.stringify(execution));
         return JSON.stringify(execution);
     } catch (error) {
         return Utils.ErrorHandler(error, {

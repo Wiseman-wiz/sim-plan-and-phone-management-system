@@ -9,9 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer type="module"
         src="https://rawcdn.githack.com/shinxzxzxz/TableJS/55597d91c8f5165cdfaaf90798bc2e0e886a42e8/tablejs.js"></script>
-    <!-- <script defer type="module"
-        src="https://rawcdn.githack.com/shinxzxzxz/TableJs-v2/fa9f1e82cf2595093650626d177115e1806a3919/tablejs.js"></script> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/datepicker.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
@@ -125,41 +123,10 @@
                                     d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                             </svg>
                         </div>
-                        <input datepicker datepicker-autohide datepicker-format="mm/dd/yyyy" type="text"
-                            name="reportsDatepickerFrom" autocomplete="off" id="reportsDatepickerFromId"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-black focus:border-black block w-40 h-10 ps-10 p-2.5"
-                            placeholder="From" />
+                        <select id="yearFilterId"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-black focus:border-black block w-40 h-10 ps-10 p-2.5">
+                        </select>
                     </div>
-                </div>
-                <!-- datepicker filter to -->
-                <div class="relative w-40">
-                    <div class="relative">
-                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                            <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                fill="currentColor" viewBox="0 0 20 20">
-                                <path
-                                    d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-                            </svg>
-                        </div>
-                        <input datepicker datepicker-autohide datepicker-format="mm/dd/yyyy" type="text"
-                            name="reportsDatepickerTo" autocomplete="off" id="reportsDatepickerToId"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-black focus:border-black block w-40 h-10 ps-10 p-2.5"
-                            placeholder="To" />
-                    </div>
-                </div>
-                <!-- apply filter button -->
-                <div class="relative w-30">
-                    <button type="button" id="applyDateFilterId"
-                        class="relative block w-24 h-10 p-2.5 border bg-green-500 hover:bg-green-600 border-green-500 font-medium text-white sm:text-sm rounded-lg focus:ring-green-600 focus:border-green-600">
-                        Apply
-                    </button>
-                </div>
-                <!-- reset filter button -->
-                <div class="relative w-30">
-                    <button type="button" id="resetDateFilterId"
-                        class="relative block w-24 h-10 p-2.5 border bg-red-500 hover:bg-red-600 border-red-500 font-medium text-white sm:text-sm rounded-lg focus:ring-red-600 focus:border-red-600">
-                        Clear
-                    </button>
                 </div>
             </div>
             <div>
@@ -195,16 +162,12 @@
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                         <tr>
                             <th scope="col" class="px-6 py-3">SIM CARD ID</th>
-                            <th scope="col" class="px-6 py-3">ACCOUNT NO</th>
                             <th scope="col" class="px-6 py-3">MOBILE NO</th>
-                            <th scope="col" class="px-6 py-3">APPLICABLE YEAR MONTH</th>
-                            <th scope="col" class="px-6 py-3">PAYMENT AMOUNT</th>
+                            <th scope="col" class="px-6 py-3">ACCOUNT NO</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
                         <tr>
-                            <td scope="col" class="px-6 py-3">No data</td>
-                            <td scope="col" class="px-6 py-3">No data</td>
                             <td scope="col" class="px-6 py-3">No data</td>
                             <td scope="col" class="px-6 py-3">No data</td>
                             <td scope="col" class="px-6 py-3">No data</td>
@@ -265,7 +228,7 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
     <?!= include('JavaScript'); ?>
     <script>
         document.addEventListener('DOMContentLoaded', async function () {
@@ -275,13 +238,7 @@
             const spinner = document.getElementById("spinner");
             const tableContainer = document.getElementById("tableContainer");
 
-            let date = {
-                dateFrom: null,
-                dateTo: null,
-            }
-
-            // Global variables to store full datasets
-            let fullExcessChargesData = [];
+            let monthlyPaymentCacheData = null;
 
             const monthlyPaymentRecordElement = document.querySelector('span#monthly-payment-pagination-records');
             const monthlyPaymentPagingElement = document.querySelector('span#monthly-payment-pagination-label');
@@ -317,26 +274,26 @@
                 "monthly-payment-checking"          // exporting file name
             );
 
-            const monthlyPaymentHeaders = [
-                // 'BILL_ID',
-                'SIM_CARD_ID',
-                'ACCOUNT_NO',
-                'MOBILE_NO',
-                'APPLICABLE_YEAR_MONTH',
-                'PAYMENT_AMOUNT'
-            ];
-
-
-            // render function for Monthly Payment Table
             async function renderMonthlyPaymentTable({ data, table }) {
                 const thead = table.querySelector('thead');
                 const tbody = table.querySelector('tbody');
+
+                // Get the selected year
+                let selectedYear = ids.yearFilterId.value || new Date().getFullYear(); // Default to current year if empty
+
+                // Define headers with 12 months
+                const monthlyPaymentHeaders = [
+                    'SIM_CARD_ID',
+                    'ACCOUNT_NO',
+                    'MOBILE_NO',
+                    ...Array.from({ length: 12 }, (_, i) => `${selectedYear}-${String(i + 1).padStart(2, '0')}`)
+                ];
 
                 // Clear existing content
                 thead.innerHTML = '';
                 tbody.innerHTML = '';
 
-                // Create Header
+                // Create Header Row
                 const headerRow = document.createElement('tr');
                 monthlyPaymentHeaders.forEach((header) => {
                     const th = document.createElement('th');
@@ -347,74 +304,35 @@
                 });
                 thead.appendChild(headerRow);
 
-                // Create Body
+                // Process Each Row
                 data.forEach((row, index) => {
-
-                    if (row.SIM_INFO) {
-                        const simInfoString = row.SIM_INFO;
-                        const hasSimInfo = !!simInfoString;
-                        const simInfo = hasSimInfo ? JSON.parse(simInfoString) : '';
-
-                        row.MOBILE_NO = simInfo.MOBILE_NO;
-                        row.ACCOUNT_NO = simInfo.ACCOUNT_NO;
-                    }
-
                     const tr = document.createElement('tr');
                     tr.classList.add('bg-white', 'border-b');
-                    if (tr.index === undefined || tr.index === null) {
-                        tr.index = index;
-                        tr.dataset.index = index;
-                    }
-                    // tr.dataset.date = row.EXCESS_CHARGE_DATE;
+                    tr.dataset.index = index;
 
-                    // Add Action Buttons
-                    const actionTd = document.createElement('td');
-                    actionTd.classList.add('px-6', 'py-3');
-                    const actionDiv = document.createElement('div');
-                    actionDiv.classList.add('action-buttons', 'flex', 'space-x-2');
+                    // Extract static values
+                    const staticValues = [
+                        row.SIM_CARD_ID,
+                        row.ACCOUNT_NO,
+                        row.MOBILE_NO
+                    ];
 
-                    if (Object.entries(row).every(([key, value]) => value === "")) {
-                        const NoData = "No data";
-                        monthlyPaymentHeaders.forEach((header) => {
-                            const td = document.createElement('td');
-                            td.classList.add('px-6', 'py-3');
-                            td.textContent = NoData;
-                            tr.appendChild(td);
-                        });
-                        actionTd.textContent = "Actions";
-                    } else {
-                        monthlyPaymentHeaders.forEach((header) => {
-                            const td = document.createElement('td');
-                            let value = row[header];
-                            td.classList.add('px-6', 'py-3');
-                            const numberValues = [
-                                'PAYMENT_AMOUNT',
-                            ];
-                            const dateValues = [
-                                'APPLICABLE_YEAR_MONTH',
-                            ]
+                    staticValues.forEach((value) => {
+                        const td = document.createElement('td');
+                        td.classList.add('px-6', 'py-3');
+                        td.textContent = value || "N/A"; // Default to "N/A" if missing
+                        tr.appendChild(td);
+                    });
 
-                            if (header === 'APPLICABLE_YEAR_MONTH') {
-                                value = row.BILL_PERIOD_FROM;
-                            } else if (header === 'PAYMENT_AMOUNT') {
-                                value = row.RFP_AMOUNT;
-                            }
-                            switch (true) {
-                                case numberValues.includes(header):
-                                    td.textContent = formatNumber(value);
-                                    // td.classList.add('text-right');
-                                    break;
-                                case dateValues.includes(header):
-                                    td.textContent = DateTime(value, { format: "MM/DD/YYYY" });
-                                    break;
-                                default:
-                                    td.textContent = value;
-                                    break;
-                            }
-                            tr.appendChild(td);
+                    // Fill in 12 months, defaulting to 0 if missing
+                    monthlyPaymentHeaders.slice(3).forEach((monthKey) => { // Skip the first 3 headers (SIM_CARD_ID, ACCOUNT_NO, MOBILE_NO)
+                        const td = document.createElement('td');
+                        td.classList.add('px-6', 'py-3', 'text-right');
+                        const value = row.YEARS?.[selectedYear]?.[monthKey] || 0;
+                        td.textContent = value ? formatNumber(value) : "";
+                        tr.appendChild(td);
+                    });
 
-                        });
-                    }
                     tbody.appendChild(tr);
                 });
             }
@@ -470,53 +388,53 @@
                 });
             };
 
-
-            // Function to fetch both datasets from the server
+            // Function to fetch datasets from the server
             async function refreshTables() {
-                // try {
-                // Fetch both datasets from the server in a single request
-                const monthlyPaymentData = await new Promise((resolve, reject) => {
-                    google.script.run
-                        .withSuccessHandler(resolve)
-                        .withFailureHandler(reject)
-                        .getMonthlyPaymentData();  // Backend function
-                });
 
-                console.warn(monthlyPaymentData)
-
-                const parsedMonthlyPaymentData = JSON.parse(monthlyPaymentData);
-                console.log(typeof parsedMonthlyPaymentData)
-
-                refreshMonthlyPaymentTable(parsedMonthlyPaymentData);
-
-                // Hide the spinner once the data was loaded
-                spinner.classList.add("hidden");
-                // Show the Table Container once the data was loaded
-                tableContainer.classList.remove("hidden");
-
-                // Remove the disable attribute from the buttons
-                document.querySelectorAll(".disable-on-load").forEach((button) => {
-                    button.disabled = false;
-                    button.classList.remove("cursor-not-allowed");
-                });
-
-                // } catch (error) {
-                //     console.error('Error refreshing tables:', error);
-                // }
-            }
-
-            // Function to refresh the Main Record Table
-            function refreshMainRecordTable(data) {
-                try {
-                    console.warn("refreshMainRecordTable runs...")
-                    // Assuming you have a table instance that accepts data and renders it
-                    excessChargesTableInstance.setDataset(data).render();
-                } catch (error) {
-                    console.error('Error rendering main record table:', error);
+                // Check if cache is available to avoid redundant API calls
+                if (monthlyPaymentCacheData) {
+                    console.log("Using cached data...");
+                    refreshMonthlyPaymentTable(monthlyPaymentCacheData);
+                    return;
                 }
+                try {
+                    // Fetch both datasets from the server in a single request
+                    const monthlyPaymentData = await new Promise((resolve, reject) => {
+                        google.script.run
+                            .withSuccessHandler(resolve)
+                            .withFailureHandler(reject)
+                            .getMonthlyPaymentData();  // Backend function
+                    });
+
+                    console.warn(monthlyPaymentData)
+                    console.warn(typeof monthlyPaymentData)
+
+                    const parsedMonthlyPaymentData = Array.from(monthlyPaymentData);
+
+                    monthlyPaymentCacheData = parsedMonthlyPaymentData;
+
+                    refreshMonthlyPaymentTable(monthlyPaymentCacheData);
+
+                    populateYearDropdown();
+
+                    // Hide the spinner once the data was loaded
+                    spinner.classList.add("hidden");
+                    // Show the Table Container once the data was loaded
+                    tableContainer.classList.remove("hidden");
+
+                    // Remove the disable attribute from the buttons
+                    document.querySelectorAll(".disable-on-load").forEach((button) => {
+                        button.disabled = false;
+                        button.classList.remove("cursor-not-allowed");
+                    });
+
+                } catch (error) {
+                    console.error("Error fetching Monthly Payment Data:", error);
+                }
+
             }
 
-            // Function to refresh the Monthly Payment Table
+            // Function to refresh the monthly payment checking table
             function refreshMonthlyPaymentTable(data) {
                 try {
                     monthlyPaymentTableInstance.setDataset(data).render();
@@ -525,101 +443,42 @@
                 }
             }
 
-            function applyDateFilter() {
-                // Get the values from the date inputs
-                let dateFrom = ids.reportsDatepickerFromId.value;
-                let dateTo = ids.reportsDatepickerToId.value;
+            function populateYearDropdown() {
+                const selectedYear = ids.yearFilterId; // Your dropdown element
 
-                document.getElementById('excess-charges-pagination-search').value = "";
-                // document.getElementById('excess-charges-pagination-search'). = "";
+                // Clear existing options
+                selectedYear.innerHTML = "";
 
-                // Check if date inputs have values
-                if (!dateFrom || !dateTo) {
-                    toast.error({
-                        title: "Invalid Date Filter",
-                        description: "Please select both 'From' and 'To' dates",
-                        timeout: 4000,
-                        closeButton: false,
-                    });
-                    return; // Stop execution if either date is missing
+                // Ensure cache data is available
+                if (!monthlyPaymentCacheData || monthlyPaymentCacheData.length === 0) {
+                    console.warn("No data available for year dropdown.");
+                    return;
                 }
 
-                // Convert input dates to Date objects
-                const fromDate = new Date(dateFrom);
-                const toDate = new Date(dateTo);
-
-                // Validate that fromDate is earlier than or equal to toDate
-                if (fromDate > toDate) {
-                    toast.error({
-                        title: "Invalid Date Filter",
-                        description: "'From' date cannot be later than 'To' date.",
-                        timeout: 4000,
-                        closeButton: false,
-                    });
-                    return; // Stop execution if date range is invalid
-                }
-
-                console.log("fromDate", { fromDate, dateFrom });
-                console.log("toDate", { toDate, dateTo });
-
-                console.warn('Full dataset:', fullExcessChargesData);
-
-                // Filter Main Record Table data
-                const filteredMainData = fullExcessChargesData.filter(item => {
-                    const recordDate = new Date(item.EXCESS_CHARGE_DATE);
-                    console.log("recordDate", recordDate);
-
-                    // Check if recordDate is valid (Date object is invalid if it returns NaN)
-                    if (isNaN(recordDate.getTime())) {
-                        console.warn('Invalid date:', item.EXCESS_CHARGE_DATE);
-                        return false; // Skip this record
-                    }
-
-                    // Filter by date range
-                    return recordDate >= fromDate && recordDate <= toDate;
+                // Extract unique years from dataset
+                const availableYears = new Set();
+                monthlyPaymentCacheData.forEach(({ YEARS }) => {
+                    Object.keys(YEARS).forEach(year => availableYears.add(Number(year)));
                 });
 
-                console.warn('Filtered data:', filteredMainData);
+                // Convert to sorted array (Descending Order)
+                const sortedYears = Array.from(availableYears).sort((a, b) => b - a);
 
-                // Check if any records matched
-                if (filteredMainData.length === 0) {
-                    toast.error({
-                        title: "Invalid Date Filter",
-                        description: "No records found for the selected date range.",
-                        timeout: 4000,
-                        closeButton: false,
-                    });
-                } else {
-                    toast.success({
-                        title: "Date Filter Applied",
-                        description: "Record has been filtered",
-                        timeout: 4000,
-                        closeButton: false,
-                    });
+                // Populate the dropdown
+                sortedYears.forEach(year => {
+                    const option = document.createElement("option");
+                    option.value = year;
+                    option.textContent = year;
+                    selectedYear.appendChild(option);
+                });
+
+                // Set default selected year (latest year)
+                if (sortedYears.length > 0) {
+                    selectedYear.value = sortedYears[0];
                 }
-
-                // Update the main table with filtered data
-                refreshMainRecordTable(filteredMainData);
             }
 
-
-            function resetDateFilter() {
-
-                // Reset the date pickers to empty values
-                ids.reportsDatepickerFromId.value = '';
-                ids.reportsDatepickerToId.value = '';
-
-                document.getElementById('excess-charges-pagination-search').value = "";
-
-                // Log the reset action (optional for debugging)
-                console.log("Date filters reset");
-
-                // Refresh the main table with the full (unfiltered) dataset
-                refreshMainRecordTable(fullExcessChargesData);
-            }
-
-            ids.applyDateFilterId.addEventListener('click', () => applyDateFilter());
-            ids.resetDateFilterId.addEventListener('click', resetDateFilter);
+            ids.yearFilterId.addEventListener("change", () => refreshTables());
 
             // Targeting a specific class instead of all the buttons
             document.querySelectorAll('.disable-on-load').forEach(button => {
@@ -628,7 +487,6 @@
             });
 
             refreshTables();
-
 
         });
 
