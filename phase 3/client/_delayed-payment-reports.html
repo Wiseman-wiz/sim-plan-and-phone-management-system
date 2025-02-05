@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+    <link href="https://rawcdn.githack.com/shinxzxzxz/TableJS/c8218ba13b4d74c34af06f9f25d5063b6a99956f/tablejs.css"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer type="module"
+        src="https://rawcdn.githack.com/shinxzxzxz/TableJS/55597d91c8f5165cdfaaf90798bc2e0e886a42e8/tablejs.js"></script>
+    <!-- <script defer type="module"
+        src="https://rawcdn.githack.com/shinxzxzxz/TableJs-v2/fa9f1e82cf2595093650626d177115e1806a3919/tablejs.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/datepicker.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: ['[data-mode="dark"]']
+        }
+    </script>
+    <?!= include("CSS"); ?>
+</head>
+
+<body>
+    <nav class="fixed top-0 z-[39] w-full bg-white border-b border-gray-200">
+        <div class="px-3 py-3 lg:px-5 lg:pl-3 h-14">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center justify-start rtl:justify-end">
+                    <button data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar"
+                        aria-controls="logo-sidebar" type="button"
+                        class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200">
+                        <span class="sr-only">Open sidebar</span>
+                        <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path clip-rule="evenodd" fill-rule="evenodd"
+                                d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z">
+                            </path>
+                        </svg>
+                    </button>
+                    <!-- <a href="https://flowbite.com" class="flex ms-5 md:me-24"> -->
+                    <span class="pl-6 self-center text-xl font-semibold sm:text-2xl whitespace-nowrap">
+                        SPPM
+                    </span>
+                    <!-- </a> -->
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- sidebar -->
+    {{SIDEBAR}}
+
+    <div class="mt-14 sm:ml-64 hidden">
+
+        <!-- <input type="text" id="pagination-search" /> -->
+        <!-- <select name="" id="pagination-limit"></select> -->
+        <!-- <button id="pagination-next">Next</button> -->
+        <!-- <button id="pagination-previous">Previous</button> -->
+        <!-- <button id="export-csv" class="hidden">Export CSV</button> -->
+        <select name="" id="flags-filter"></select>
+        <!-- <div id="table-colvis"></div> -->
+
+    </div>
+
+    <div class="fixed top-14 right-0 w-vw-64 h-vh-14">
+        <!-- Table title and action buttons -->
+        <div class="w-full h-14 flex justify-between items-center border-b border-neutral-200">
+            <div class="flex space-x-2">
+                <h1 class="ml-3 text-md font-medium">Delayed Payments</h1>
+            </div>
+
+            <!-- Modal Toggles  -->
+            <div
+                class="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
+                <div class="flex items-center w-full space-x-3 md:w-auto">
+                </div>
+            </div>
+        </div>
+        <!-- Table header controllers -->
+        <div class="w-full h-14 flex justify-between items-center border-b border-neutral-200">
+            <div class="flex space-x-2">
+                <!-- search -->
+                <label for="searchInput" class="sr-only">Search</label>
+                <div class="relative w-70">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg aria-hidden="true" class="w-5 h-5 text-gray-500" viewbox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <input type="text" id="delayed-payments-pagination-search"
+                        class="block w-full h-10 p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded bg-gray-50 focus:ring-black focus:border-black"
+                        placeholder="Search" required="">
+                </div>
+                <!-- colvis -->
+                <div class="relative w-40">
+                    <button data-dropdown-toggle="delayed-payments-table-colvis"
+                        class="relative block w-40 h-10 p-1.5 border bg-neutral-50 border-neutral-300 text-neutral-900 sm:text-sm rounded focus:ring-neutral-600 focus:border-neutral-600">
+                        <div
+                            class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-neutral-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
+                            </svg>
+                        </div>
+                        Columns
+                    </button>
+                    <div data-popover id="delayed-payments-table-colvis"
+                        class="text-left z-50 hidden bg-white divide-y divide-neutral-100 rounded-lg shadow w-44 max-h-vh-36 overflow-x-auto">
+                        <ul class="py-2 text-sm text-neutral-700"></ul>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <!-- Modal Toggles -->
+                <div
+                    class="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
+                    <button id="delayed-payments-export-csv"
+                        class="flex items-center justify-center px-4 py-2 h-10 text-sm font-medium text-white rounded-lg bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 disable-on-load">
+                        Export CSV
+                    </button>
+
+
+                    <div class="flex items-center w-full space-x-3 md:w-auto">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Main Content -->
+        <div class="h-vh-40 overflow-y-auto overflow-x-auto">
+            <!-- Spinner -->
+            <div class="flex items-center justify-center h-vh-40" id="spinner">
+                <div role="status" class="flex items-center space-x-2">
+                    <svg aria-hidden="true" class="w-8 h-8 mr-2 text-gray-200 animate-spin fill-gray-600"
+                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+                        <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                        <path
+                            d="M304 48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zm0 416a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM48 304a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm464-48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM142.9 437A48 48 0 1 0 75 369.1 48 48 0 1 0 142.9 437zm0-294.2A48 48 0 1 0 75 75a48 48 0 1 0 67.9 67.9zM369.1 437A48 48 0 1 0 437 369.1 48 48 0 1 0 369.1 437z" />
+                    </svg>
+                    <!-- <span class="sr-only">Loading...</span> -->
+                </div>
+            </div>
+            <!-- Table Container -->
+            <div id="tableContainer" class="table-container hidden">
+                <table id="delayedPaymentsTable" class="w-full text-sm text-left rtl:text-right text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">REPORT_NAME</th>
+                            <th scope="col" class="px-6 py-3">COUNT</th>
+                            <th scope="col" class="px-6 py-3">RATING</th>
+                            <th scope="col" class="px-6 py-3">ACTION</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr>
+                            <td scope="col" class="px-6 py-3">No data</td>
+                            <td scope="col" class="px-6 py-3">No data</td>
+                            <td scope="col" class="px-6 py-3">No data</td>
+                            <td scope="col" class="px-6 py-3">No data</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <!-- Table Footer -->
+        <div class="flex items-center justify-between border-t border-neutral-200 px-4 h-12">
+            <!-- <div class="info flex items-center space-x-2">
+                <div class="font-bold text-xl me-8 w-24">
+                    TOTAL
+                </div>
+                <div class="font-medium text-xl me-2" id="reports-total">
+                    0.00
+                </div>
+            </div> -->
+            <div class="text-sm">
+                <span class="text-sm" id="delayed-payments-pagination-records">Shows 1 of 1 of 1 entries</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <div class="text-sm">
+                    Rows per page
+                </div>
+                <div class="text-sm">
+                    <select id="delayed-payments-pagination-limit"
+                        class="block w-full items-center justify-center px-2 h-8 text-xs font-medium text-neutral-500 bg-white border rounded-lg hover:bg-neutral-100 hover:text-neutral-700  border-neutral-300 focus-within:ring-0 focus:ring-neutral-500 focus:outline-none focus:border-neutral-500">
+                        <option value="*" selected>All</option>
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="500">500</option>
+                        <option value="1000">1000</option>
+                    </select>
+                </div>
+                <span class="text-sm" id="delayed-payments-pagination-label">Page 1 of 10</span>
+                <button id="delayed-payments-pagination-previous"
+                    class="aspect-square flex items-center justify-center px-2 h-8 text-sm font-medium text-neutral-500 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-100 hover:text-neutral-700"
+                    name="previous">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                    </svg>
+                </button>
+                <button id="delayed-payments-pagination-next"
+                    class="aspect-square flex items-center justify-center px-2 h-8 text-sm font-medium text-neutral-500 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-100 hover:text-neutral-700 "
+                    name="next">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+    <?!= include('JavaScript'); ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+
+            const ids = generateIds(document.querySelectorAll('[id]'));
+
+            const spinner = document.getElementById("spinner");
+            const tableContainer = document.getElementById("tableContainer");
+
+            // const onClickEvents = {
+            //     viewData: function (row) {
+            //         let modalToggleButton = "";
+
+            //         if (row.REPORT_NAME == "Total SIM Cards") {
+            //             modalToggleButton = document.getElementById("total-sim-cards-modal-toggle");
+            //         } else if (row.REPORT_NAME == "On-hand SIM Cards") {
+            //             modalToggleButton = document.getElementById("on-hand-sim-cards-modal-toggle");
+            //         } else if (row.REPORT_NAME == "SIM Cards with no phone") {
+            //             // modalToggleButton = document.getElementById("on-hand-sim-cards-modal-toggle");
+            //         } else if (row.REPORT_NAME == "SIM Cards with Standard Plan") {
+            //             modalToggleButton = document.getElementById("standard-sim-cards-modal-toggle");
+            //         } else if (row.REPORT_NAME == "SIM Cards with Non-standard Plan") {
+            //             modalToggleButton = document.getElementById("non-standard-sim-cards-modal-toggle");
+            //         } else if (row.REPORT_NAME == "SIM Cards with Outstanding Balance") {
+            //             modalToggleButton = document.getElementById("outstanding-balance-modal-toggle");
+            //         } else if (row.REPORT_NAME == "Delayed Payments") {
+            //             modalToggleButton = document.getElementById("delayed-payments-modal-toggle");
+            //         }
+            //         console.warn(row);
+
+            //         if (!modalToggleButton) return console.error("Modal toggle button not found!");
+
+            //         // Programmatically trigger the existing modal toggle button
+            //         modalToggleButton.click();
+            //     }
+            // };
+
+            let date = {
+                dateFrom: null,
+                dateTo: null,
+            }
+
+            var currentData = [];
+
+            const delayedPaymentsElement = document.querySelector('span#delayed-payments-pagination-records');
+            const delayedPaymentsPagingElement = document.querySelector('span#delayed-payments-pagination-label');
+            const delayedPaymentsHiddenColumns = [0, 1, 2, 7];
+
+            const delayedPaymentsTableOutput = {
+                pagination: ({
+                    current_page,
+                    total_page,
+                    start_item,
+                    end_item,
+                    total_rows,
+                }) => {
+                    if (delayedPaymentsElement)
+                        delayedPaymentsElement.innerHTML = `Shows ${start_item} to ${end_item} of ${total_rows} entries`;
+                    if (delayedPaymentsPagingElement)
+                        delayedPaymentsPagingElement.innerHTML = `Page ${current_page} of ${total_page}`;
+                },
+            };
+
+            // Initialize the table with its specific rendering function
+            const delayedPaymentsTableInstance = initializeTable(
+                '#delayedPaymentsTable',            // tableId
+                'div#delayed-payments-table-colvis',  // colvisElement
+                'button#delayed-payments-export-csv',  // csvButtonId
+                'select#delayed-payments-pagination-limit',  // paginationLimitId
+                'button#delayed-payments-pagination-next',   // paginationNextId
+                'button#delayed-payments-pagination-previous',  // paginationPreviousId
+                'input#delayed-payments-pagination-search',  // paginationSearchId
+                delayedPaymentsTableOutput,            // table output
+                delayedPaymentsHiddenColumns,         // hidden columns
+                renderDelayedPaymentsTable,          // renderingFunction
+                "delayed-payments-report"          // exporting file name
+            );
+
+            const delayedPaymentHeaders = [
+                'BILL_ID',
+                'RFP_NO',
+                'SIM_CARD_ID',
+                'MOBILE_NO',
+                'ACCOUNT_NO',
+                'BILL_PERIOD_FROM',
+                'BILL_PERIOD_TO',
+                'DUE_DATE_DAY',
+                'DUE_DATE',
+                'RFP_DATE',
+                'DATE_RECEIVED_BY_ACCTG',
+                'CHECK_DATE',
+                'DATE_OF_PAYMENT',
+                'PAYMENT_POSTED_DATE',
+            ];
+
+            async function renderDelayedPaymentsTable({ data, table }) {
+                const thead = table.querySelector('thead');
+                const tbody = table.querySelector('tbody');
+
+                // Clear existing content
+                thead.innerHTML = '';
+                tbody.innerHTML = '';
+
+                // Create Header
+                const headerRow = document.createElement('tr');
+                delayedPaymentHeaders.forEach((header) => {
+                    const th = document.createElement('th');
+                    th.scope = 'col';
+                    th.classList.add('px-6', 'py-3');
+                    th.textContent = header.replace(/[_\s]{1,}/g, ' ');
+                    headerRow.appendChild(th);
+                });
+
+                thead.appendChild(headerRow);
+
+                // Create Body
+                data.forEach((row, index) => {
+
+                    if (row.SIM_INFO) {
+                        const simInfoString = row.SIM_INFO;
+                        const hasSimInfo = !!simInfoString;
+                        const simInfo = hasSimInfo ? JSON.parse(simInfoString) : '';
+
+                        row.MOBILE_NO = simInfo.MOBILE_NO;
+                        row.ACCOUNT_NO = simInfo.ACCOUNT_NO;
+                    }
+
+                    const tr = document.createElement('tr');
+                    tr.classList.add('bg-white', 'border-b');
+                    if (tr.index === undefined || tr.index === null) {
+                        tr.index = index;
+                        tr.dataset.index = index;
+                    }
+
+                    // Add Action Buttons
+                    const actionTd = document.createElement('td');
+                    actionTd.classList.add('px-6', 'py-3');
+                    const actionDiv = document.createElement('div');
+                    actionDiv.classList.add('action-buttons', 'flex', 'space-x-2');
+
+                    if (Object.entries(row).every(([key, value]) => value === "")) {
+                        const NoData = "No data";
+                        delayedPaymentHeaders.forEach((header) => {
+                            const td = document.createElement('td');
+                            td.classList.add('px-6', 'py-3');
+                            td.textContent = NoData;
+                            tr.appendChild(td);
+                        });
+                        actionTd.textContent = "Actions";
+                    } else {
+                        delayedPaymentHeaders.forEach((header) => {
+                            const td = document.createElement('td');
+                            let value = row[header];
+                            td.classList.add('px-6', 'py-3');
+                            const numberValues = [
+                                'TOTAL_CHARGE',
+                                'TOTAL_PAYMENT',
+                                'OUTSTANDING_AMOUNT',
+                            ];
+                            const dateValues = [
+                                'BILL_PERIOD_FROM',
+                                'BILL_PERIOD_TO',
+                                'RFP_DATE',
+                                'DATE_RECEIVED_BY_ACCTG',
+                                'CHECK_DATE',
+                                'DATE_OF_PAYMENT',
+                                'PAYMENT_POSTED_DATE',
+                            ];
+                            switch (true) {
+                                case numberValues.includes(header):
+                                    td.textContent = formatNumber(value);
+                                    td.classList.add('text-right');
+                                    break;
+                                case dateValues.includes(header):
+                                    td.textContent = DateTime(value, { format: "MM/DD/YYYY" });
+                                    break;
+                                default:
+                                    td.textContent = value;
+                                    break;
+                            }
+                            tr.appendChild(td);
+
+                        });
+                    }
+                    tbody.appendChild(tr);
+                });
+            }
+
+            function initializeTable(tableId, colvisElement, csvButtonId, paginationLimitId, paginationNextId, paginationPreviousId, paginationSearchId, output, hiddenColumns, renderingFunction, filename) {
+                const table = document.querySelector(tableId);
+                return new TableJS(table, {
+                    dataset: {
+                        init: false,
+                        collection: [],
+                        rendering: renderingFunction,
+                    },
+                    colvis: {
+                        element: colvisElement,
+                        exclude: ['.checkbox-column', '.actions-column'],
+                        hide: hiddenColumns,
+                    },
+                    exportAs: [
+                        {
+                            as: 'csv',
+                            element: csvButtonId,
+                            filename: filename,
+                            exclude: ['.checkbox-column', '.actions-column'],
+                        },
+                    ],
+                    paginate: [
+                        {
+                            to: 'api',
+                            as: 'limit',
+                            element: paginationLimitId,
+                            output: output.pagination,
+                        },
+                        {
+                            to: 'api',
+                            as: 'next',
+                            element: paginationNextId,
+                            output: output.pagination,
+                        },
+                        {
+                            to: 'api',
+                            as: 'previous',
+                            element: paginationPreviousId,
+                            output: output.pagination,
+                        },
+                        {
+                            to: 'local',
+                            as: 'search',
+                            element: paginationSearchId,
+                            exclude: ['.checkbox-column', '.actions-column'],
+                            output: output.pagination,
+                        },
+                    ],
+                });
+            };
+
+            // Function to fetch both datasets from the server
+            async function refreshTables() {
+                // try {
+                // Fetch both datasets from the server in a single request
+                const delayedPaymentsData = await new Promise((resolve, reject) => {
+                    google.script.run
+                        .withSuccessHandler(resolve)
+                        .withFailureHandler(reject)
+                        .getDelayedPaymentsData();  // Backend function
+                });
+
+                console.warn(delayedPaymentsData)
+                console.warn(typeof delayedPaymentsData)
+
+                const parsedDelayedPaymentsData = JSON.parse(delayedPaymentsData);
+                console.warn(parsedDelayedPaymentsData);
+
+                // Get today's date without time for accurate comparison
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                // Process the data before rendering
+                const simCardsWithDelayedPayments = parsedDelayedPaymentsData
+                    .map((row) => {
+                        // Skip if no BILL_PERIOD_TO or DUE_DATE_DAY
+                        if (!row.BILL_PERIOD_TO || !row.DUE_DATE_DAY) return null;
+
+                        // Compute Due Date (MM/dd/yyyy)
+                        const billPeriodTo = new Date(row.BILL_PERIOD_TO);
+                        const month = String(billPeriodTo.getMonth() + 1).padStart(2, '0'); // MM
+                        const year = billPeriodTo.getFullYear(); // YYYY
+                        const dueDateFormatted = `${month}/${row.DUE_DATE_DAY}/${year}`;
+                        const dueDate = new Date(`${year}-${month}-${row.DUE_DATE_DAY}`);
+                        dueDate.setHours(0, 0, 0, 0); // Normalize time for accurate comparison
+
+                        // Convert DATE_OF_PAYMENT to Date object if available
+                        const dateOfPayment = row.DATE_OF_PAYMENT ? new Date(row.DATE_OF_PAYMENT) : null;
+
+                        // Condition 1: If DATE_OF_PAYMENT is null, check if DUE_DATE < TODAY()
+                        if (!dateOfPayment && dueDate < today) {
+                            return { ...row, DUE_DATE: dueDateFormatted };
+                        }
+
+                        // Condition 2: If DATE_OF_PAYMENT exists, check if DUE_DATE < DATE_OF_PAYMENT
+                        if (dateOfPayment && dueDate < dateOfPayment) {
+                            return { ...row, DUE_DATE: dueDateFormatted };
+                        }
+
+                        return null; // Skip records that do not meet the condition
+                    })
+                    .filter(Boolean); // Remove null values
+
+                refreshDelayedPaymentsTable(simCardsWithDelayedPayments);
+
+                // Hide the spinner once the data was loaded
+                spinner.classList.add("hidden");
+                // Show the Table Container once the data was loaded
+                tableContainer.classList.remove("hidden");
+
+                // Remove the disable attribute from the buttons
+                document.querySelectorAll(".disable-on-load").forEach((button) => {
+                    button.disabled = false;
+                    button.classList.remove("cursor-not-allowed");
+                });
+
+                // } catch (error) {
+                //     console.error('Error refreshing tables:', error);
+                // }
+            }
+
+            function refreshDelayedPaymentsTable(data) {
+                try {
+                    delayedPaymentsTableInstance.setDataset(data).render();
+                } catch (error) {
+                    console.error('Error rendering delayed payments table:', error);
+                }
+            }
+
+            // Targeting a specific class instead of all the buttons
+            document.querySelectorAll('.disable-on-load').forEach(button => {
+                button.classList.add('cursor-not-allowed');
+                button.disabled = true;
+            });
+
+            // Initializes the table
+            refreshTables();
+
+
+        });
+
+    </script>
+</body>
+
+</html>

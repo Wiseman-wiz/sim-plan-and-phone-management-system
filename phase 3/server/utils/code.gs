@@ -160,6 +160,10 @@ function getSidebar(activePage) {
                     view: "payment-summary-report",
                     label: "Payment Summary Report",
                 },
+                {
+                    view: "_delayed-payment-reports",
+                    label: "Delayed Payments",
+                },
                 { view: "_sim-reports", label: "SIM Card Reports" },
             ],
         },
