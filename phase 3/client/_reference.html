@@ -557,8 +557,8 @@
             function loadEditFields(item) {
                 console.warn("Editing record: ", item);
                 ids.editSignatoryId.value = item.SIGNATORY_ID;
-                ids.editNameId.value = item.NAME;
-                ids.editPositionId.value = item.POSITION;
+                ids.editNameId.value = item.NAME.trim();
+                ids.editPositionId.value = item.POSITION.trim();
                 ids.editFieldNameId.value = item.FIELD_NAME;
                 ids.editDocumentNameId.value = item.DOCUMENT_NAME;
             }
