@@ -165,33 +165,6 @@
 
                                 </div>
                             </div>
-                            <!-- <div id="deviceInfo" class="col-span-1 p-4 bg-neutral-100 h-[240px] overflow-y-auto rounded-lg">
-                              <div id="deviceInfoList" class="grid grid-cols-12 gap-y-1.5">
-                                  <h1>Device Information</h1> -->
-                            <!-- <div
-                                      class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
-                                      Current User
-                                  </div>
-                                  <div id="viewBillId" class="col-span-2 text-left text-sm text-neutral-700">Jacob
-                                      Manansala
-                                  </div>
-                                  <div
-                                      class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
-                                      Current User
-                                  </div>
-                                  <div id="viewBillId" class="col-span-2 text-left text-sm text-neutral-700">Jacob
-                                      Manansala
-                                  </div>
-                                  <div
-                                      class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
-                                      Current User
-                                  </div>
-                                  <div id="viewBillId" class="col-span-2 text-left text-sm text-neutral-700">Jacob
-                                      Manansala
-                                  </div> -->
-                            <!-- </div>
-
-                          </div> -->
 
                             <!-- Ticket Description -->
                             <div class="col-span-2">
@@ -408,143 +381,6 @@
         </div>
     </div>
 
-    <!-- View Modal -->
-    <div id="view-modal" tabindex="-1" aria-hidden="true" data-modal-backdrop="static"
-        class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-        <div class="relative p-4 w-full max-w-4xl max-h-full ">
-            <!-- Modal content -->
-            <div class="relative bg-white rounded-lg shadow max-h-[100vh]">
-                <!-- Modal header -->
-                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
-                    <h3 class="text-lg font-semibold text-gray-900">
-                        View Billing Information
-                    </h3>
-                    <button type="button"
-                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
-                        data-modal-hide="view-modal">
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                        </svg>
-                        <span class="sr-only">Close modal</span>
-                    </button>
-                </div>
-                <!-- Modal body -->
-                <div id="viewModal" class="p-4 md:p-5 overflow-y-auto max-h-[80vh]">
-                    <div class="grid gap-y-1.5 grid-cols-3">
-                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
-                            BILL ID
-                        </div>
-                        <div id="viewBillId" class="col-span-2 text-left text-sm text-neutral-700">
-                        </div>
-                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
-                            ISSUANCE NO
-                        </div>
-                        <div id="viewIssuanceNoId" class="col-span-2 text-left text-sm text-neutral-700">
-                        </div>
-                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
-                            EMPLOYEE GROUP ID
-                        </div>
-                        <div id="viewEmpGroupId" class="col-span-2 text-left text-sm text-neutral-700">
-                        </div>
-                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
-                            EMPLOYEE NAME
-                        </div>
-                        <div id="viewEmployeeNameId" class="col-span-2 text-left text-sm text-neutral-700">
-                        </div>
-                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
-                            RFP GROUP NAME
-                        </div>
-                        <div id="viewRfpGroupNameId" class="col-span-2 text-left text-sm text-neutral-700">
-                        </div>
-                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
-                            SIM CARD ID
-                        </div>
-                        <div id="viewSimCardId" class="col-span-2 text-left text-sm text-neutral-700">
-                        </div>
-                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
-                            MOBILE NO
-                        </div>
-                        <div id="viewMobileNoId" class="col-span-2 text-left text-sm text-neutral-700">
-                        </div>
-                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
-                            ACCOUNT NO
-                        </div>
-                        <div id="viewAccountNoId" class="col-span-2 text-left text-sm text-neutral-700">
-                        </div>
-                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
-                            RFP NO
-                        </div>
-                        <div id="viewRfpNoId" class="col-span-2 text-left text-sm text-neutral-700">
-                        </div>
-                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
-                            BILL PERIOD
-                        </div>
-                        <div id="viewBillPeriodFromToId" class="col-span-2 text-left text-sm text-neutral-700">
-                        </div>
-                        <!-- <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
-                            BILL PERIOD TO
-                        </div>
-                        <div id="viewBillPeriodToId" class="col-span-2 text-left text-sm text-neutral-700">
-                        </div> -->
-                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
-                            MONTHLY RECURRING FEE
-                        </div>
-                        <div id="viewMrfId" class="col-span-2 text-left text-sm text-neutral-700">
-                        </div>
-                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
-                            PREVIOUS BILL AMOUNT
-                        </div>
-                        <div id="viewPreviousBillAmountId" class="col-span-2 text-left text-sm text-neutral-700">
-                        </div>
-                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
-                            PREVIOUS BILL PAYMENT
-                        </div>
-                        <div id="viewPreviousBillPaymentId" class="col-span-2 text-left text-sm text-neutral-700">
-                        </div>
-                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
-                            EXCESS CHARGES
-                        </div>
-                        <div id="viewExcessChargesId" class="col-span-2 text-left text-sm text-neutral-700">
-                        </div>
-                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
-                            OTHER CHARGES
-                        </div>
-                        <div id="viewOtherChargesId" class="col-span-2 text-left text-sm text-neutral-700">
-                        </div>
-                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
-                            ADJ AMOUNT
-                        </div>
-                        <div id="viewAdjAmountId" class="col-span-2 text-left text-sm text-neutral-700">
-                        </div>
-                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
-                            RFP AMOUNT
-                        </div>
-                        <div id="viewRfpAmountId" class="col-span-2 text-left text-sm text-neutral-700">
-                        </div>
-                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
-                            AMOUNT DUE
-                        </div>
-                        <div id="viewAmountDueId" class="col-span-2 text-left text-sm text-neutral-700">
-                        </div>
-                        <div class="col-span-1 text-left font-semibold text-sm mb-1 flex space-x-2 justify-between">
-                            CURRENT CHARGE AMOUNT
-                        </div>
-                        <div id="viewCurrentChargeAmountId" class="col-span-2 text-left text-sm text-neutral-700">
-                        </div>
-                    </div>
-                    <div class="flex justify-end pt-2">
-                        <button type="button" data-modal-hide="view-modal"
-                            class="text-white inline-flex items-center bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                            Close
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Delete Modal -->
     <div id="delete-modal" tabindex="-1"
         class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -578,20 +414,6 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Toast container -->
-    <div id="toast-container" class="fixed z-50 bottom-5 left-5 space-y-4"></div>
-
-    <div class="mt-14 sm:ml-64 hidden">
-
-        <!-- <input type="text" id="pagination-search" /> -->
-        <!-- <select name="" id="pagination-limit"></select> -->
-        <!-- <button id="pagination-next">Next</button> -->
-        <!-- <button id="pagination-previous">Previous</button> -->
-        <!-- <button id="export-csv" class="hidden">Export CSV</button> -->
-        <!-- <div id="table-colvis"></div> -->
-
     </div>
 
     <div class="fixed top-14 right-0 w-vw-64 h-vh-14">
@@ -794,16 +616,16 @@
             const spinner = document.getElementById('spinner');
             const tableContainer = document.getElementById('tableContainer');
 
+            let deviceType = null;
+
             const onClickEvents = {
                 viewData: function (data) {
                     console.warn(data);
                     console.warn(Object.keys(data));
-                    loadViewFields(data);
                     showModal('view');
                 },
                 editData: function (data) {
                     loadEditFields(data);
-                    // calculateCurrentChargeAmount();
                     showModal('edit');
                 },
                 deleteData: function (data) {
@@ -830,12 +652,6 @@
                     });
                 }
             }
-
-            // Disables all buttons while the table content is loading
-            // document.querySelectorAll('button').forEach(button => {
-            //     button.classList.add('cursor-not-allowed');
-            //     button.disabled = true;
-            // });
 
             // Targeting a specific class instead of all the buttons
             document.querySelectorAll('.disable-on-load').forEach(button => {
@@ -933,8 +749,6 @@
                         row.CATEGORY = simInfo.CATEGORY;
                     }
 
-                    // console.log("employeeInfo", row.EMPLOYEE_NAME);
-                    // console.log("simInfo", simInfo);
 
                     const tr = document.createElement('tr');
                     tr.classList.add('bg-white', 'border-b');
@@ -966,21 +780,6 @@
 
                             td.classList.add('px-6', 'py-3');
                             switch (header) {
-                                case 'MONTHLY_RECURRING_FEE':
-                                case 'EXCESS_CHARGES':
-                                case 'OTHER_CHARGES':
-                                case 'PREVIOUS_BILL_AMOUNT':
-                                case 'PREVIOUS_BILL_PAYMENT':
-                                case 'CURRENT_CHARGE_AMOUNT':
-                                case 'ADJ_AMOUNT':
-                                case 'AMOUNT_DUE':
-                                case 'RFP_AMOUNT':
-                                case 'WITHHOLDING_TAX':
-                                case 'AMOUNT_AFTER_TAX':
-                                case 'CHARGE_TO_BDC':
-                                    td.textContent = formatNumber(value);
-                                    td.classList.add('text-right');
-                                    break;
                                 case 'DATE_RECEIVED':
                                 case 'DATE_RESOLVED':
                                     td.textContent = DateTime(value, { format: "MM/DD/YYYY" });
@@ -989,42 +788,25 @@
                                     td.textContent = value;
                                     break;
                             }
-
                             tr.appendChild(td);
 
                         });
-
-                        const viewButton = generateActionButton(vectors.view, {
-                            class: 'px-2 py-2 bg-teal-500 text-white rounded',
-                            onClick: () => {
-                                const skips = ["BILL_PERIOD_FROM", "BILL_PERIOD_TO"];
-                                const object = Object.fromEntries(
-                                    Object.entries(row).filter(([k, v]) => !skips.includes(k))
-                                );
-                                onClickEvents.viewData({
-                                    ...object,
-                                    BILL_PERIOD_FROM_TO: `${DateTime(row.BILL_PERIOD_FROM, { format: "MM/DD/YYYY" })} - ${DateTime(row.BILL_PERIOD_TO, { format: "MM/DD/YYYY" })}`,
-                                    ISSUANCE_NO: row.ISSUANCE_NO,
-                                    GROUP_ID: row.GROUP_ID,
-                                    EMPLOYEE_NO: row.EMPLOYEE_NO,
-                                    EMPLOYEE_NAME: row.EMPLOYEE_NAME,
-                                })
-                            }
-                        }, row);
                         const editButton = generateActionButton(vectors.edit, {
-                            class: 'px-2 py-2 bg-blue-500 text-white rounded',
-                            onClick: () => onClickEvents.editData({
-                                ...row,
-                            })
+                            class: `px-2 py-2 bg-blue-500 text-white rounded ${row.STATUS == 'Resolved' ? 'hover:cursor-not-allowed opacity-50' : ''}`,
+                            onClick: () => {
+                                if (row.STATUS == 'Pending') {
+                                    onClickEvents.editData({
+                                        ...row,
+                                    });
+                                }
+                            }
                         }, row);
                         const deleteButton = generateActionButton(vectors.delete, {
                             class: 'px-2 py-2 bg-red-500 text-white rounded',
                             onClick: () => onClickEvents.deleteData({
                                 ...row,
-                                billId: row.BILL_ID,
                             })
                         }, row);
-                        // actionDiv.appendChild(viewButton);
                         actionDiv.appendChild(editButton);
                         actionDiv.appendChild(deleteButton);
                         actionTd.appendChild(actionDiv);
@@ -1138,16 +920,6 @@
                 noDataTd.textContent = 'No records found';
                 noDataRow.appendChild(noDataTd);
                 tbody.appendChild(noDataRow);
-
-                // Hide spinner and table container
-                // spinner.classList.add('hidden');
-                // tableContainer.classList.remove('hidden');
-
-                // Remove the disable attribute from the buttons when the  
-                // document.querySelectorAll('.disable-on-load').forEach(button => {
-                //     button.disabled = false;
-                //     button.classList.remove('cursor-not-allowed');
-                // });
             }
 
             // Function to load data into edit fields
@@ -1163,6 +935,7 @@
                 ids.editPlanOfActionId.value = item.PLAN_OF_ACTION;
                 ids.dateResolvedId.value = DateTime(item.DATE_RESOLVED, { format: "MM/DD/YYYY" });
                 ids.resolutionDetailsId.value = item.RESOLUTION_DETAILS;
+                deviceType = item.DEVICE_TYPE;
                 console.warn("DATASET: ", dataset);
 
                 const matchingRecord = matchDeviceRecord(item, dataset);
@@ -1189,43 +962,6 @@
                 return null; // Return null if no matching device type
             }
 
-
-            function loadViewFields(data = {}) {
-
-                const matching = [
-                    { element: ids.viewBillId, data: 'BILL_ID', type: 'string' },
-                    { element: ids.viewIssuanceNoId, data: 'ISSUANCE_NO', type: 'string' },
-                    { element: ids.viewSimCardId, data: 'SIM_CARD_ID', type: 'string' },
-                    { element: ids.viewEmpGroupId, data: 'GROUP_ID', type: 'string' },
-                    { element: ids.viewEmployeeNameId, data: 'EMPLOYEE_NAME', type: 'string' },
-                    { element: ids.viewRfpGroupNameId, data: 'RFP_GROUP_NAME', type: 'string' },
-                    { element: ids.viewMobileNoId, data: 'MOBILE_NO', type: 'string' },
-                    { element: ids.viewAccountNoId, data: 'ACCOUNT_NO', type: 'string' },
-                    { element: ids.viewRfpNoId, data: 'RFP_NO', type: 'string' },
-                    { element: ids.viewMrfId, data: 'MONTHLY_RECURRING_FEE', type: 'number' },
-                    { element: ids.viewBillPeriodFromToId, data: 'BILL_PERIOD_FROM_TO', type: 'string' },
-                    // { element: ids.viewBillPeriodToId, data: 'BILL_PERIOD_TO', type: 'date' },
-                    { element: ids.viewPreviousBillAmountId, data: 'PREVIOUS_BILL_AMOUNT', type: 'number' },
-                    { element: ids.viewPreviousBillPaymentId, data: 'PREVIOUS_BILL_PAYMENT', type: 'number' },
-                    { element: ids.viewExcessChargesId, data: 'EXCESS_CHARGES', type: 'number' },
-                    { element: ids.viewOtherChargesId, data: 'OTHER_CHARGES', type: 'number' },
-                    { element: ids.viewRfpAmountId, data: 'RFP_AMOUNT', type: 'number' },
-                    { element: ids.viewAdjAmountId, data: 'ADJ_AMOUNT', type: 'number' },
-                    { element: ids.viewAmountDueId, data: 'AMOUNT_DUE', type: 'number' },
-                    { element: ids.viewCurrentChargeAmountId, data: 'CURRENT_CHARGE_AMOUNT', type: 'number' },
-                ];
-
-                matching.forEach(({ element, data: keyValue, type, default: defaultValue }) => {
-                    const value = data[keyValue] !== '' ? data[keyValue] : defaultValue;
-                    if (type === 'number') {
-                        element.textContent = formatNumber(value);
-                    } else {
-                        element.textContent = value;
-                    }
-                });
-
-            }
-
             async function getFormConfig(action) {
                 switch (action) {
                     case 'addTicketRecord':
@@ -1233,8 +969,6 @@
                             submitCallback: async formData => {
                                 dropdownList.innerHTML = "";
                                 employeeNameContainer.classList.add('hidden');
-                                // formData.rfpNo = formData.rfpNo.toUpperCase();
-                                // console.log("FormData RFP No:", formData.rfpNo);
 
                                 formData.group_id = selectedDeviceDetails.GROUP_ID || "N/A";
                                 formData.sim_card_id = selectedDeviceDetails.SIM_CARD_ID || "N/A";
@@ -1242,54 +976,16 @@
 
                                 console.warn(formData);
 
-                                // isRfpNoValid(formData.rfpNo);
-
-                                // // If RFP No is invalid, show error and exit
-                                // if (!isRfpNumValid) {
-                                //     // toast.error({
-                                //     //     title: "The RFP No is Invalid",
-                                //     //     description: "Please enter a valid RFP No",
-                                //     //     timeout: 4000,
-                                //     //     closeButton: false,
-                                //     // });
-                                //     return Promise.reject("The RFP No is Invalid");
-                                // }
-
-                                // const simCardIds = updateTotalSelectedItems();
-
-                                // if (simCardIds.length > 0) {
-                                //     const billingSheetData = await generateBillingSheet(simCardIds);
-
                                 return new Promise((resolve, reject) => {
                                     google.script.run
                                         .withSuccessHandler(async () => {
                                             // Perform additional operations after successful submission
-                                            // console.log("Performing additional operations for addForm");
-
-                                            // ids.simCardsId.innerHTML = '';
-                                            // ids.simCardInitialStateId.classList.remove('hidden');
-                                            // ids.simCardInitialStateId.classList.add('flex');
-                                            // existingRfpNos.set(formData.rfpNo, formData.rfpNo);
-
-                                            // ids.selectedItems.textContent = 'Total Selected Items (0)';
                                             ids.deviceInfoList.innerHTML = '';
-
                                             resolve();
                                         })
                                         .withFailureHandler(reject)
                                         .addTicketRecord(formData);
                                 });
-                                // } else {
-                                //     toast.error({
-                                //         title: "No Items Selected",
-                                //         description: "Please select an items to proceed",
-                                //         timeout: 4000,
-                                //         closeButton: false,
-                                //     });
-
-                                //     return Promise.reject("No Items Selected");
-
-                                // }
 
                             },
                             additionalOperations: null // No additional operations before submission
@@ -1303,11 +999,8 @@
                                     .editTicketRecord(formData); // Correct server-side function
                             }),
                             additionalOperations: async formData => {
-                                // Additional operations specific to editTicketRecord
-                                // formData.editWithholdingTax = (formData.editRfpAmount / 1.12 * 0.02).toFixed(2);
-                                // formData.editAmountAfterTax = formData.editRfpAmount - formData.editWithholdingTax;
-                                // formData.editWithSoa = ids.editWithSoaId.checked;
-                                console.warn("FormData for editTicketRecord:", formData.editTicketId);
+                                formData.device_type = deviceType;
+                                console.warn("FormData for editTicketRecord:", formData);
                                 return Promise.resolve();
                             }
                         };
@@ -1786,10 +1479,7 @@
             // Fetch datasets and initialize the form
             await initializeDatasets(); // Ensure datasets are loaded before enabling dropdowns
 
-
         });
-
-        // document.getElementById('billsAndPayment').classList.remove('hidden');
 
     </script>
 </body>
