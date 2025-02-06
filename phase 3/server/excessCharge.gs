@@ -652,7 +652,7 @@ function getExcessChargesSummary(excessChargesData, deductionsData) {
                 TOTAL_EXCESS_CHARGE: 0,
                 TOTAL_REMAINING_EXCESS_CHARGE: 0,
                 TOTAL_AMOUNT_DEDUCTED: 0,
-                AS_OF_DATE: "",
+                LATEST_TRANSACTION_DATE: "",
             },
         ];
     }
@@ -673,20 +673,21 @@ function getExcessChargesSummary(excessChargesData, deductionsData) {
                 TOTAL_EXCESS_CHARGE: 0,
                 TOTAL_REMAINING_EXCESS_CHARGE: 0,
                 TOTAL_AMOUNT_DEDUCTED: 0,
-                AS_OF_DATE: item.EXCESS_CHARGE_DATE, // Set initial date as excess charge date
+                LATEST_TRANSACTION_DATE: item.EXCESS_CHARGE_DATE, // Set initial date as excess charge date
             };
         }
 
         // Accumulate the total excess charge
         summary[employeeNo].TOTAL_EXCESS_CHARGE += item.EXCESS_CHARGE;
 
-        // Update the AS_OF_DATE only if no deductions exist later
+        // Update the LATEST_TRANSACTION_DATE only if no deductions exist later
         if (
-            !summary[employeeNo].AS_OF_DATE ||
+            !summary[employeeNo].LATEST_TRANSACTION_DATE ||
             new Date(item.EXCESS_CHARGE_DATE) >
-                new Date(summary[employeeNo].AS_OF_DATE)
+                new Date(summary[employeeNo].LATEST_TRANSACTION_DATE)
         ) {
-            summary[employeeNo].AS_OF_DATE = item.EXCESS_CHARGE_DATE;
+            summary[employeeNo].LATEST_TRANSACTION_DATE =
+                item.EXCESS_CHARGE_DATE;
         }
     });
 
@@ -711,7 +712,7 @@ function getExcessChargesSummary(excessChargesData, deductionsData) {
                 TOTAL_EXCESS_CHARGE: 0,
                 TOTAL_REMAINING_EXCESS_CHARGE: 0,
                 TOTAL_AMOUNT_DEDUCTED: 0,
-                AS_OF_DATE: deduction.DATE_UPLOADED, // Set initial date as deduction file uploaded
+                LATEST_TRANSACTION_DATE: deduction.DATE_UPLOADED, // Set initial date as deduction file uploaded
             };
         }
 
@@ -720,13 +721,14 @@ function getExcessChargesSummary(excessChargesData, deductionsData) {
             deduction.AMOUNT || 0
         );
 
-        // Compare and update the AS_OF_DATE if the deduction date is later
+        // Compare and update the LATEST_TRANSACTION_DATE if the deduction date is later
         if (
-            !summary[employeeNo].AS_OF_DATE ||
+            !summary[employeeNo].LATEST_TRANSACTION_DATE ||
             new Date(deduction.DATE_UPLOADED) >
-                new Date(summary[employeeNo].AS_OF_DATE)
+                new Date(summary[employeeNo].LATEST_TRANSACTION_DATE)
         ) {
-            summary[employeeNo].AS_OF_DATE = deduction.DATE_UPLOADED;
+            summary[employeeNo].LATEST_TRANSACTION_DATE =
+                deduction.DATE_UPLOADED;
         }
     });
 
@@ -859,4 +861,274 @@ function getExcessChargePayrollPdfUrl(staticValue, data) {
     );
 
     return pdfUrl;
+}
+
+function processAndWriteDeductionData(data, fileName) {
+    // const data = [
+    //   {
+    //     "Formula": "Quantity",
+    //     "__EMPTY": "Hours",
+    //     "__EMPTY_1": "Constant",
+    //     "__EMPTY_2": "Salary Rate Type"
+    //   },
+    //   {
+    //     "__EMPTY_2": "Salary Type",
+    //     "__EMPTY_3": "Rate Type",
+    //     "__EMPTY_4": "Rate"
+    //   },
+    //   {
+    //     "Line #": 1,
+    //     "Employee Code": "000735",
+    //     "Employee Name": "ABAD, ARIEL B.",
+    //     "Pay Item Code": 5,
+    //     "Pay Item Name": "PLDT/CEL",
+    //     "Type": "Deduction",
+    //     "__EMPTY": 0,
+    //     "__EMPTY_1": 0,
+    //     "__EMPTY_2": "",
+    //     "__EMPTY_3": "",
+    //     "Amount": 32.46
+    //   },
+    //   {
+    //     "Line #": 2,
+    //     "Employee Code": "001163",
+    //     "Employee Name": "ABAD, FRANZ KEVIN R.",
+    //     "Pay Item Code": 5,
+    //     "Pay Item Name": "PLDT/CEL",
+    //     "Type": "Deduction",
+    //     "__EMPTY": 0,
+    //     "__EMPTY_1": 0,
+    //     "__EMPTY_2": "",
+    //     "__EMPTY_3": "",
+    //     "Amount": 32.46
+    //   }
+    // ];
+
+    // Get the spreadsheet and the "Deduction" sheet
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const deductionSheet = ss.getSheetByName("DEDUCTION");
+
+    // Get the last row with data in column A of the "Deduction" sheet
+    const lastRow = deductionSheet.getLastRow();
+
+    // Get the last ID from the sheet (assuming it's in the first column)
+    let lastId;
+    if (lastRow > 0) {
+        const lastIdRange = deductionSheet.getRange(lastRow, 1);
+        lastId = lastIdRange.getValue();
+        // Check if lastId is a number, otherwise set it to 0
+        lastId = isNaN(lastId) ? 0 : lastId;
+    } else {
+        lastId = 0; // No records, start with ID 1
+    }
+
+    let processedData = [];
+
+    // Process the data
+    for (let i = 2; i < data.length; i++) {
+        if (String(data[i]["Employee Code"] || "").trim() !== "") {
+            processedData.push([
+                lastId + i - 1, // Use lastId for the first ID and increment
+                `'${String(data[i]["Employee Code"]).padStart(6, "0")}`,
+                data[i]["Employee Name"],
+                data[i]["Amount"],
+                Utilities.formatDate(
+                    new Date(),
+                    Session.getScriptTimeZone(),
+                    "MM/dd/yyyy"
+                ),
+                fileName,
+            ]);
+        }
+    }
+
+    // Write the collected data to the sheet in a single operation
+    if (processedData.length > 0) {
+        const startRow = lastRow + 1;
+        const numRows = processedData.length;
+        const startColumn = 1;
+        deductionSheet
+            .getRange(startRow, startColumn, numRows, processedData[0].length)
+            .setValues(processedData);
+        return processedData.length;
+    }
+
+    return 0;
+}
+
+// function to populate the excess charge report template
+function populateExcessChargeReportTemplate(
+    staticValue,
+    data,
+    sheetName,
+    titleText
+) {
+    const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = spreadsheet.getSheetByName(sheetName);
+
+    const reference = getReferenceData();
+    const parsedReference = JSON.parse(reference);
+
+    // Check if the sheet exists
+    if (!sheet) {
+        Logger.log(`Sheet with name "${sheetName}" does not exist.`);
+        return;
+    }
+
+    // Clear the sheet before writing
+    sheet.clear();
+
+    // Common styles
+    const headerFont = {
+        fontSize: 12,
+        fontFamily: "Poppins",
+        fontWeight: "bold",
+    };
+    const regularFont = { fontSize: 10, fontFamily: "Poppins" };
+
+    // Insert the sheet name and today's date in a single batch
+    const today = new Date();
+    const formattedDate = Utilities.formatDate(
+        today,
+        Session.getScriptTimeZone(),
+        "MM/dd/yyyy"
+    );
+    const headerValues = [
+        [titleText, "", "", "", "", "", "", "", "", `Date: ${formattedDate}`],
+    ];
+    sheet.getRange("A1:J1").setValues(headerValues);
+    sheet
+        .getRange("A1")
+        .setFontSize(14)
+        .setFontWeight("bold")
+        .setHorizontalAlignment("LEFT");
+    sheet.getRange("J1").setFontSize(14).setHorizontalAlignment("LEFT");
+
+    // Insert report details in batch
+    const reportDetails = [
+        ["RFP NO", staticValue.RFP_NO],
+        ["RFP DATE", staticValue.RFP_DATE],
+        ["NETWORK PROVIDER", staticValue.NETWORK_PROVIDER],
+    ];
+    sheet.getRange("A3:B5").setValues(reportDetails);
+    sheet
+        .getRange("A3:B5")
+        .setFontSize(10)
+        .setFontFamily("Poppins")
+        .setHorizontalAlignment("LEFT");
+    sheet.getRange("A3:B5").setBorder(true, true, true, true, true, true);
+
+    // Define headers for the main data table
+    const headers = [
+        "EMPLOYEE NO",
+        "EMPLOYEE NAME",
+        "DEPARTMENT",
+        "COMPANY",
+        "BILL PERIOD FROM",
+        "BILL PERIOD TO",
+        "SIM CARD ID",
+        "MOBILE NO",
+        "ACCOUNT NO",
+        "EXCESS CHARGE",
+    ];
+
+    // Process the data with optimized processing
+    const rows = data;
+
+    // Insert headers and data
+    const startRow = 10;
+    sheet.getRange(startRow, 1, 1, headers.length).setValues([headers]);
+    sheet
+        .getRange(startRow + 1, 1, rows.length, headers.length)
+        .setValues(rows);
+
+    // Format headers in batch
+    const headerRange = sheet.getRange(startRow, 1, 1, headers.length);
+    headerRange
+        .setFontWeight("bold")
+        .setFontSize(12)
+        .setHorizontalAlignment("CENTER")
+        .setFontFamily("Poppins")
+        .setBorder(true, true, true, true, true, true);
+
+    // Format data in batch
+    const dataRange = sheet.getRange(
+        startRow + 1,
+        1,
+        rows.length,
+        headers.length
+    );
+    dataRange
+        .setFontSize(11)
+        .setFontFamily("Poppins")
+        .setHorizontalAlignment("CENTER")
+        .setBorder(true, true, true, true, true, true);
+
+    // Format excess charge column
+    const excessChargeColumn = sheet.getRange(startRow + 1, 10, rows.length, 1);
+    excessChargeColumn
+        .setNumberFormat("#,##0.00")
+        .setHorizontalAlignment("RIGHT");
+
+    // Add grand total row
+    const totalRowIndex = startRow + rows.length + 1;
+    sheet
+        .getRange(totalRowIndex, 1)
+        .setValue("GRAND TOTAL")
+        .setFontWeight("bold")
+        .setFontSize(12)
+        .setHorizontalAlignment("CENTER");
+    sheet
+        .getRange(totalRowIndex, 10)
+        .setFormula(`=SUM(J${startRow + 1}:J${startRow + rows.length})`)
+        .setNumberFormat("#,##0.00")
+        .setFontWeight("bold")
+        .setFontSize(12)
+        .setHorizontalAlignment("RIGHT");
+
+    // Apply borders to the grand total row
+    sheet
+        .getRange(totalRowIndex, 1, 1, 10)
+        .setBorder(true, true, true, true, true, true);
+
+    // Signatories section
+    const pageHeight = 50;
+    const totalUsedRows = totalRowIndex + 3;
+    const totalPages = Math.ceil(totalUsedRows / pageHeight);
+    const lastPageStartRow = (totalPages - 1) * pageHeight + 1;
+    const blankRowsNeeded = Math.max(0, lastPageStartRow - totalUsedRows);
+
+    if (blankRowsNeeded > 0) {
+        sheet.insertRowsAfter(totalRowIndex, blankRowsNeeded);
+    }
+
+    const signatoryStartRow = totalRowIndex + blankRowsNeeded + 5;
+    // const signatoryValues = [
+    //   ['Prepared by:', 'Checked By:', 'Received By:'],
+    //   ['', '', ''],
+    //   ['Cottish Star Papa', 'Rienalyn Villanueva', 'Nida Fajiculay'],
+    //   ['Admin and Benefits Specialist', 'Human Resources Supervisor', 'Payroll Specialist']
+    // ];
+    const signatoryValues = [
+        ["Prepared by:", "Checked By:", "Received By:"],
+        ["", "", ""],
+        [
+            parsedReference[3].NAME,
+            parsedReference[4].NAME,
+            parsedReference[5].NAME,
+        ],
+        [
+            parsedReference[3].POSITION,
+            parsedReference[4].POSITION,
+            parsedReference[5].POSITION,
+        ],
+    ];
+    sheet
+        .getRange(signatoryStartRow, 1, 4, 3)
+        .setFontWeight("bold")
+        .setValues(signatoryValues);
+    sheet.getRange(signatoryStartRow, 1, 1, 3).setFontSize(11);
+    sheet.getRange(signatoryStartRow + 1, 1, 1, 3).setFontSize(11);
+
+    Logger.log(`Report successfully populated in sheet: "${sheetName}"`);
 }
