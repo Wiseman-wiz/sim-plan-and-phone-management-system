@@ -60,8 +60,8 @@ function editSignatory(formData) {
     // Define new values
     let newValues = [
         formData.editSignatoryId,
-        formData.editName,
-        formData.editPosition,
+        formData.editName.trim(),
+        formData.editPosition.trim(),
         formData.editFieldName,
         formData.editDocumentName
     ];
