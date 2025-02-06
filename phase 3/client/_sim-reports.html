@@ -1228,7 +1228,7 @@
 
             const outstandingBalanceElement = document.querySelector('span#outstanding-balance-pagination-records');
             const outstandingBalancePagingElement = document.querySelector('span#outstanding-balance-pagination-label');
-            const outstandingBalanceHiddenColumns = [4, 7];
+            const outstandingBalanceHiddenColumns = [4, 5, 6];
 
             const outstandingBalanceTableOutput = {
                 pagination: ({
@@ -1363,6 +1363,7 @@
                 'CATEGORY',
                 'NETWORK_PROVIDER',
                 'PLAN_DETAILS',
+                'WITH_TICKET'
             ];
 
             const standardSimCardsHeaders = [
@@ -2042,6 +2043,8 @@
 
                 console.warn(simReportsData)
                 console.warn(typeof simReportsData)
+
+                const parsedSimReportsData = JSON.parse(simReportsData);
 
                 const simCardsOnHand = parsedSimReportsData.filter(sim => sim.STATUS.toLowerCase() == 'available');
                 const simCardsWithNoPhone = [];
