@@ -169,6 +169,7 @@ function getSidebar(activePage) {
         },
         { view: "_ticket-management", label: "Ticket Management" },
         { view: "_audit-trail", label: "Audit Trail" },
+        { view: "_reference", label: "Reference" },
     ];
 
     const sidebarContent = sidebarItems
