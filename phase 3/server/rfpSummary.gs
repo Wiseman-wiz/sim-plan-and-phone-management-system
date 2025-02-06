@@ -248,6 +248,17 @@ function getPaymentBreakdownPdfUrl(data) {
     return pdfUrl;
 }
 
+function formatDatezxcv(inputDate) {
+    const date = new Date(inputDate);
+    return date
+        .toLocaleDateString("en-US", {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+        })
+        .replace(",", ".");
+}
+
 function populateRfpTemplate(data) {
     // { TOTAL_WITHHOLDING_TAX: 643.2000000000013,
     // DATE_RECEIVED_BY_ACCTG: '',
@@ -285,11 +296,12 @@ function populateRfpTemplate(data) {
         console.error("Error parsing RFP_INFO:", error);
     }
 
-    var billPeriod = `${formatDateToStr(
+    var billPeriod = `${formatDatezxcv(
         data.BILL_PERIOD_FROM
-    )} - ${formatDateToStr(data.BILL_PERIOD_TO)}`;
+    )} - ${formatDatezxcv(data.BILL_PERIOD_TO)}`;
+    console.log(billPeriod);
     var dateOfPayment = data.DATE_OF_PAYMENT
-        ? formatDateToStr(data.DATE_OF_PAYMENT)
+        ? formatDatezxcv(data.DATE_OF_PAYMENT)
         : "";
 
     const rfpCompany = rfpInfo.RFP_COMPANY.toUpperCase();
@@ -297,7 +309,7 @@ function populateRfpTemplate(data) {
     sheet
         .getRange("Q7:S7")
         .setValue(
-            formatDateToStr(
+            formatDatezxcv(
                 Utilities.formatDate(new Date(), "GMT+1", "MM/dd/yyyy")
             )
         );
@@ -310,6 +322,8 @@ function populateRfpTemplate(data) {
     sheet.getRange("M16:N16").setValue(parsedReference[0].NAME);
     // RFP Template - Requested by
     sheet.getRange("B35:G35").setValue(parsedReference[1].NAME);
+    // RFP Template - Standard Approval
+    sheet.getRange("B41:G41").setValue(parsedReference[2].NAME);
 
     sheet.getRange("Q6:S6").setValue(data.RFP_NO);
     sheet.getRange("D22:F22").setValue(billPeriod);

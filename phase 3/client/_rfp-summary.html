@@ -1222,20 +1222,21 @@
                         headers.forEach((header) => {
                             const td = document.createElement("td");
                             let value = row[header];
-                            if (header == "RFP_DATE") {
-                                value = formatIsoDate(row.RFP_DATE);
-                            } else if (header == "DATE_OF_PAYMENT") {
-                                value = formatIsoDate(row.DATE_OF_PAYMENT);
-                            } else if (header == "DATE_RECEIVED_BY_ACCTG") {
-                                value = formatIsoDate(row.DATE_RECEIVED_BY_ACCTG);
-                            } else if (header == "CV_DATE") {
-                                value = formatIsoDate(row.CV_DATE);
-                            } else if (header == "CHECK_DATE") {
-                                value = formatIsoDate(row.CHECK_DATE);
-                            } else if (header == "DEPOSIT_DATE") {
-                                value = formatIsoDate(row.DEPOSIT_DATE);
-                            }
-                            else if (header == "RFP_AMOUNT") {
+                            // if (header == "RFP_DATE") {
+                            //     value = formatIsoDate(row.RFP_DATE);
+                            // } else if (header == "DATE_OF_PAYMENT") {
+                            //     value = formatIsoDate(row.DATE_OF_PAYMENT);
+                            // } else if (header == "DATE_RECEIVED_BY_ACCTG") {
+                            //     value = formatIsoDate(row.DATE_RECEIVED_BY_ACCTG);
+                            // } else if (header == "CV_DATE") {
+                            //     value = formatIsoDate(row.CV_DATE);
+                            // } else if (header == "CHECK_DATE") {
+                            //     value = formatIsoDate(row.CHECK_DATE);
+                            // } else if (header == "DEPOSIT_DATE") {
+                            //     value = formatIsoDate(row.DEPOSIT_DATE);
+                            // }
+                            // else 
+                            if (header == "RFP_AMOUNT") {
                                 value = row.TOTAL_RFP_AMOUNT;
                             } else if (header == "WITHHOLDING_TAX") {
                                 value = row.TOTAL_WITHHOLDING_TAX;
@@ -1251,6 +1252,7 @@
                             const dateValues = [
                                 'BILL_PERIOD_FROM',
                                 'BILL_PERIOD_TO',
+                                'RFP_DATE',
                                 'DATE_OF_PAYMENT',
                                 'DATE_RECEIVED_BY_ACCTG',
                                 'CV_DATE',
