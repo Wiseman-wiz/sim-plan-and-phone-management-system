@@ -1248,10 +1248,22 @@
                                 "WITHHOLDING_TAX",
                                 "AMOUNT_AFTER_TAX",
                             ];
+                            const dateValues = [
+                                'BILL_PERIOD_FROM',
+                                'BILL_PERIOD_TO',
+                                'DATE_OF_PAYMENT',
+                                'DATE_RECEIVED_BY_ACCTG',
+                                'CV_DATE',
+                                'CHECK_DATE',
+                                'DEPOSIT_DATE',
+                            ]
                             switch (true) {
                                 case numberValues.includes(header):
                                     td.textContent = formatNumber(value);
                                     td.classList.add("text-right");
+                                    break;
+                                case dateValues.includes(header):
+                                    td.textContent = DateTime(value, { format: "MM/DD/YYYY" });
                                     break;
                                 default:
                                     td.textContent = value;

@@ -268,6 +268,11 @@ function populateRfpTemplate(data) {
     // RFP_DATE: '10/18/2024',
     // NETWORK_PROVIDER: 'Sun' }
 
+    const reference = getReferenceData();
+    const parsedReference = JSON.parse(reference);
+
+    // console.log(reference);
+
     console.log(data);
 
     var sheet = accessSheet("RFP_TEMPLATE");
@@ -300,6 +305,11 @@ function populateRfpTemplate(data) {
     sheet.getRange("D6:J6").setValue(data.NETWORK_PROVIDER);
     sheet.getRange("D7:J7").setValue(data.PAYABLE_TO);
     sheet.getRange("D9:F9").setValue(dateOfPayment);
+
+    // RFP Template - Representative's Name
+    sheet.getRange("M16:N16").setValue(parsedReference[0].NAME);
+    // RFP Template - Requested by
+    sheet.getRange("B35:G35").setValue(parsedReference[1].NAME);
 
     sheet.getRange("Q6:S6").setValue(data.RFP_NO);
     sheet.getRange("D22:F22").setValue(billPeriod);
@@ -651,64 +661,32 @@ function getRfpData() {
         ]);
 
         // Format date fields (assuming BILL_PERIOD_FROM and BILL_PERIOD_TO are date fields)
-        execution.forEach((row) => {
-            if (row.BILL_PERIOD_FROM) {
-                row.BILL_PERIOD_FROM = Utilities.formatDate(
-                    new Date(row.BILL_PERIOD_FROM),
-                    Session.getScriptTimeZone(),
-                    "MM/dd/yyyy"
-                );
-            }
-            if (row.BILL_PERIOD_TO) {
-                row.BILL_PERIOD_TO = Utilities.formatDate(
-                    new Date(row.BILL_PERIOD_TO),
-                    Session.getScriptTimeZone(),
-                    "MM/dd/yyyy"
-                );
-            }
-            if (row.RFP_DATE) {
-                row.RFP_DATE = Utilities.formatDate(
-                    new Date(row.RFP_DATE),
-                    Session.getScriptTimeZone(),
-                    "MM/dd/yyyy"
-                );
-            }
-            if (row.DATE_OF_PAYMENT) {
-                row.DATE_OF_PAYMENT = Utilities.formatDate(
-                    new Date(row.DATE_OF_PAYMENT),
-                    Session.getScriptTimeZone(),
-                    "MM/dd/yyyy"
-                );
-            }
-            if (row.DATE_RECEIVED_BY_ACCTG) {
-                row.DATE_RECEIVED_BY_ACCTG = Utilities.formatDate(
-                    new Date(row.DATE_RECEIVED_BY_ACCTG),
-                    Session.getScriptTimeZone(),
-                    "MM/dd/yyyy"
-                );
-            }
-            if (row.CV_DATE) {
-                row.CV_DATE = Utilities.formatDate(
-                    new Date(row.CV_DATE),
-                    Session.getScriptTimeZone(),
-                    "MM/dd/yyyy"
-                );
-            }
-            if (row.CHECK_DATE) {
-                row.CHECK_DATE = Utilities.formatDate(
-                    new Date(row.CHECK_DATE),
-                    Session.getScriptTimeZone(),
-                    "MM/dd/yyyy"
-                );
-            }
-            if (row.DEPOSIT_DATE) {
-                row.DEPOSIT_DATE = Utilities.formatDate(
-                    new Date(row.DEPOSIT_DATE),
-                    Session.getScriptTimeZone(),
-                    "MM/dd/yyyy"
-                );
-            }
-        });
+        // execution.forEach(row => {
+        //   if (row.BILL_PERIOD_FROM) {
+        //     row.BILL_PERIOD_FROM = Utilities.formatDate(new Date(row.BILL_PERIOD_FROM), Session.getScriptTimeZone(), "MM/dd/yyyy");
+        //   }
+        //   if (row.BILL_PERIOD_TO) {
+        //     row.BILL_PERIOD_TO = Utilities.formatDate(new Date(row.BILL_PERIOD_TO), Session.getScriptTimeZone(), "MM/dd/yyyy");
+        //   }
+        //   if (row.RFP_DATE) {
+        //     row.RFP_DATE = Utilities.formatDate(new Date(row.RFP_DATE), Session.getScriptTimeZone(), "MM/dd/yyyy");
+        //   }
+        //   if (row.DATE_OF_PAYMENT) {
+        //     row.DATE_OF_PAYMENT = Utilities.formatDate(new Date(row.DATE_OF_PAYMENT), Session.getScriptTimeZone(), "MM/dd/yyyy");
+        //   }
+        //   if (row.DATE_RECEIVED_BY_ACCTG) {
+        //     row.DATE_RECEIVED_BY_ACCTG = Utilities.formatDate(new Date(row.DATE_RECEIVED_BY_ACCTG), Session.getScriptTimeZone(), "MM/dd/yyyy");
+        //   }
+        //   if (row.CV_DATE) {
+        //     row.CV_DATE = Utilities.formatDate(new Date(row.CV_DATE), Session.getScriptTimeZone(), "MM/dd/yyyy");
+        //   }
+        //   if (row.CHECK_DATE) {
+        //     row.CHECK_DATE = Utilities.formatDate(new Date(row.CHECK_DATE), Session.getScriptTimeZone(), "MM/dd/yyyy");
+        //   }
+        //   if (row.DEPOSIT_DATE) {
+        //     row.DEPOSIT_DATE = Utilities.formatDate(new Date(row.DEPOSIT_DATE), Session.getScriptTimeZone(), "MM/dd/yyyy");
+        //   }
+        // });
 
         // Check if dataset is empty, return placeholder if needed
         if (!execution || execution.length === 0) {
